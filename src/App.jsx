@@ -1,20 +1,21 @@
-import { useState } from 'react'
+import { useState } from "react";
+import "./index.css";
+import TopBar from "./Components/Topbar";
+import Homepage from "./Components/Homepage";
+import SLD from "./Components/SLD/DynamicSLD";
 
-import './index.css'
-import TopBar from './Components/Topbar'
-import Homepage from './Components/Homepage';
-
-import { BrowserRouter } from "react-router-dom"; // Import BrowserRouter
+import { BrowserRouter, Routes, Route } from "react-router-dom"; // Import Routes and Route
 
 function App() {
- 
   return (
-    <>
-      <BrowserRouter>
-        <Homepage />
-      </BrowserRouter>
-    </>
+    <BrowserRouter>
+   
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/sld-view" element={<SLD />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
-export default App
+export default App;
