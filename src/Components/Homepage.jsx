@@ -63,8 +63,8 @@ export default function HomePage() {
             className="mt-1 mb-5 border-2 border-gray-300 font-bold block w-full p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="Select">Select an option</option>
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
+            <option value="option1">SDP (Swith Double Pole)</option>
+            <option value="option2">Transformer</option>
           </select>
 
        
