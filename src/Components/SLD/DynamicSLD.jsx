@@ -83,12 +83,11 @@ const SLD = () => {
   };
 
   return (
-
     <>
       <TopBar />
       <div className="container-fluid mx-auto max-h-screen px-4 overflow-auto">
         <h2 className="text-md font-semibold text-[#63667e] mt-4">
-          Location ID:{" "} yash
+          Location ID: yash
           <span className="font-bold text-[#6c63ff]">{locationID}</span>
         </h2>
 
@@ -218,13 +217,70 @@ const SLD = () => {
                     })}
                 </g>
               </svg>
-              <button
-                onClick={resetView}
-                className="absolute bottom-4 right-4 bg-blue-500 text-white p-2 rounded-full shadow-md sm:block md:block lg:hidden"
-                style={{ zIndex: 1000 }}
+
+              <div
+                className="absolute bottom-4 right-4 flex flex-col items-center gap-2 p-2 border border-black bg-white rounded-lg sm:block md:block lg:hidden"
+                style={{
+                  zIndex: 1000,
+                  touchAction: "manipulation", // prevent double-tap zoom on mobile
+                }}
               >
-                Reset View
-              </button>
+                <button
+                  onClick={() => setZoom((prev) => Math.min(prev + 0.1, 5))}
+                  className="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition"
+                  title="Zoom In"
+                >
+                  <img src="/zoomin.svg" alt="" />
+                </button>
+
+                <button
+                  onClick={() => setZoom((prev) => Math.max(prev - 0.1, 0.2))}
+                  className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition"
+                  title="Zoom Out"
+                >
+                  <img src="/zoomout.svg" alt="" />
+                </button>
+
+                <button
+                  onClick={resetView}
+                  className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
+                  title="Reset View"
+                >
+                  <img src="/reset.svg" alt="" />
+                </button>
+              </div>
+
+              {/* <div
+                className="absolute bottom-4 right-4 flex flex-col items-center gap-2 p-2 bg-white rounded-lg shadow-lg sm:block md:block lg:hidden"
+                style={{ zIndex: 1000, touchAction: "manipulation" }}
+              >
+                <button
+                  onTouchStart={(e) => e.preventDefault()}
+                  onClick={() => setZoom((prev) => Math.min(prev + 0.1, 5))}
+                  className="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition"
+                  title="Zoom In"
+                >
+                  <img src="/zoomin.svg" alt="Zoom In" />
+                </button>
+
+                <button
+                  onTouchStart={(e) => e.preventDefault()}
+                  onClick={() => setZoom((prev) => Math.max(prev - 0.1, 0.2))}
+                  className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition"
+                  title="Zoom Out"
+                >
+                  <img src="/zoomout.svg" alt="Zoom Out" />
+                </button>
+
+                <button
+                  onTouchStart={(e) => e.preventDefault()}
+                  onClick={resetView}
+                  className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
+                  title="Reset View"
+                >
+                  <img src="/reset.svg" alt="Reset View" />
+                </button>
+              </div> */}
             </div>
 
             <div className="p-4 border border-black overflow-auto">
@@ -246,7 +302,6 @@ const SLD = () => {
                   <strong>Last Maintenance Date:</strong>{" "}
                   {selectedInfo.maintenance}
                 </p>
-               
               </>
             )}
           </div>
