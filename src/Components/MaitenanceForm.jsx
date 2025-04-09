@@ -7,6 +7,14 @@ function MaitenanceForm({ locationId, deviceId, projectId }) {
   const [allTasks, setAllTasks] = useState([]);
   const [availableTasks, setAvailableTasks] = useState([]);
   const [selectedTasks, setSelectedTasks] = useState([]);
+  const [createdBy, setCreatedBy] = useState("");
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user?.username) {
+      setCreatedBy(user.username); // Pre-fill from localStorage
+    }
+  }, []);
 
  useEffect(() => {
    const token = localStorage.getItem("token");
@@ -142,7 +150,6 @@ useEffect(() => {
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Created By
@@ -151,6 +158,8 @@ useEffect(() => {
             type="text"
             name="createdBy"
             placeholder="Enter creator's name"
+            value={createdBy}
+            onChange={(e) => setCreatedBy(e.target.value)} 
             className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
           />
         </div>

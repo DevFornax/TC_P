@@ -15,18 +15,22 @@ function MaintenancePage({
   const [selection, setSelection] = useState("General");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [activeView, setActiveView] = useState(null); 
+  const [activeView, setActiveView] = useState(null);
 
   const handleLocationSearch = async () => {
     if (!newLocationID || isNaN(newLocationID)) {
       setError("Location ID must be a valid number.");
+
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
+
       return;
     }
-
     setError("");
     setLoading(true);
-
-    try {  const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
       const API_URL = import.meta.env.VITE_API_BASE_URL;
       const res = await fetch(`${API_URL}/get-location-data`, {
         method: "POST",
@@ -36,14 +40,11 @@ function MaintenancePage({
         },
         body: JSON.stringify({ location_id: parseInt(newLocationID) }),
       });
-
       const data = await res.json();
-
       if (!res.ok) {
         setError(data.message || "Location not found");
         return;
       }
-
       setLocationData(data);
       setNewLocationID("");
       setLocationIDforchild(parseInt(newLocationID));
@@ -59,7 +60,8 @@ function MaintenancePage({
     return <div className="text-gray-500">No data available.</div>;
   }
 
-  const { id, project_id, project_name, substation_name, attributes } = locationdata;
+  const { id, project_id, project_name, substation_name, attributes } =
+    locationdata;
   const {
     point_type,
     point_no,
@@ -114,7 +116,6 @@ function MaintenancePage({
         </div>
         <div>
           <SectionWithToggle>
-      
             <InfoItem label="Support Type" value={point_props.support_type} />
             <InfoItem
               label="Structure Type"
@@ -124,7 +125,6 @@ function MaintenancePage({
             <InfoItem label="Earthing Type" value={point_props.earthing_type} />
             <InfoItem label="Scheme" value={point_props.scheme} />
 
-            
             <InfoItem label="Position" value={line_props.position} />
             <InfoItem label="Type" value={line_props.type} />
             <InfoItem
@@ -168,7 +168,7 @@ function MaintenancePage({
                   <MaitenanceForm
                     locationId={id}
                     deviceId={selectedPoint?.id}
-                    projectId = {project_id}
+                    projectId={project_id}
                   />
                 )}
 
@@ -215,4 +215,3 @@ function MaintenancePage({
 }
 
 export default MaintenancePage;
-

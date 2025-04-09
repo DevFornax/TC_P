@@ -57,7 +57,7 @@ export default function HomePage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen p-3">
-      <div className="flex flex-col md:flex-row w-full max-w-7xl mx-auto bg-white rounded-lg border border-black shadow-lg">
+      <div className="flex flex-col md:flex-row w-full max-w-7xl mx-auto bg-white rounded-lg  shadow-lg">
         <div className="flex justify-center items-center w-full md:w-1/2 p-4">
           <img
             src="/undraw_qa-engineers_kgp8.svg"
@@ -71,7 +71,7 @@ export default function HomePage() {
           </p>
 
           <label className="block text-gray-700 text-lg font-medium mb-2">
-            Location ID 15480872
+            Location ID 266293
           </label>
           <input
             type="text"

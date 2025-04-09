@@ -22,12 +22,11 @@ const SLD = () => {
   const [locationData, setLocationData] = useState(null);
   const [selectedPoint, setselectedPoint] = useState(null);
   const [locationIDforchild, setLocationIDforchild] = useState("");
-
   const { locationID, selection } = location.state || {};
-
   const [error, setError] = useState("");
   const handleMouseUp = () => setIsDragging(false);
   const handleTouchEnd = () => setIsDragging(false);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,11 +34,9 @@ const SLD = () => {
         navigate("/");
         return;
       }
-
-      try {const token = localStorage.getItem("token");
-     
+      try {
+        const token = localStorage.getItem("token");
         const API_URL = import.meta.env.VITE_API_BASE_URL;
-        
         const res = await fetch(`${API_URL}/get-location-data`, {
           method: "POST",
           headers: {
@@ -48,9 +45,7 @@ const SLD = () => {
           },
           body: JSON.stringify({ location_id: locationID }),
         });
-
         const data = await res.json();
-
         if (!res.ok) {
           setError(data.message || "Location not found");
           return;
@@ -63,7 +58,6 @@ const SLD = () => {
         setError("Something went wrong while loading SLD.");
       }
     };
-
     fetchData();
   }, [locationID, selection, navigate]);
 
@@ -303,7 +297,7 @@ const SLD = () => {
               selectedPoint={selectedPoint}
               setLocationData={setLocationData}
               setselectedPoint={setselectedPoint}
-              setLocationIDforchild={setLocationIDforchild} // 👈 NEW
+              setLocationIDforchild={setLocationIDforchild} 
             />
           </div>
         </div>
