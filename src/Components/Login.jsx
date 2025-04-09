@@ -7,33 +7,37 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+const handleLogin = async (e) => {
+  e.preventDefault();
 
-   try {
-     const res = await fetch("http://localhost:5000/api/login", {
-       method: "POST",
-       headers: {
-         "Content-Type": "application/json",
-       },
-       body: JSON.stringify({ username, password }),
-     });
+  try {
+    const res = await fetch("http://localhost:5000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
 
-     const data = await res.json();
+    const data = await res.json();
 
-     if (res.ok && data.success) {
-       localStorage.setItem("isLoggedIn", "true");
-       localStorage.setItem("user", JSON.stringify(data.user));
-       localStorage.setItem("token", data.token);
-       navigate("/");
-     } else {
-       alert("Login failed: " + (data.message || "Unknown error"));
-     }
-   } catch (err) {
-     alert("Login failed: " + err.message);
-   }
+    if (res.ok && data.success) {
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
 
-  };
+      // ✅ Optional: Set Authorization header for future fetches
+      // fetch.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+
+      navigate("/"); // or wherever your dashboard/home is
+    } else {
+      alert("Login failed: " + (data.message || "Unknown error"));
+    }
+  } catch (err) {
+    alert("Login failed: " + err.message);
+  }
+};
+;
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">

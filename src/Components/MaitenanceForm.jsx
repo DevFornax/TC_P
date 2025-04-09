@@ -3,27 +3,34 @@ import React, { useState, useEffect } from "react";
 function MaitenanceForm({ locationId, deviceId, projectId }) {
   const [date, setDate] = useState("");
   const [maintenanceType, setMaintenanceType] = useState("");
-
   const [filteredTasks, setFilteredTasks] = useState([]);
-
   const [allTasks, setAllTasks] = useState([]);
   const [availableTasks, setAvailableTasks] = useState([]);
   const [selectedTasks, setSelectedTasks] = useState([]);
 
-  useEffect(() => {
-    fetch("http://localhost:5000/get-job-list")
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        setAllTasks(data);
-        setAvailableTasks(data);
-      })
-      .catch((err) => {
-        console.error("🔥 Failed to fetch tasks:", err);
-      });
-  }, []);
+ useEffect(() => {
+   const token = localStorage.getItem("token");
+
+   fetch(`${import.meta.env.VITE_API_BASE_URL}/get-job-list`, {
+     method: "GET",
+     headers: {
+       "Content-Type": "application/json",
+       Authorization: `Bearer ${token}`,
+     },
+   })
+     .then((res) => {
+       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+       return res.json();
+     })
+     .then((data) => {
+       setAllTasks(data);
+       setAvailableTasks(data);
+     })
+     .catch((err) => {
+       console.error("🔥 Failed to fetch tasks:", err);
+     });
+ }, []);
+
 
 useEffect(() => {
   let filtered = [];

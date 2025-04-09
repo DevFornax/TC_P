@@ -9,27 +9,25 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-
   const handleSubmit = async () => {
     setError("");
-
     if (!locationID || isNaN(locationID)) {
       setError("Location ID must be a valid number.");
       return;
     }
-
     if (!selection || selection === "Select") {
       setError("Please select a valid type.");
       return;
     }
-
     setLoading(true);
-
     try {
+      const token = localStorage.getItem("token");
+
       const res = await fetch(`${API_URL}/check-location-exist`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ location_id: parseInt(locationID) }),
       });
@@ -56,7 +54,6 @@ export default function HomePage() {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="flex items-center justify-center min-h-screen p-3">
