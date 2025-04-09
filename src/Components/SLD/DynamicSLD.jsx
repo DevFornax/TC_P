@@ -88,7 +88,7 @@ const SLD = () => {
       <TopBar />
       <div className="container-fluid mx-auto max-h-screen px-4 overflow-auto">
         <h2 className="text-md font-semibold text-[#63667e] mt-4">
-          Location ID:{" "}
+          Location ID:{" "} yash
           <span className="font-bold text-[#6c63ff]">{locationID}</span>
         </h2>
 
