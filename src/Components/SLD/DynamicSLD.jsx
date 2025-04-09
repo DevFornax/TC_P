@@ -1,8 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TopBar from "../Topbar";
-import { lines ,scale , visiblePointIds, waypoints, customIcons } from "./Support";
-import Maintenance from "../Maintenance";
+import {
+  lines,
+  scale,
+  visiblePointIds,
+  waypoints,
+  customIcons,
+} from "./Support";
+
+import MaintenancePage from "../MaintenancePage";
 
 const SLD = () => {
   const navigate = useNavigate();
@@ -14,7 +21,7 @@ const SLD = () => {
   const dragStart = useRef({ x: 0, y: 0 });
   const [locationData, setLocationData] = useState(null);
   const [selectedPoint, setselectedPoint] = useState(null);
-  const [locationIDforchild, setLocationIDforchild] = useState(""); 
+  const [locationIDforchild, setLocationIDforchild] = useState("");
 
   const { locationID, selection } = location.state || {};
 
@@ -31,7 +38,7 @@ const SLD = () => {
 
       try {
         const API_URL = import.meta.env.VITE_API_BASE_URL;
-        const res = await fetch(`${API_URL}/check-locationid`, {
+        const res = await fetch(`${API_URL}/get-location-data`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -45,7 +52,7 @@ const SLD = () => {
           setError(data.message || "Location not found");
           return;
         }
-setLocationIDforchild(locationID)
+        setLocationIDforchild(locationID);
         setLocationData(data);
         console.log(data);
       } catch (err) {
@@ -128,10 +135,13 @@ setLocationIDforchild(locationID)
       <TopBar />
       <div className="container-fluid mx-auto p-3">
         <div className="flex flex-col md:flex-row xl:w-full gap-4 mt-4">
-          <div className="w-full xl:w-1/3 flex flex-col  xl:h-[700px] xl:sticky xl:top-4">
+          <div className="w-full xl:w-1/3 flex flex-col  xl:h-[700px] xl:sticky xl:top-4 overflow-auto border border-gray-300 rounded-xl shadow-lg">
+            <h2 className="text-2xl p-4 pt-6 font-bold text-[#6c63ff] mb-4 sm:mb-0">
+              {selection}
+            </h2>
             <div
               ref={containerRef}
-              className="flex-1  overflow-auto  border border-red-600 relative"
+              className="flex-1   relative"
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
@@ -192,7 +202,6 @@ setLocationIDforchild(locationID)
                       const cy = -y * scale;
                       const CustomIcon = customIcons[wp.id];
 
-
                       const handleClick = (id) => {
                         const validIds = new Set([
                           "TBC",
@@ -211,7 +220,9 @@ setLocationIDforchild(locationID)
                         ]);
 
                         if (validIds.has(id)) {
-                          setselectedPoint({ id: `${wp.id}${locationIDforchild}` });
+                          setselectedPoint({
+                            id: `${wp.id}${locationIDforchild}`,
+                          });
                         } else {
                           console.log(`Default click for ${id}`);
                         }
@@ -250,7 +261,7 @@ setLocationIDforchild(locationID)
               </svg>
 
               <div
-                className="absolute bottom-4 right-4 flex flex-col items-center gap-2 p-2 border border-black bg-white rounded-lg sm:block md:block lg:hidden"
+                className="absolute bottom-4 right-4 flex flex-col items-center gap-4 p-4 border border-black bg-white rounded-lg sm:block md:block lg:hidden"
                 style={{
                   zIndex: 1000,
                   touchAction: "manipulation",
@@ -283,8 +294,8 @@ setLocationIDforchild(locationID)
             </div>
           </div>
 
-          <div className="w-full xl:w-2/3 p-3 mt-3 border border-red-300 md:mt-0 overflow-auto">
-            <Maintenance
+          <div className="w-full xl:w-2/3  md:mt-0 overflow-auto">
+            <MaintenancePage
               locationdata={locationData}
               selectedPoint={selectedPoint}
               setLocationData={setLocationData}
