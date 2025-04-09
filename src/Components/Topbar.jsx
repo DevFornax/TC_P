@@ -9,7 +9,7 @@ function TopBar() {
   };
 
   return (
-    <div className="flex justify-between items-center bg-[#6c63ff] text-white p-4">
+    <div className="flex justify-between items-center bg-[#6c63ff] text-white p-5">
       <div className="text-left flex items-center space-x-3">
         <span className="text-2xl font-semibold">InteliGIs Survey</span>
       </div>

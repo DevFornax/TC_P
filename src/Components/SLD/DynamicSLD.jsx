@@ -1,57 +1,80 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TopBar from "../Topbar";
-import { lines } from "./Support";
-import { visiblePointIds } from "./Support";
-import { waypoints } from "./Support";
-import { scale } from "./Support";
-import { customIcons } from "./Support";
+import { lines ,scale , visiblePointIds, waypoints, customIcons } from "./Support";
+import Maintenance from "../Maintenance";
 
 const SLD = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
   const containerRef = useRef();
   const [zoom, setZoom] = useState(1);
   const [offset, setOffset] = useState({ x: 110, y: 410 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef({ x: 0, y: 0 });
-  const [selectedInfo, setSelectedInfo] = useState(null);
+  const [locationData, setLocationData] = useState(null);
+  const [selectedPoint, setselectedPoint] = useState(null);
+  const [locationIDforchild, setLocationIDforchild] = useState(""); 
 
- const { locationID, selection } = location.state || {};
+  const { locationID, selection } = location.state || {};
 
+  const [error, setError] = useState("");
+  const handleMouseUp = () => setIsDragging(false);
+  const handleTouchEnd = () => setIsDragging(false);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!locationID || !selection) {
+        navigate("/");
+        return;
+      }
 
+      try {
+        const API_URL = import.meta.env.VITE_API_BASE_URL;
+        const res = await fetch(`${API_URL}/check-locationid`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ location_id: locationID }),
+        });
 
-useEffect(() => {
-  const container = containerRef.current;
+        const data = await res.json();
 
-  const preventPullToRefresh = (e) => {
-    // Prevent pull-to-refresh only when scroll is at top
-    if (container.scrollTop === 0 && e.touches[0].clientY > 0) {
-      e.preventDefault();
-    }
-  };
+        if (!res.ok) {
+          setError(data.message || "Location not found");
+          return;
+        }
+setLocationIDforchild(locationID)
+        setLocationData(data);
+        console.log(data);
+      } catch (err) {
+        console.error("SLD Page API error:", err);
+        setError("Something went wrong while loading SLD.");
+      }
+    };
 
-  container.addEventListener("touchmove", preventPullToRefresh, {
-    passive: false,
-  });
+    fetchData();
+  }, [locationID, selection, navigate]);
 
-  return () => {
-    container.removeEventListener("touchmove", preventPullToRefresh);
-  };
-}, []);
-
-
- useEffect(() => {
- 
-   if (!locationID || !selection) {
-     navigate("/");
-   }
- }, [locationID, selection, navigate]);
+  useEffect(() => {
+    const container = containerRef.current;
+    const preventPullToRefresh = (e) => {
+      if (container.scrollTop === 0 && e.touches[0].clientY > 0) {
+        e.preventDefault();
+      }
+    };
+    container.addEventListener("touchmove", preventPullToRefresh, {
+      passive: false,
+    });
+    return () => {
+      container.removeEventListener("touchmove", preventPullToRefresh);
+    };
+  }, []);
 
   const handleWheel = (e) => {
     e.preventDefault();
-    e.stopPropagation(); // try this
+    e.stopPropagation();
     const delta = e.deltaY < 0 ? 0.1 : -0.1;
     setZoom((prev) => Math.max(0.2, prev + delta));
   };
@@ -78,10 +101,7 @@ useEffect(() => {
     }
   };
 
-  const handleMouseUp = () => setIsDragging(false);
-
   const handleTouchStart = (e) => {
-    // Similar to mouse down but for touch events
     setIsDragging(true);
     dragStart.current = {
       x: e.touches[0].clientX - offset.x,
@@ -98,32 +118,20 @@ useEffect(() => {
     }
   };
 
-  const handleTouchEnd = () => setIsDragging(false);
-
   const resetView = () => {
-    setZoom(1); // Reset zoom to initial value
-    setOffset({ x: 110, y: 410 }); // Reset offset to initial position
+    setZoom(1);
+    setOffset({ x: 110, y: 410 });
   };
 
   return (
     <>
       <TopBar />
-      <div className="container-fluid mx-auto max-h-screen px-4 overflow-auto">
-        <h2 className="text-md font-semibold text-[#63667e] mt-4">
-          Location ID: yash
-          <span className="font-bold text-[#6c63ff]">{locationID}</span>
-        </h2>
-
-        <h3 className="text-md font-medium text-[#63667e] mb-6">
-          Selected Option:{" "}
-          <span className="font-semibold text-[#6c63ff]">{selection}</span>
-        </h3>
-
-        <div className="flex flex-col md:flex-row gap-4 border border-black">
-          <div className="flex flex-col md:w-1/3 gap-4">
+      <div className="container-fluid mx-auto p-3">
+        <div className="flex flex-col md:flex-row xl:w-full gap-4 mt-4">
+          <div className="w-full xl:w-1/3 flex flex-col  xl:h-[700px] xl:sticky xl:top-4">
             <div
               ref={containerRef}
-              className="flex-1 p-4 overflow-auto   relative"
+              className="flex-1  overflow-auto  border border-red-600 relative"
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
@@ -141,7 +149,7 @@ useEffect(() => {
                 width="100%"
                 height="100%"
                 viewBox="0 0 700 700"
-                className="border border-black bg-white rounded shadow"
+                className=" bg-white rounded shadow"
               >
                 <g
                   transform={`translate(${offset.x}, ${offset.y}) scale(${zoom})`}
@@ -184,28 +192,28 @@ useEffect(() => {
                       const cy = -y * scale;
                       const CustomIcon = customIcons[wp.id];
 
+
                       const handleClick = (id) => {
-                        switch (id) {
-                          case "TBC":
-                            console.log("TBC point clicked 🚀");
-                            alert("OIL based TC\nmade by: toshiba");
-                            break;
-                          case "A1":
-                            console.log("A1 logic runs here 🔧");
-                            break;
-                          case "SW2":
-                            console.log("Switch 2 clicked! ⚡");
-                            alert("switch 2 clicked");
-                            break;
-                          case "SP":
-                            setSelectedInfo({
-                              id: "SP",
-                              maintenance: "20/12/2024",
-                              locationId: locationID,
-                            });
-                            break;
-                          default:
-                            console.log(`Default click for ${id}`);
+                        const validIds = new Set([
+                          "TBC",
+                          "LA1",
+                          "LA2",
+                          "LA3",
+                          "SW1",
+                          "SW2",
+                          "SW3",
+                          "SP",
+                          "FS1",
+                          "FS2",
+                          "FS3",
+                          "T-A",
+                          "T-B",
+                        ]);
+
+                        if (validIds.has(id)) {
+                          setselectedPoint({ id: `${wp.id}${locationIDforchild}` });
+                        } else {
+                          console.log(`Default click for ${id}`);
                         }
                       };
 
@@ -233,7 +241,7 @@ useEffect(() => {
                             fontSize="10"
                             fill="#333"
                           >
-                            {`${wp.id}${locationID}`}
+                            {`${wp.id}${locationIDforchild}`}
                           </text>
                         </g>
                       );
@@ -245,7 +253,7 @@ useEffect(() => {
                 className="absolute bottom-4 right-4 flex flex-col items-center gap-2 p-2 border border-black bg-white rounded-lg sm:block md:block lg:hidden"
                 style={{
                   zIndex: 1000,
-                  touchAction: "manipulation", // prevent double-tap zoom on mobile
+                  touchAction: "manipulation",
                 }}
               >
                 <button
@@ -272,31 +280,17 @@ useEffect(() => {
                   <img src="/reset.svg" alt="" />
                 </button>
               </div>
-
-             
-            </div>
-
-            <div className="p-4 border border-black overflow-auto">
-              <h3 className="font-bold text-lg mb-2">Additional Information</h3>
             </div>
           </div>
 
-          <div className="md:w-2/3 p-4 mt-3 border border-black md:mt-0 overflow-auto">
-            {selectedInfo && (
-              <>
-                <h3 className="font-bold text-lg mb-2">Maintenance Info</h3>
-                <p>
-                  <strong>ID:</strong> {selectedInfo.id}
-                </p>
-                <p>
-                  <strong>Location ID:</strong> {selectedInfo.locationId}
-                </p>
-                <p>
-                  <strong>Last Maintenance Date:</strong>{" "}
-                  {selectedInfo.maintenance}
-                </p>
-              </>
-            )}
+          <div className="w-full xl:w-2/3 p-3 mt-3 border border-red-300 md:mt-0 overflow-auto">
+            <Maintenance
+              locationdata={locationData}
+              selectedPoint={selectedPoint}
+              setLocationData={setLocationData}
+              setselectedPoint={setselectedPoint}
+              setLocationIDforchild={setLocationIDforchild} // 👈 NEW
+            />
           </div>
         </div>
       </div>
