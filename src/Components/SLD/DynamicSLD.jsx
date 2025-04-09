@@ -19,6 +19,29 @@ const SLD = () => {
 
  const { locationID, selection } = location.state || {};
 
+
+
+
+useEffect(() => {
+  const container = containerRef.current;
+
+  const preventPullToRefresh = (e) => {
+    // Prevent pull-to-refresh only when scroll is at top
+    if (container.scrollTop === 0 && e.touches[0].clientY > 0) {
+      e.preventDefault();
+    }
+  };
+
+  container.addEventListener("touchmove", preventPullToRefresh, {
+    passive: false,
+  });
+
+  return () => {
+    container.removeEventListener("touchmove", preventPullToRefresh);
+  };
+}, []);
+
+
  useEffect(() => {
  
    if (!locationID || !selection) {
@@ -250,37 +273,7 @@ const SLD = () => {
                 </button>
               </div>
 
-              {/* <div
-                className="absolute bottom-4 right-4 flex flex-col items-center gap-2 p-2 bg-white rounded-lg shadow-lg sm:block md:block lg:hidden"
-                style={{ zIndex: 1000, touchAction: "manipulation" }}
-              >
-                <button
-                  onTouchStart={(e) => e.preventDefault()}
-                  onClick={() => setZoom((prev) => Math.min(prev + 0.1, 5))}
-                  className="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition"
-                  title="Zoom In"
-                >
-                  <img src="/zoomin.svg" alt="Zoom In" />
-                </button>
-
-                <button
-                  onTouchStart={(e) => e.preventDefault()}
-                  onClick={() => setZoom((prev) => Math.max(prev - 0.1, 0.2))}
-                  className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition"
-                  title="Zoom Out"
-                >
-                  <img src="/zoomout.svg" alt="Zoom Out" />
-                </button>
-
-                <button
-                  onTouchStart={(e) => e.preventDefault()}
-                  onClick={resetView}
-                  className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
-                  title="Reset View"
-                >
-                  <img src="/reset.svg" alt="Reset View" />
-                </button>
-              </div> */}
+             
             </div>
 
             <div className="p-4 border border-black overflow-auto">
