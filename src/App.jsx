@@ -4,7 +4,7 @@ import TopBar from "./Components/Topbar";
 import Homepage from "./Components/Homepage";
 import SLD from "./Components/SLD/DynamicSLD";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom"; // Import Routes and Route
+import { BrowserRouter, Routes, Route } from "react-router-dom"; 
 
 function App() {
   return (
