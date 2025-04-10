@@ -1,7 +1,7 @@
-import TCIcon from "./TCIcon";
-import DotIcon from "./DotIcon";
-import OTCIcon from "./OTCIcon";
-import SPIcon from "./SPIcon";
+import TCIcon from "../utils/TCIcon";
+import DotIcon from "../utils/DotIcon";
+import OTCIcon from "../utils/OTCIcon";
+import SPIcon from "../utils/SPIcon";
 
 //////////////////////////////-------------------------------TC-------------------------------------------////////////////////
 export const Transformerwaypoints = [

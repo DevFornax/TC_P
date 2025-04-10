@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -20,7 +19,6 @@ function TopBar() {
     setSidebarOpen(false);
   };
 
-  
   useEffect(() => {
     if (isSidebarOpen) {
       document.body.classList.add("overflow-hidden");
@@ -33,19 +31,14 @@ function TopBar() {
 
   return (
     <>
-      
       <div className="flex justify-between items-center bg-[#6c63ff] text-white p-5 relative z-30">
-      
         <button
           className="md:hidden text-2xl font-bold"
           onClick={() => setSidebarOpen(!isSidebarOpen)}
         >
           {isSidebarOpen ? "✖" : "☰"}
         </button>
-
         <span className="text-2xl font-semibold">InteliGIs Survey</span>
-
-     
         <div className="hidden md:flex items-center space-x-6">
           {user && (
             <>
@@ -66,7 +59,6 @@ function TopBar() {
           </span>
         </div>
       </div>
-
 
       <div
         className={`fixed top-0 left-0 h-full w-64 bg-white text-black shadow-lg transform transition-transform duration-300 z-20 ${

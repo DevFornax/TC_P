@@ -12,7 +12,7 @@ function MaitenanceForm({ locationId, deviceId, projectId }) {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user?.username) {
-      setCreatedBy(user.username); // Pre-fill from localStorage
+      setCreatedBy(user.username); 
     }
   }, []);
 

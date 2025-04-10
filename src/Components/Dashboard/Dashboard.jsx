@@ -206,12 +206,11 @@ import SLD from "../SLD/DynamicSLD";
 import { InfoItem } from "../UI/InfoItem";
 import { SectionWithToggle } from "../UI/SectionwithToggle";
 import LocationInfoCard from "./LocationInfoCard";
-import MaitenanceForm from "../MaitenanceForm";
+import MaitenanceForm from "./MaitenanceForm";
 import TopBar from "../Topbar";
+import VisualInspection from "./VisualInspection";
 
-function Dashboard({
-  
-}) {
+function Dashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const { locationID, selection: navSelection } = location.state || {};
@@ -249,6 +248,8 @@ function Dashboard({
         } 
         setLocationIDforchild(locationID);
         setLocationData(data);
+        setProjectId(data.project_id)
+        console.log(data.project_id  , "project id from the useeffect")
         console.log(data, "api called from sld");
       } catch (err) {
         console.error("SLD Page API error:", err);
@@ -287,7 +288,10 @@ function Dashboard({
         return;
       }
       setLocationData(data);
-      setNewLocationID("");
+   setSelection(data.attributes.point_type);
+
+   
+      setProjectId(data.project_id);
       setLocationIDforchild(parseInt(newLocationID));
       console.log("Api called from dashbpard");
     } catch (err) {
@@ -302,111 +306,6 @@ function Dashboard({
     <>
       <TopBar />
 
-      {/* <div className="container-fluid mx-auto p-3">
-        <div className="flex flex-col xl:flex-row gap-4 mt-4">
-          <div className="w-full xl:w-1/3 flex flex-col xl:h-[700px] xl:sticky xl:top-4 overflow-auto border border-gray-300 rounded-xl shadow-lg bg-white">
-            <SLD
-              locationData={locationData}
-              setLocationData={setLocationData}
-              locationID={locationIDforchild}
-              selection={selection}
-              setSelection={setSelection}
-              setSelectedPoint={setselectedPoint}
-            />
-          </div>
-
-          <div className="flex-1 space-y-6">
-          
-            <LocationSearchFormCard
-              newLocationID={newLocationID}
-              setNewLocationID={setNewLocationID}
-              selection={selection}
-              setSelection={setSelection}
-              handleLocationSearch={handleLocationSearch}
-              loading={loading}
-              error={error}
-            />
-           
-            <LocationInfoCard locationdata={locationData} />
-
-            
-            <div className="p-6 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
-              <h2 className="text-2xl font-bold text-[#6c63ff] mb-4">
-                Maintenance Information
-              </h2>
-
-              <div className="pt-4">
-                {selectedPoint?.id ? (
-                  <>
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                      <InfoItem label="Device ID" value={selectedPoint.id} />
-                      <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                        <button
-                          onClick={() => setActiveView("form")}
-                          className="w-full sm:w-auto px-4 py-2 bg-[#6c63ff] hover:bg-[#5951e6] text-white rounded-lg shadow"
-                        >
-                          Add Record
-                        </button>
-                        <button
-                          onClick={() => setActiveView("table")}
-                          className="w-full sm:w-auto px-4 py-2 bg-[#6c63ff] hover:bg-[#5951e6] text-white rounded-lg shadow"
-                        >
-                          View Latest Records
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="mt-6">
-                      {activeView === "form" && (
-                        <MaitenanceForm
-                          locationId={locationIDforchild}
-                          deviceId={selectedPoint?.id}
-                          projectId={projectId}
-                        />
-                      )}
-
-                      {activeView === "table" && (
-                        <div className="overflow-x-auto">
-                          <table className="min-w-full border mt-4">
-                            <thead className="bg-gray-100">
-                              <tr>
-                                <th className="px-4 py-2 border">Date</th>
-                                <th className="px-4 py-2 border">Technician</th>
-                                <th className="px-4 py-2 border">Notes</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td className="px-4 py-2 border">2025-04-08</td>
-                                <td className="px-4 py-2 border">Yash</td>
-                                <td className="px-4 py-2 border">
-                                  Replaced fuse, tested circuit.
-                                </td>
-                              </tr>
-                              <tr>
-                                <td className="px-4 py-2 border">2025-04-01</td>
-                                <td className="px-4 py-2 border">Ravi</td>
-                                <td className="px-4 py-2 border">
-                                  Routine inspection, no issues.
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  <p className="text-gray-500 text-center font-semibold">
-                    Please select a device from the SLD to view or add
-                    maintenance records.
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
       <div className="container-fluid mx-auto p-3">
         <div className="flex flex-col md:flex-row gap-4 mt-4">
           <div className="w-full md:w-1/3 flex flex-col md:max-h-[calc(100vh-100px)] md:sticky md:top-4 overflow-auto border border-gray-300 rounded-xl shadow-lg bg-white">
@@ -433,6 +332,10 @@ function Dashboard({
 
             <LocationInfoCard locationdata={locationData} />
 
+            <VisualInspection
+              locationdata={locationData}
+              selection={selection}
+            />
             <div className="p-6 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
               <h2 className="text-2xl font-bold text-[#6c63ff] mb-4">
                 Maintenance Information
@@ -503,7 +406,6 @@ function Dashboard({
                   <p className="text-gray-500 text-center font-semibold">
                     Please select a device from the SLD to view or add
                     maintenance records.
-                   
                   </p>
                 )}
               </div>
