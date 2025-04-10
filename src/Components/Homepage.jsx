@@ -92,10 +92,9 @@ export default function HomePage() {
             className="mt-1 mb-5 border-2 border-gray-300 font-bold block w-full p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="Select">Select an option</option>
-            <option value="SDP (Swith Double Pole)">
-              SDP (Switch Double Pole)
-            </option>
             <option value="Transformer">Transformer</option>
+            <option value="Switch">Switch</option>
+            <option value="Fuse">Fuse</option>
           </select>
 
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
