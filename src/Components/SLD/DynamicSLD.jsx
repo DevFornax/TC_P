@@ -19,7 +19,8 @@ import {
   FuseCustomIcons,
 } from "./DataFileForSLD";
 
-import MaintenancePage from "../MaintenancePage";
+import MaintenancePage from "../Dashboard/Dashboard";
+import Dashboard from "../Dashboard/Dashboard";
 
 const SLD = () => {
   const navigate = useNavigate();
@@ -32,10 +33,11 @@ const SLD = () => {
   const [locationData, setLocationData] = useState(null);
   const [selectedPoint, setselectedPoint] = useState(null);
   const [locationIDforchild, setLocationIDforchild] = useState("");
-  const { locationID, selection } = location.state || {};
   const [error, setError] = useState("");
   const handleMouseUp = () => setIsDragging(false);
   const handleTouchEnd = () => setIsDragging(false);
+  const { locationID, selection: navSelection } = location.state || {};
+  const [selection, setSelection] = useState(navSelection || "Select");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,7 +63,7 @@ const SLD = () => {
         }
         setLocationIDforchild(locationID);
         setLocationData(data);
-        console.log(data);
+        console.log(data, "api called from sld");
       } catch (err) {
         console.error("SLD Page API error:", err);
         setError("Something went wrong while loading SLD.");
@@ -516,12 +518,14 @@ const SLD = () => {
           </div>
 
           <div className="w-full xl:w-2/3  md:mt-0 overflow-auto">
-            <MaintenancePage
+            <Dashboard
               locationdata={locationData}
               selectedPoint={selectedPoint}
               setLocationData={setLocationData}
               setselectedPoint={setselectedPoint}
               setLocationIDforchild={setLocationIDforchild}
+              selection={selection}
+              setSelection={setSelection}
             />
           </div>
         </div>

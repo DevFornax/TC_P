@@ -1,21 +1,29 @@
 import React, { useState } from "react";
-import { InfoItem } from "./UI/InfoItem";
-import { SectionWithToggle } from "./UI/SectionwithToggle";
+import { InfoItem } from "../UI/InfoItem";
+import { SectionWithToggle } from "../UI/SectionwithToggle";
+import LocationInfoCard from "./LocationInfoCard";
+import MaitenanceForm from "../MaitenanceForm";
 
-import MaitenanceForm from "./MaitenanceForm";
-
-function MaintenancePage({
+function Dashboard({
   locationdata,
   selectedPoint,
   setLocationData,
-  // setselectedPoint,
   setLocationIDforchild,
+  selection,
+  setSelection,
 }) {
   const [newLocationID, setNewLocationID] = useState("");
-  const [selection, setSelection] = useState("General");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [activeView, setActiveView] = useState(null);
+
+
+  // const updateSelection = (newSelection) => {
+  //   navigate(".", {
+  //     replace: true,
+  //     state: { ...location.state, selection: newSelection },
+  //   });
+  // };
 
   const handleLocationSearch = async () => {
     if (!newLocationID || isNaN(newLocationID)) {
@@ -48,6 +56,7 @@ function MaintenancePage({
       setLocationData(data);
       setNewLocationID("");
       setLocationIDforchild(parseInt(newLocationID));
+      console.log("Api called from dashbpard")
     } catch (err) {
       console.error("Error fetching new location:", err);
       setError("Something went wrong!");
@@ -56,102 +65,56 @@ function MaintenancePage({
     }
   };
 
-  if (!locationdata) {
-    return <div className="text-gray-500">No data available.</div>;
-  }
 
-  const { id, project_id, project_name, substation_name, attributes } =
-    locationdata;
-  const {
-    point_type,
-    point_no,
-    area_code,
-    lat,
-    lng,
-    point_props = {},
-    line_props = {},
-  } = attributes;
   return (
     <>
       <div className="p-6 mb-5 border border-gray-300 rounded-xl shadow-lg bg-white">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-4 sm:space-y-0 w-full">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div className="flex flex-col">
+            <label className="block font-bold mb-1">Location ID</label>
+            <input
+              type="text"
+              placeholder="Enter Location ID"
+              className="font-bold p-3 bg-gray-100 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+              value={newLocationID}
+              onChange={(e) => setNewLocationID(e.target.value)}
+            />
+          </div>
 
-          <input
-            type="text"
-            placeholder="Enter Location ID"
-            className=" font-bold p-3 bg-gray-100 flex-1 w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
-            value={newLocationID}
-            onChange={(e) => setNewLocationID(e.target.value)}
-          />
+          <div className="flex flex-col">
+            <label className="block font-bold mb-1">Select Device Type</label>
+            <select
+              name="selection"
+              value={selection}
+              onChange={(e) => setSelection(e.target.value)}
+              className="font-bold p-3 bg-gray-100 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+            >
+              <option value="Select">Select an option</option>
+              <option value="Transformer">Transformer</option>
+              <option value="Switch">Switch</option>
+              <option value="Fuse">Fuse</option>
+            </select>
+          </div>
 
-          <select
-            name="selection"
-            value={selection}
-            onChange={(e) => setSelection(e.target.value)}
-            className=" font-bold p-3 bg-gray-100 flex-1 w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
-          >
-            <option value="Select">Select an option</option>
-            <option value="SDP (Swith Double Pole)">
-              SDP (Switch Double Pole)
-            </option>
-            <option value="Transformer">Transformer</option>
-          </select>
-
-          <button
-            onClick={handleLocationSearch}
-            className="bg-[#6c63ff] hover:bg-[#5951e6] text-white px-5 py-2 rounded-md transition w-full sm:w-auto"
-            disabled={loading}
-          >
-            {loading ? "Checking..." : "Search"}
-          </button>
-        </div>
-
-        {error && <p className="text-red-600 text-sm text-end pt-2">{error}</p>}
-      </div>
-
-      <div className="p-6 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
-        <div className="">
-          <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start">
-            <h2 className="text-2xl font-bold text-[#6c63ff] mb-4 sm:mb-0">
-              Location Information
-            </h2>
-            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
-            </div>
+          <div className="flex items-end">
+            <button
+              onClick={handleLocationSearch}
+              className="bg-[#6c63ff] hover:bg-[#5951e6] text-white font-semibold px-5 py-3 rounded-lg w-full transition disabled:opacity-50"
+              disabled={loading}
+            >
+              {loading ? "Checking..." : "Search"}
+            </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3  text-sm">
-          <InfoItem label="Location ID" value={id} />
-          <InfoItem label="Project Id" value={project_id} />
-          <InfoItem label="Project" value={project_name} />
-          <InfoItem label="Substation" value={substation_name} />
-          <InfoItem label="Point Type" value={point_type} />
-          <InfoItem label="Point No" value={point_no} />
-          <InfoItem label="Area Code" value={area_code} />
-          <InfoItem label="Latitude" value={lng} />
-          <InfoItem label="Longitude" value={lat} />
-        </div>
-        <div>
-          <SectionWithToggle>
-            <InfoItem label="Support Type" value={point_props.support_type} />
-            <InfoItem
-              label="Structure Type"
-              value={point_props.structure_type}
-            />
-            <InfoItem label="Pole Type" value={point_props.pole_type} />
-            <InfoItem label="Earthing Type" value={point_props.earthing_type} />
-            <InfoItem label="Scheme" value={point_props.scheme} />
-
-            <InfoItem label="Position" value={line_props.position} />
-            <InfoItem label="Type" value={line_props.type} />
-            <InfoItem
-              label="Spare Line"
-              value={line_props.has_spare_line ? "Yes" : "No"}
-            />
-          </SectionWithToggle>
-        </div>
+        {error && (
+          <p className="text-red-600 text-sm text-right pt-2 font-semibold">
+            {error}
+          </p>
+        )}
       </div>
 
+      <LocationInfoCard locationdata={locationdata} />
       <div className="p-6 mt-5 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
         <h2 className="text-2xl font-bold text-[#6c63ff] mb-4">
           Maintenance Information
@@ -231,4 +194,4 @@ function MaintenancePage({
   );
 }
 
-export default MaintenancePage;
+export default Dashboard;
