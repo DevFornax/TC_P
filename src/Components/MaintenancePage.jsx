@@ -8,7 +8,7 @@ function MaintenancePage({
   locationdata,
   selectedPoint,
   setLocationData,
-  setselectedPoint,
+  // setselectedPoint,
   setLocationIDforchild,
 }) {
   const [newLocationID, setNewLocationID] = useState("");
@@ -73,6 +73,42 @@ function MaintenancePage({
   } = attributes;
   return (
     <>
+      <div className="p-6 mb-5 border border-gray-300 rounded-xl shadow-lg bg-white">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-4 sm:space-y-0 w-full">
+
+          <input
+            type="text"
+            placeholder="Enter Location ID"
+            className=" font-bold p-3 bg-gray-100 flex-1 w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+            value={newLocationID}
+            onChange={(e) => setNewLocationID(e.target.value)}
+          />
+
+          <select
+            name="selection"
+            value={selection}
+            onChange={(e) => setSelection(e.target.value)}
+            className=" font-bold p-3 bg-gray-100 flex-1 w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+          >
+            <option value="Select">Select an option</option>
+            <option value="SDP (Swith Double Pole)">
+              SDP (Switch Double Pole)
+            </option>
+            <option value="Transformer">Transformer</option>
+          </select>
+
+          <button
+            onClick={handleLocationSearch}
+            className="bg-[#6c63ff] hover:bg-[#5951e6] text-white px-5 py-2 rounded-md transition w-full sm:w-auto"
+            disabled={loading}
+          >
+            {loading ? "Checking..." : "Search"}
+          </button>
+        </div>
+
+        {error && <p className="text-red-600 text-sm text-end pt-2">{error}</p>}
+      </div>
+
       <div className="p-6 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
         <div className="">
           <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start">
@@ -80,27 +116,8 @@ function MaintenancePage({
               Location Information
             </h2>
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
-              <div className="flex flex-col w-full sm:w-64">
-                <input
-                  type="text"
-                  placeholder="Enter Location ID"
-                  className="border px-3 py-2 rounded-md"
-                  value={newLocationID}
-                  onChange={(e) => setNewLocationID(e.target.value)}
-                />
-              </div>
-              <button
-                onClick={handleLocationSearch}
-                className=" bg-[#6c63ff] hover:bg-[#5951e6] sm:w-auto w-full text-white px-5 py-2 rounded-md transition"
-                disabled={loading}
-              >
-                {loading ? "Checking..." : "Location"}
-              </button>
             </div>
           </div>
-          {error && (
-            <p className="text-red-600 text-sm text-end p-0 m-0">{error}</p>
-          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3  text-sm">

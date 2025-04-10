@@ -8,7 +8,6 @@ import PrivateRoute from "./Components/PrivateRoute"; // Add this
 function App() {
   return (
     <BrowserRouter>
-
       {/* {localStorage.getItem("isLoggedIn") === "true" && <TopBar />} */}
 
       <Routes>
@@ -18,6 +17,7 @@ function App() {
           path="/"
           element={
             <PrivateRoute>
+           
               <Homepage />
             </PrivateRoute>
           }
@@ -27,6 +27,7 @@ function App() {
           path="/sld-view"
           element={
             <PrivateRoute>
+           
               <SLD />
             </PrivateRoute>
           }
