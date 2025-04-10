@@ -42,12 +42,12 @@ export const Transformerlines = [
   { id: "Line_FuseSupport", from: [0, 4.5], to: [8, 4.5] },
   { id: "Line_TransformerSupport", from: [0, 2.4], to: [8, 2.4] },
   { id: "Base_Ground_Line", from: [-3, 0], to: [11, 0] },
-  { id: "Load_stub", from: [4, 2.8], to: [4, 3] },
-  { id: "Load_Xline", from: [4, 3], to: [10, 3] },
-  { id: "Load_down", from: [10, 3], to: [10, -1] },
-  { id: "Load_ground_3", from: [9.9, -0.8], to: [10.1, -0.8] },
-  { id: "Load_ground_2", from: [9.8, -0.7], to: [10.2, -0.7] },
-  { id: "Load_ground_1", from: [9.7, -0.6], to: [10.3, -0.6] },
+  { id: "LOADCONNECTORTC", from: [4, 2.8], to: [4, 3] },
+  { id: "LOADXLINE", from: [4, 3], to: [7, 3] },
+  { id: "LOADYLINE", from: [7, 3], to: [7, -1] },
+  { id: "LDG1", from: [6.9, -0.8], to: [7.1, -0.8] },
+  { id: "LDG2", from: [6.8, -0.7], to: [7.2, -0.7] },
+  { id: "LDG3", from: [6.7, -0.6], to: [7.3, -0.6] },
 ];
 
 export const TransformervisiblePointIds = [
@@ -173,8 +173,6 @@ export const switchWaypoints = [
   { id: "F1A", coordinates: [2, 4.5] },
   { id: "F1B", coordinates: [4, 4.5] },
   { id: "F1C", coordinates: [6, 4.5] },
-  // { id: "TD", coordinates: [4, 2.4] },
-  // { id: "DB", coordinates: [8, 2] },
   { id: "TL", coordinates: [-1, 7.5] },
   { id: "TR", coordinates: [9, 7.5] },
 ];
@@ -187,14 +185,6 @@ export const switchLines = [
   { id: "Line_LightningArrestorSupport", from: [0, 7.5], to: [8, 7.5] },
   { id: "Line_SwitchSupport", from: [0, 5.7], to: [8, 5.7] },
   { id: "Base_Ground_Line", from: [-3, 0], to: [11, 0] },
-  // { id: "Line_TransformerSupport", from: [0, 2.4], to: [8, 2.4] },
-  // { id: "Load_stub", from: [4, 2.8], to: [4, 3] },
-  // { id: "Line_FuseSupport", from: [0, 4.5], to: [8, 4.5] },
-  // { id: "Load_Xline", from: [4, 3], to: [10, 3] },
-  // { id: "Load_down", from: [10, 3], to: [10, -1] },
-  // { id: "Load_ground_3", from: [9.9, -0.8], to: [10.1, -0.8] },
-  // { id: "Load_ground_2", from: [9.8, -0.7], to: [10.2, -0.7] },
-  // { id: "Load_ground_1", from: [9.7, -0.6], to: [10.3, -0.6] },
 ];
 export const SwitchScale = 50;
 
@@ -209,11 +199,6 @@ export const switchVisiblePointIds = [
   "L1C",
   "TR",
   "TL",
-  // "TD",
-  // "F1A",
-  // "F1B",
-  // "F1C",
-  // "DB",
 ];
 
 export const switchCustomIcons = {
@@ -270,11 +255,7 @@ export const FuseWaypoints = [
   { id: "F1C", coordinates: [6, 4.5] },
 
   { id: "TL", coordinates: [-1, 7.5] },
-  { id: "TR", coordinates: [9, 7.5] }, // { id: "TD", coordinates: [4, 2.4] },
-  // { id: "DB", coordinates: [8, 2] },
-  // { id: "S1A", coordinates: [2, 5.7] },
-  // { id: "S1B", coordinates: [4, 5.7] },
-  // { id: "S1C", coordinates: [6, 5.7] },
+  { id: "TR", coordinates: [9, 7.5] },
 ];
 
 export const FuseLines = [
@@ -285,14 +266,6 @@ export const FuseLines = [
   { id: "Line_LightningArrestorSupport", from: [0, 7.5], to: [8, 7.5] },
   { id: "Base_Ground_Line", from: [-3, 0], to: [11, 0] },
   { id: "Line_FuseSupport", from: [0, 4.5], to: [8, 4.5] },
-  // { id: "Line_TransformerSupport", from: [0, 2.4], to: [8, 2.4] },
-  // { id: "Load_stub", from: [4, 2.8], to: [4, 3] },
-  // { id: "Line_SwitchSupport", from: [0, 5.7], to: [8, 5.7] },
-  // { id: "Load_Xline", from: [4, 3], to: [10, 3] },
-  // { id: "Load_down", from: [10, 3], to: [10, -1] },
-  // { id: "Load_ground_3", from: [9.9, -0.8], to: [10.1, -0.8] },
-  // { id: "Load_ground_2", from: [9.8, -0.7], to: [10.2, -0.7] },
-  // { id: "Load_ground_1", from: [9.7, -0.6], to: [10.3, -0.6] },
 ];
 export const FuseScale = 50;
 
@@ -307,16 +280,9 @@ export const FuseVisiblePointIds = [
   "F1A",
   "F1B",
   "F1C",
-  // "DB",
-  // "S1A",
-  // "S1B",
-  // "S1C",
-  // "TD",
 ];
 
 export const FuseCustomIcons = {
- 
-
   F1A: (x, y, onClick) => (
     <g
       transform={`translate(${x - 10}, ${y - 10})`}

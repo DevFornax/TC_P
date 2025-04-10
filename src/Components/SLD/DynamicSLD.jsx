@@ -536,12 +536,8 @@
 
 // export default SLD;
 
-
-
-
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import TopBar from "../Topbar";
+
 import {
   Transformerlines,
   Transformerscale,
@@ -560,13 +556,7 @@ import {
   FuseCustomIcons,
 } from "./DataFileForSLD";
 
-
-const SLD = ({
-  locationID,
-  selection,
-  setSelectedPoint, 
-}) => {
-
+const SLD = ({ locationID, selection, setSelectedPoint }) => {
   const containerRef = useRef();
   const [zoom, setZoom] = useState(1);
   const [offset, setOffset] = useState({ x: 110, y: 410 });
@@ -574,7 +564,6 @@ const SLD = ({
   const dragStart = useRef({ x: 0, y: 0 });
   const handleMouseUp = () => setIsDragging(false);
   const handleTouchEnd = () => setIsDragging(false);
-
 
   useEffect(() => {
     const container = containerRef.current;
@@ -644,382 +633,379 @@ const SLD = ({
 
   return (
     <>
-  
-     
-         
-            <h2 className="text-2xl p-4 pt-6 font-bold text-[#6c63ff] mb-4 sm:mb-0">
-              {selection}
-            </h2>
-            <div
-              ref={containerRef}
-              className="flex-1   relative"
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-              style={{
-                overflow: "auto",
-                cursor: isDragging ? "grabbing" : "grab",
-                userSelect: "none",
-              }}
-            >
-              {selection === "Transformer" && (
-                <svg
-                  width="100%"
-                  height="100%"
-                  viewBox="0 0 700 700"
-                  className=" bg-white rounded shadow"
-                >
-                  <g
-                    transform={`translate(${offset.x}, ${offset.y}) scale(${zoom})`}
-                  >
-                    {Transformerlines.map((line) => {
-                      const [x1, y1] = line.from;
-                      const [x2, y2] = line.to;
+      <h2 className="text-2xl p-4 pt-6 font-bold text-[#6c63ff] mb-4 sm:mb-0">
+        {selection}
+      </h2>
+      <div
+        ref={containerRef}
+        className="flex-1   relative"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          overflow: "auto",
+          cursor: isDragging ? "grabbing" : "grab",
+          userSelect: "none",
+        }}
+      >
+        {selection === "Transformer" && (
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 700 700"
+            className=" bg-white rounded shadow"
+          >
+            <g transform={`translate(${offset.x}, ${offset.y}) scale(${zoom})`}>
+              {Transformerlines.map((line) => {
+                const [x1, y1] = line.from;
+                const [x2, y2] = line.to;
 
-                      let dashPattern = "none";
-                      if (
-                        line.id.includes("Underground") ||
-                        line.id === "Base_Ground_Line"
-                      ) {
-                        dashPattern = "2 2";
-                      }
+                let dashPattern = "none";
+                if (
+                  line.id.includes("Underground") ||
+                  line.id === "Base_Ground_Line"
+                ) {
+                  dashPattern = "2 2";
+                }
 
-                      const isMainPoleLine =
-                        (line.id === "A_Overground" && x1 === 0 && x2 === 0) ||
-                        (line.id === "B_Overground" && x1 === 8 && x2 === 8);
+                const isMainPoleLine =
+                  (line.id === "A_Overground" && x1 === 0 && x2 === 0) ||
+                  (line.id === "B_Overground" && x1 === 8 && x2 === 8);
+                const isLoadLine =
+                  line.id === "LOADCONNECTORTC" ||
+                  line.id === "LOADYLINE" ||
+                  line.id === "LOADXLINE" ||
+                  line.id === "LDG1" ||
+                  line.id === "LDG2" ||
+                  line.id === "LDG3";
+                return (
+                  <line
+                    key={line.id}
+                    x1={x1 * Transformerscale}
+                    y1={-y1 * Transformerscale}
+                    x2={x2 * Transformerscale}
+                    y2={-y2 * Transformerscale}
+                    stroke={
+                      isMainPoleLine ? "#3498db" : isLoadLine ? "gray" : "black"
+                    }
+                    strokeWidth={isMainPoleLine ? 8 : 2}
+                    strokeDasharray={dashPattern}
+                  />
+                );
+              })}
 
-                      return (
-                        <line
-                          key={line.id}
-                          x1={x1 * Transformerscale}
-                          y1={-y1 * Transformerscale}
-                          x2={x2 * Transformerscale}
-                          y2={-y2 * Transformerscale}
-                          stroke={isMainPoleLine ? "#3498db" : "black"}
-                          strokeWidth={isMainPoleLine ? 8 : 2}
-                          strokeDasharray={dashPattern}
-                        />
-                      );
-                    })}
+              {Transformerwaypoints.filter((wp) =>
+                TransformervisiblePointIds.includes(wp.id)
+              ).map((wp) => {
+                const [x, y] = wp.coordinates;
+                const cx = x * Transformerscale;
+                const cy = -y * Transformerscale;
+                const CustomIcon = TransformercustomIcons[wp.id];
 
-                    {Transformerwaypoints.filter((wp) =>
-                      TransformervisiblePointIds.includes(wp.id)
-                    ).map((wp) => {
-                      const [x, y] = wp.coordinates;
-                      const cx = x * Transformerscale;
-                      const cy = -y * Transformerscale;
-                      const CustomIcon = TransformercustomIcons[wp.id];
+                const handleClick = (id) => {
+                  const validIds = new Set([
+                    "TD",
+                    "L1A",
+                    "L1B",
+                    "L1C",
+                    "S1A",
+                    "S1B",
+                    "S1C",
+                    "SP",
+                    "F1A",
+                    "F1B",
+                    "F1C",
+                    "TL",
+                    "TR",
+                    "DB",
+                  ]);
 
-                      const handleClick = (id) => {
-                        const validIds = new Set([
-                          "TD",
-                          "L1A",
-                          "L1B",
-                          "L1C",
-                          "S1A",
-                          "S1B",
-                          "S1C",
-                          "SP",
-                          "F1A",
-                          "F1B",
-                          "F1C",
-                          "TL",
-                          "TR",
-                          "DB",
-                        ]);
+                  if (validIds.has(id)) {
+                    setSelectedPoint({
+                      id: `${wp.id}${locationID}`,
+                    });
+                  } else {
+                    console.log(`Default click for ${id}`);
+                  }
+                };
 
-                        if (validIds.has(id)) {
-                          setSelectedPoint({
-                            id: `${wp.id}${locationID}`,
-                          });
-                        } else {
-                          console.log(`Default click for ${id}`);
-                        }
-                      };
+                return (
+                  <g key={wp.id}>
+                    {CustomIcon ? (
+                      CustomIcon(cx, cy, () => handleClick(wp.id))
+                    ) : (
+                      <circle
+                        cx={cx}
+                        cy={cy}
+                        r={5}
+                        fill="#3498db"
+                        stroke="black"
+                        strokeWidth={1}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleClick(wp.id)}
+                        onTouchStart={() => handleClick(wp.id)}
+                      />
+                    )}
 
-                      return (
-                        <g key={wp.id}>
-                          {CustomIcon ? (
-                            CustomIcon(cx, cy, () => handleClick(wp.id))
-                          ) : (
-                            <circle
-                              cx={cx}
-                              cy={cy}
-                              r={5}
-                              fill="#3498db"
-                              stroke="black"
-                              strokeWidth={1}
-                              style={{ cursor: "pointer" }}
-                              onClick={() => handleClick(wp.id)}
-                              onTouchStart={() => handleClick(wp.id)}
-                            />
-                          )}
-
-                          <text
-                            x={wp.id === "TD" ? cx + 22 : cx + 8}
-                            y={cy - 6}
-                            fontSize="10"
-                            fill="#333"
-                          >
-                            {`${wp.id}${locationID}`}
-                          </text>
-                        </g>
-                      );
-                    })}
+                    <text
+                      x={wp.id === "TD" ? cx + 22 : cx + 8}
+                      y={cy - 6}
+                      fontSize="10"
+                      fill="#333"
+                    >
+                      {`${wp.id}${locationID}`}
+                    </text>
                   </g>
-                </svg>
-              )}
+                );
+              })}
+            </g>
+          </svg>
+        )}
 
-              {selection === "Switch" && (
-                <svg
-                  width="100%"
-                  height="100%"
-                  viewBox="0 0 700 700"
-                  className=" bg-white rounded shadow"
-                >
-                  <g
-                    transform={`translate(${offset.x}, ${offset.y}) scale(${zoom})`}
-                  >
-                    {switchLines.map((line) => {
-                      const [x1, y1] = line.from;
-                      const [x2, y2] = line.to;
+        {selection === "Switch" && (
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 700 700"
+            className=" bg-white rounded shadow"
+          >
+            <g transform={`translate(${offset.x}, ${offset.y}) scale(${zoom})`}>
+              {switchLines.map((line) => {
+                const [x1, y1] = line.from;
+                const [x2, y2] = line.to;
 
-                      let dashPattern = "none";
-                      if (
-                        line.id.includes("Underground") ||
-                        line.id === "Base_Ground_Line"
-                      ) {
-                        dashPattern = "2 2";
-                      }
+                let dashPattern = "none";
+                if (
+                  line.id.includes("Underground") ||
+                  line.id === "Base_Ground_Line"
+                ) {
+                  dashPattern = "2 2";
+                }
 
-                      const isMainPoleLine =
-                        (line.id === "A_Overground" && x1 === 0 && x2 === 0) ||
-                        (line.id === "B_Overground" && x1 === 8 && x2 === 8);
+                const isMainPoleLine =
+                  (line.id === "A_Overground" && x1 === 0 && x2 === 0) ||
+                  (line.id === "B_Overground" && x1 === 8 && x2 === 8);
 
-                      return (
-                        <line
-                          key={line.id}
-                          x1={x1 * SwitchScale}
-                          y1={-y1 * SwitchScale}
-                          x2={x2 * SwitchScale}
-                          y2={-y2 * SwitchScale}
-                          stroke={isMainPoleLine ? "#3498db" : "black"}
-                          strokeWidth={isMainPoleLine ? 8 : 2}
-                          strokeDasharray={dashPattern}
+                return (
+                  <line
+                    key={line.id}
+                    x1={x1 * SwitchScale}
+                    y1={-y1 * SwitchScale}
+                    x2={x2 * SwitchScale}
+                    y2={-y2 * SwitchScale}
+                    stroke={isMainPoleLine ? "#3498db" : "black"}
+                    strokeWidth={isMainPoleLine ? 8 : 2}
+                    strokeDasharray={dashPattern}
+                  />
+                );
+              })}
+
+              {switchWaypoints
+                .filter((wp) => switchVisiblePointIds.includes(wp.id))
+                .map((wp) => {
+                  const [x, y] = wp.coordinates;
+                  const cx = x * SwitchScale;
+                  const cy = -y * SwitchScale;
+                  const CustomIcon = switchCustomIcons[wp.id]; // ← valid check
+
+                  const handleClick = (id) => {
+                    const validIds = new Set([
+                      "TD",
+                      "L1A",
+                      "L1B",
+                      "L1C",
+                      "S1A",
+                      "S1B",
+                      "S1C",
+                      "SP",
+                      "F1A",
+                      "F1B",
+                      "F1C",
+                      "TL",
+                      "TR",
+                      "DB",
+                    ]);
+                    if (validIds.has(id)) {
+                      setSelectedPoint({
+                        id: `${wp.id}${locationID}`,
+                      });
+                    } else {
+                      console.log(`Default click for ${id}`);
+                    }
+                  };
+
+                  return (
+                    <g key={wp.id}>
+                      {CustomIcon ? (
+                        CustomIcon(cx, cy, () => handleClick(wp.id))
+                      ) : (
+                        <circle
+                          cx={cx}
+                          cy={cy}
+                          r={5}
+                          fill="#3498db"
+                          stroke="black"
+                          strokeWidth={1}
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleClick(wp.id)}
+                          onTouchStart={() => handleClick(wp.id)}
                         />
-                      );
-                    })}
+                      )}
+                      <text
+                        x={wp.id === "TD" ? cx + 22 : cx + 8}
+                        y={cy - 6}
+                        fontSize="10"
+                        fill="#333"
+                      >
+                        {`${wp.id}${locationID}`}
+                      </text>
+                    </g>
+                  );
+                })}
+            </g>
+          </svg>
+        )}
 
-                    {switchWaypoints
-                      .filter((wp) => switchVisiblePointIds.includes(wp.id))
-                      .map((wp) => {
-                        const [x, y] = wp.coordinates;
-                        const cx = x * SwitchScale;
-                        const cy = -y * SwitchScale;
-                        const CustomIcon = switchCustomIcons[wp.id]; // ← valid check
+        {selection === "Fuse" && (
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 700 700"
+            className="bg-white rounded shadow"
+          >
+            <g transform={`translate(${offset.x}, ${offset.y}) scale(${zoom})`}>
+              {FuseLines.map((line) => {
+                const [x1, y1] = line.from;
+                const [x2, y2] = line.to;
 
-                        const handleClick = (id) => {
-                          const validIds = new Set([
-                            "TD",
-                            "L1A",
-                            "L1B",
-                            "L1C",
-                            "S1A",
-                            "S1B",
-                            "S1C",
-                            "SP",
-                            "F1A",
-                            "F1B",
-                            "F1C",
-                            "TL",
-                            "TR",
-                            "DB",
-                          ]);
-                          if (validIds.has(id)) {
-                            setSelectedPoint({
-                              id: `${wp.id}${locationID}`,
-                            });
-                          } else {
-                            console.log(`Default click for ${id}`);
-                          }
-                        };
+                let dashPattern = "none";
+                if (
+                  line.id.includes("Underground") ||
+                  line.id === "Base_Ground_Line"
+                ) {
+                  dashPattern = "2 2";
+                }
 
-                        return (
-                          <g key={wp.id}>
-                            {CustomIcon ? (
-                              CustomIcon(cx, cy, () => handleClick(wp.id))
-                            ) : (
-                              <circle
-                                cx={cx}
-                                cy={cy}
-                                r={5}
-                                fill="#3498db"
-                                stroke="black"
-                                strokeWidth={1}
-                                style={{ cursor: "pointer" }}
-                                onClick={() => handleClick(wp.id)}
-                                onTouchStart={() => handleClick(wp.id)}
-                              />
-                            )}
-                            <text
-                              x={wp.id === "TD" ? cx + 22 : cx + 8}
-                              y={cy - 6}
-                              fontSize="10"
-                              fill="#333"
-                            >
-                              {`${wp.id}${locationID}`}
-                            </text>
-                          </g>
-                        );
-                      })}
+                const isMainPoleLine =
+                  (line.id === "A_Overground" && x1 === 0 && x2 === 0) ||
+                  (line.id === "B_Overground" && x1 === 8 && x2 === 8);
+
+                return (
+                  <line
+                    key={line.id}
+                    x1={x1 * FuseScale}
+                    y1={-y1 * FuseScale}
+                    x2={x2 * FuseScale}
+                    y2={-y2 * FuseScale}
+                    stroke={isMainPoleLine ? "#3498db" : "black"}
+                    strokeWidth={isMainPoleLine ? 8 : 2}
+                    strokeDasharray={dashPattern}
+                  />
+                );
+              })}
+
+              {FuseWaypoints.filter((wp) =>
+                FuseVisiblePointIds.includes(wp.id)
+              ).map((wp) => {
+                const [x, y] = wp.coordinates;
+                const cx = x * FuseScale;
+                const cy = -y * FuseScale;
+                const CustomIcon = FuseCustomIcons[wp.id];
+
+                const handleClick = (id) => {
+                  const validIds = new Set([
+                    "TD",
+                    "L1A",
+                    "L1B",
+                    "L1C",
+                    "S1A",
+                    "S1B",
+                    "S1C",
+                    "SP",
+                    "F1A",
+                    "F1B",
+                    "F1C",
+                    "TL",
+                    "TR",
+                    "DB",
+                  ]);
+                  if (validIds.has(id)) {
+                    setSelectedPoint({
+                      id: `${wp.id}${locationID}`,
+                    });
+                  } else {
+                    console.log(`Default click for ${id}`);
+                  }
+                };
+
+                return (
+                  <g key={wp.id}>
+                    {CustomIcon ? (
+                      CustomIcon(cx, cy, () => handleClick(wp.id))
+                    ) : (
+                      <circle
+                        cx={cx}
+                        cy={cy}
+                        r={5}
+                        fill="#3498db"
+                        stroke="black"
+                        strokeWidth={1}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleClick(wp.id)}
+                        onTouchStart={() => handleClick(wp.id)}
+                      />
+                    )}
+                    <text
+                      x={wp.id === "TD" ? cx + 22 : cx + 8}
+                      y={cy - 6}
+                      fontSize="10"
+                      fill="#333"
+                    >
+                      {`${wp.id}${locationID}`}
+                    </text>
                   </g>
-                </svg>
-              )}
+                );
+              })}
+            </g>
+          </svg>
+        )}
 
-              {selection === "Fuse" && (
-                <svg
-                  width="100%"
-                  height="100%"
-                  viewBox="0 0 700 700"
-                  className="bg-white rounded shadow"
-                >
-                  <g
-                    transform={`translate(${offset.x}, ${offset.y}) scale(${zoom})`}
-                  >
-                    {FuseLines.map((line) => {
-                      const [x1, y1] = line.from;
-                      const [x2, y2] = line.to;
+        <div
+          className="absolute bottom-4 right-4 flex flex-col items-center gap-4 p-4 border border-black bg-white rounded-lg sm:block md:block lg:hidden"
+          style={{
+            zIndex: 1000,
+            touchAction: "manipulation",
+          }}
+        >
+          <button
+            onClick={() => setZoom((prev) => Math.min(prev + 0.1, 5))}
+            className="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition"
+            title="Zoom In"
+          >
+            <img src="/zoomin.svg" alt="" />
+          </button>
 
-                      let dashPattern = "none";
-                      if (
-                        line.id.includes("Underground") ||
-                        line.id === "Base_Ground_Line"
-                      ) {
-                        dashPattern = "2 2";
-                      }
+          <button
+            onClick={() => setZoom((prev) => Math.max(prev - 0.1, 0.2))}
+            className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition"
+            title="Zoom Out"
+          >
+            <img src="/zoomout.svg" alt="" />
+          </button>
 
-                      const isMainPoleLine =
-                        (line.id === "A_Overground" && x1 === 0 && x2 === 0) ||
-                        (line.id === "B_Overground" && x1 === 8 && x2 === 8);
-
-                      return (
-                        <line
-                          key={line.id}
-                          x1={x1 * FuseScale}
-                          y1={-y1 * FuseScale}
-                          x2={x2 * FuseScale}
-                          y2={-y2 * FuseScale}
-                          stroke={isMainPoleLine ? "#3498db" : "black"}
-                          strokeWidth={isMainPoleLine ? 8 : 2}
-                          strokeDasharray={dashPattern}
-                        />
-                      );
-                    })}
-
-                    {FuseWaypoints.filter((wp) =>
-                      FuseVisiblePointIds.includes(wp.id)
-                    ).map((wp) => {
-                      const [x, y] = wp.coordinates;
-                      const cx = x * FuseScale;
-                      const cy = -y * FuseScale;
-                      const CustomIcon = FuseCustomIcons[wp.id];
-
-                      const handleClick = (id) => {
-                        const validIds = new Set([
-                          "TD",
-                          "L1A",
-                          "L1B",
-                          "L1C",
-                          "S1A",
-                          "S1B",
-                          "S1C",
-                          "SP",
-                          "F1A",
-                          "F1B",
-                          "F1C",
-                          "TL",
-                          "TR",
-                          "DB",
-                        ]);
-                        if (validIds.has(id)) {
-                          setSelectedPoint({
-                            id: `${wp.id}${locationID}`,
-                          });
-                        } else {
-                          console.log(`Default click for ${id}`);
-                        }
-                      };
-
-                      return (
-                        <g key={wp.id}>
-                          {CustomIcon ? (
-                            CustomIcon(cx, cy, () => handleClick(wp.id))
-                          ) : (
-                            <circle
-                              cx={cx}
-                              cy={cy}
-                              r={5}
-                              fill="#3498db"
-                              stroke="black"
-                              strokeWidth={1}
-                              style={{ cursor: "pointer" }}
-                              onClick={() => handleClick(wp.id)}
-                              onTouchStart={() => handleClick(wp.id)}
-                            />
-                          )}
-                          <text
-                            x={wp.id === "TD" ? cx + 22 : cx + 8}
-                            y={cy - 6}
-                            fontSize="10"
-                            fill="#333"
-                          >
-                            {`${wp.id}${locationID}`}
-                          </text>
-                        </g>
-                      );
-                    })}
-                  </g>
-                </svg>
-              )}
-
-              <div
-                className="absolute bottom-4 right-4 flex flex-col items-center gap-4 p-4 border border-black bg-white rounded-lg sm:block md:block lg:hidden"
-                style={{
-                  zIndex: 1000,
-                  touchAction: "manipulation",
-                }}
-              >
-                <button
-                  onClick={() => setZoom((prev) => Math.min(prev + 0.1, 5))}
-                  className="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition"
-                  title="Zoom In"
-                >
-                  <img src="/zoomin.svg" alt="" />
-                </button>
-
-                <button
-                  onClick={() => setZoom((prev) => Math.max(prev - 0.1, 0.2))}
-                  className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition"
-                  title="Zoom Out"
-                >
-                  <img src="/zoomout.svg" alt="" />
-                </button>
-
-                <button
-                  onClick={resetView}
-                  className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
-                  title="Reset View"
-                >
-                  <img src="/reset.svg" alt="" />
-                </button>
-              </div>
-            </div>
-        
-        
+          <button
+            onClick={resetView}
+            className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
+            title="Reset View"
+          >
+            <img src="/reset.svg" alt="" />
+          </button>
+        </div>
+      </div>
     </>
   );
 };
