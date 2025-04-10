@@ -4,6 +4,7 @@ import SLD from "./Components/SLD/DynamicSLD";
 import TopBar from "./Components/Topbar";
 import Login from "./Components/Login"; // Add this
 import PrivateRoute from "./Components/PrivateRoute"; // Add this
+import Dashboard from "./Components/Dashboard/Dashboard";
 
 function App() {
   return (
@@ -17,7 +18,6 @@ function App() {
           path="/"
           element={
             <PrivateRoute>
-           
               <Homepage />
             </PrivateRoute>
           }
@@ -27,9 +27,17 @@ function App() {
           path="/sld-view"
           element={
             <PrivateRoute>
-           
               <SLD />
             </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard/>
+                          </PrivateRoute>
           }
         />
       </Routes>
