@@ -7,7 +7,7 @@ export const InspectionFields = [
     options: ["Coated", "Barred Conductor", "Sleeve"],
     type: "select",
     device: ["Transformer", "Switch", "Fuse"],
-    selectedOption: "Coated", // ✅ just a string
+    selectedOption: "Coated",
   },
   {
     label: "Bus Bar to DO Jumper",

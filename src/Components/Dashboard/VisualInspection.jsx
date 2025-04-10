@@ -55,7 +55,7 @@ function VisualInspection({ locationdata, selection }) {
       resetData[field.name] = field.selectedOption || ""; 
     });
     setFormData(resetData);
-    setErrors({});
+    setErrors({}); // clear errors too
   };
 
   const handleSubmit = (e) => {

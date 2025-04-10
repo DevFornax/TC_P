@@ -17,7 +17,6 @@
 //   const [loading, setLoading] = useState(false);
 //   const [activeView, setActiveView] = useState(null);
 
-
 //   // const updateSelection = (newSelection) => {
 //   //   navigate(".", {
 //   //     replace: true,
@@ -65,123 +64,122 @@
 //     }
 //   };
 
-
 //   return (
-    // <>
-      // <div className="p-6 mb-5 border border-gray-300 rounded-xl shadow-lg bg-white">
-      //   <div className="grid gap-4 sm:grid-cols-3">
-      //     <div className="flex flex-col">
-      //       <label className="block font-bold mb-1">Location ID</label>
-      //       <input
-      //         type="text"
-      //         placeholder="Enter Location ID"
-      //         className="font-bold p-3 bg-gray-100 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
-      //         value={newLocationID}
-      //         onChange={(e) => setNewLocationID(e.target.value)}
-      //       />
-      //     </div>
+// <>
+// <div className="p-6 mb-5 border border-gray-300 rounded-xl shadow-lg bg-white">
+//   <div className="grid gap-4 sm:grid-cols-3">
+//     <div className="flex flex-col">
+//       <label className="block font-bold mb-1">Location ID</label>
+//       <input
+//         type="text"
+//         placeholder="Enter Location ID"
+//         className="font-bold p-3 bg-gray-100 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+//         value={newLocationID}
+//         onChange={(e) => setNewLocationID(e.target.value)}
+//       />
+//     </div>
 
-      //     <div className="flex flex-col">
-      //       <label className="block font-bold mb-1">Select Device Type</label>
-      //       <select
-      //         name="selection"
-      //         value={selection}
-      //         onChange={(e) => setSelection(e.target.value)}
-      //         className="font-bold p-3 bg-gray-100 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
-      //       >
-      //         <option value="Select">Select an option</option>
-      //         <option value="Transformer">Transformer</option>
-      //         <option value="Switch">Switch</option>
-      //         <option value="Fuse">Fuse</option>
-      //       </select>
-      //     </div>
+//     <div className="flex flex-col">
+//       <label className="block font-bold mb-1">Select Device Type</label>
+//       <select
+//         name="selection"
+//         value={selection}
+//         onChange={(e) => setSelection(e.target.value)}
+//         className="font-bold p-3 bg-gray-100 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+//       >
+//         <option value="Select">Select an option</option>
+//         <option value="Transformer">Transformer</option>
+//         <option value="Switch">Switch</option>
+//         <option value="Fuse">Fuse</option>
+//       </select>
+//     </div>
 
-      //     <div className="flex items-end">
-      //       <button
-      //         onClick={handleLocationSearch}
-      //         className="bg-[#6c63ff] hover:bg-[#5951e6] text-white font-semibold px-5 py-3 rounded-lg w-full transition disabled:opacity-50"
-      //         disabled={loading}
-      //       >
-      //         {loading ? "Checking..." : "Search"}
-      //       </button>
-      //     </div>
-      //   </div>
+//     <div className="flex items-end">
+//       <button
+//         onClick={handleLocationSearch}
+//         className="bg-[#6c63ff] hover:bg-[#5951e6] text-white font-semibold px-5 py-3 rounded-lg w-full transition disabled:opacity-50"
+//         disabled={loading}
+//       >
+//         {loading ? "Checking..." : "Search"}
+//       </button>
+//     </div>
+//   </div>
 
-      //   {error && (
-      //     <p className="text-red-600 text-sm text-right pt-2 font-semibold">
-      //       {error}
-      //     </p>
-      //   )}
-      // </div>
+//   {error && (
+//     <p className="text-red-600 text-sm text-right pt-2 font-semibold">
+//       {error}
+//     </p>
+//   )}
+// </div>
 
-      // <LocationInfoCard locationdata={locationdata} />
-      // <div className="p-6 mt-5 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
-      //   <h2 className="text-2xl font-bold text-[#6c63ff] mb-4">
-      //     Maintenance Information
-      //   </h2>
+// <LocationInfoCard locationdata={locationdata} />
+// <div className="p-6 mt-5 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
+//   <h2 className="text-2xl font-bold text-[#6c63ff] mb-4">
+//     Maintenance Information
+//   </h2>
 
-      //   <div className="pt-4">
-      //     {selectedPoint?.id ? (
-      //       <>
-      //         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      //           <InfoItem label="Device ID" value={selectedPoint.id} />
+//   <div className="pt-4">
+//     {selectedPoint?.id ? (
+//       <>
+//         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+//           <InfoItem label="Device ID" value={selectedPoint.id} />
 
-      //           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-      //             <button
-      //               onClick={() => setActiveView("form")}
-      //               className="w-full sm:w-auto px-4 py-2 bg-[#6c63ff] hover:bg-[#5951e6] text-white rounded-lg shadow"
-      //             >
-      //               Add Record
-      //             </button>
+//           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+//             <button
+//               onClick={() => setActiveView("form")}
+//               className="w-full sm:w-auto px-4 py-2 bg-[#6c63ff] hover:bg-[#5951e6] text-white rounded-lg shadow"
+//             >
+//               Add Record
+//             </button>
 
-      //             <button
-      //               onClick={() => setActiveView("table")}
-      //               className="w-full sm:w-auto px-4 py-2 bg-[#6c63ff] hover:bg-[#5951e6] text-white rounded-lg shadow"
-      //             >
-      //               View Latest Records
-      //             </button>
-      //           </div>
-      //         </div>
+//             <button
+//               onClick={() => setActiveView("table")}
+//               className="w-full sm:w-auto px-4 py-2 bg-[#6c63ff] hover:bg-[#5951e6] text-white rounded-lg shadow"
+//             >
+//               View Latest Records
+//             </button>
+//           </div>
+//         </div>
 
-      //         <div className="mt-6">
-      //           {activeView === "form" && (
-      //             <MaitenanceForm
-      //               locationId={id}
-      //               deviceId={selectedPoint?.id}
-      //               projectId={project_id}
-      //             />
-      //           )}
+//         <div className="mt-6">
+//           {activeView === "form" && (
+//             <MaitenanceForm
+//               locationId={id}
+//               deviceId={selectedPoint?.id}
+//               projectId={project_id}
+//             />
+//           )}
 
-      //           {activeView === "table" && (
-      //             <div className="overflow-x-auto">
-      //               <table className="min-w-full border mt-4">
-      //                 <thead className="bg-gray-100">
-      //                   <tr>
-      //                     <th className="px-4 py-2 border">Date</th>
-      //                     <th className="px-4 py-2 border">Technician</th>
-      //                     <th className="px-4 py-2 border">Notes</th>
-      //                   </tr>
-      //                 </thead>
-      //                 <tbody>
-      //                   <tr>
-      //                     <td className="px-4 py-2 border">2025-04-08</td>
-      //                     <td className="px-4 py-2 border">Yash</td>
-      //                     <td className="px-4 py-2 border">
-      //                       Replaced fuse, tested circuit.
-      //                     </td>
-      //                   </tr>
-      //                   <tr>
-      //                     <td className="px-4 py-2 border">2025-04-01</td>
-      //                     <td className="px-4 py-2 border">Ravi</td>
-      //                     <td className="px-4 py-2 border">
-      //                       Routine inspection, no issues.
-      //                     </td>
-      //                   </tr>
-      //                 </tbody>
-      //               </table>
-      //             </div>
-      //           )}
-      //         </div>
+//           {activeView === "table" && (
+//             <div className="overflow-x-auto">
+//               <table className="min-w-full border mt-4">
+//                 <thead className="bg-gray-100">
+//                   <tr>
+//                     <th className="px-4 py-2 border">Date</th>
+//                     <th className="px-4 py-2 border">Technician</th>
+//                     <th className="px-4 py-2 border">Notes</th>
+//                   </tr>
+//                 </thead>
+//                 <tbody>
+//                   <tr>
+//                     <td className="px-4 py-2 border">2025-04-08</td>
+//                     <td className="px-4 py-2 border">Yash</td>
+//                     <td className="px-4 py-2 border">
+//                       Replaced fuse, tested circuit.
+//                     </td>
+//                   </tr>
+//                   <tr>
+//                     <td className="px-4 py-2 border">2025-04-01</td>
+//                     <td className="px-4 py-2 border">Ravi</td>
+//                     <td className="px-4 py-2 border">
+//                       Routine inspection, no issues.
+//                     </td>
+//                   </tr>
+//                 </tbody>
+//               </table>
+//             </div>
+//           )}
+//         </div>
 //             </>
 //           ) : (
 //             <p className="text-sm text-red-500 mt-2">
@@ -196,8 +194,6 @@
 
 // export default Dashboard;
 
-
-
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -211,6 +207,8 @@ import TopBar from "../Topbar";
 import VisualInspection from "./VisualInspection";
 
 function Dashboard() {
+  const sldRef = useRef(null);
+
   const navigate = useNavigate();
   const location = useLocation();
   const { locationID, selection: navSelection } = location.state || {};
@@ -223,7 +221,20 @@ function Dashboard() {
   const [selectedPoint, setselectedPoint] = useState(null);
   const [locationIDforchild, setLocationIDforchild] = useState("");
   const [projectId, setProjectId] = useState(null);
+  const [showGoToSld, setShowGoToSld] = useState(false);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 500) {
+        setShowGoToSld(true);
+      } else {
+        setShowGoToSld(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       if (!locationID || !selection) {
@@ -245,11 +256,11 @@ function Dashboard() {
         if (!res.ok) {
           setError(data.message || "Location not found");
           return;
-        } 
+        }
         setLocationIDforchild(locationID);
         setLocationData(data);
-        setProjectId(data.project_id)
-        console.log(data.project_id  , "project id from the useeffect")
+        setProjectId(data.project_id);
+        console.log(data.project_id, "project id from the useeffect");
         console.log(data, "api called from sld");
       } catch (err) {
         console.error("SLD Page API error:", err);
@@ -288,9 +299,8 @@ function Dashboard() {
         return;
       }
       setLocationData(data);
-   setSelection(data.attributes.point_type);
+      setSelection(data.attributes.point_type);
 
-   
       setProjectId(data.project_id);
       setLocationIDforchild(parseInt(newLocationID));
       console.log("Api called from dashbpard");
@@ -305,10 +315,30 @@ function Dashboard() {
   return (
     <>
       <TopBar />
+     {showGoToSld && (
+  <div className="lg:hidden fixed bottom-5 right-5 z-50">
+    <button
+      onClick={() => {
+        sldRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }}
+      className="w-12 h-12 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg flex items-center justify-center transition duration-300 ease-in-out"
+      aria-label="Scroll to SLD"
+    >
+      ↑
+    </button>
+  </div>
+)}
+
 
       <div className="container-fluid mx-auto p-3">
         <div className="flex flex-col md:flex-row gap-4 mt-4">
-          <div className="w-full md:w-1/3 flex flex-col md:max-h-[calc(100vh-100px)] md:sticky md:top-4 overflow-auto border border-gray-300 rounded-xl shadow-lg bg-white">
+          <div
+            ref={sldRef}
+            className="w-full md:w-1/3 flex flex-col md:max-h-[calc(100vh-100px)] md:sticky md:top-4 overflow-auto border border-gray-300 rounded-xl shadow-lg bg-white"
+          >
             <SLD
               locationData={locationData}
               setLocationData={setLocationData}

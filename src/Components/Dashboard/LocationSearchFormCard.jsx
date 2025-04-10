@@ -1,4 +1,4 @@
-
+// components/LocationSearchFormCard.jsx
 import React from "react";
 
 const LocationSearchFormCard = ({
@@ -19,7 +19,7 @@ const LocationSearchFormCard = ({
             type="text"
             placeholder="Enter Location ID"
             className="font-bold p-3 bg-gray-100 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
-            value={newLocationID}
+            value={ newLocationID}
             onChange={(e) => setNewLocationID(e.target.value)}
           />
         </div>
@@ -29,7 +29,7 @@ const LocationSearchFormCard = ({
           <select
             name="selection"
             value={selection}
-            onChange={(e) => setSelection(e.target.value) || selection}
+            onChange={(e) => setSelection(e.target.value)}
             className="font-bold p-3 bg-gray-100 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
           >
             <option value="Select">Select an option</option>
