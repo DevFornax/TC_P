@@ -1,7 +1,7 @@
-const DotIcon = ({
+const DotIconForLightArrestor = ({
   width = 24,
-  height = 35,
-  fill = "#6cae4a",
+  height = 24,
+  fill = "blue",
   stroke = "#4f6b3d",
 }) => (
   <svg
@@ -11,10 +11,10 @@ const DotIcon = ({
     viewBox="0 0 76 76"
   >
     <g fill={fill} stroke={stroke} strokeWidth="2">
-      <circle cx="38" cy="38" r="38" stroke="none" />
-      <circle cx="38" cy="38" r="37" fill="none" />
+      <circle cx="38" cy="38" r="26" stroke="none" />
+      <circle cx="38" cy="38" r="25" fill="none" />
     </g>
   </svg>
 );
 
-export default DotIcon;
+export default DotIconForLightArrestor;

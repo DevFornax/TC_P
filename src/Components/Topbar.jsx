@@ -38,7 +38,10 @@ function TopBar() {
         >
           {isSidebarOpen ? "✖" : "☰"}
         </button>
-        <span className="text-2xl font-semibold">InteliGIs Survey</span>
+      
+        <h2 className="text-2xl p-4 pt-6 font-bold text-white mb-4 sm:mb-0">
+          Fornax ThermoVis
+        </h2>
         <div className="hidden md:flex items-center space-x-6">
           {user && (
             <>

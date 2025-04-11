@@ -1,4 +1,4 @@
-const DotIcon = ({ width = 10, height = 14 }) => (
+const OTCIcon = ({ width = 10, height = 14 }) => (
  
 
 <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
@@ -71,4 +71,4 @@ m440 0 l0 -150 -200 0 -200 0 0 150 0 150 200 0 200 0 0 -150z"/>
 
 );
 
-export default DotIcon;
+export default OTCIcon;

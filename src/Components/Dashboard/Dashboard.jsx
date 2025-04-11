@@ -204,7 +204,7 @@ import { SectionWithToggle } from "../UI/SectionwithToggle";
 import LocationInfoCard from "./LocationInfoCard";
 import MaitenanceForm from "./MaitenanceForm";
 import TopBar from "../Topbar";
-import VisualInspection from "./VisualInspection";
+import Inspection from "./Inspection";
 
 function Dashboard() {
   const sldRef = useRef(null);
@@ -315,23 +315,22 @@ function Dashboard() {
   return (
     <>
       <TopBar />
-     {showGoToSld && (
-  <div className="lg:hidden fixed bottom-5 right-5 z-50">
-    <button
-      onClick={() => {
-        sldRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }}
-      className="w-12 h-12 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg flex items-center justify-center transition duration-300 ease-in-out"
-      aria-label="Scroll to SLD"
-    >
-      ↑
-    </button>
-  </div>
-)}
-
+      {showGoToSld && (
+        <div className="lg:hidden fixed bottom-5 right-5 z-50">
+          <button
+            onClick={() => {
+              sldRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }}
+            className="w-12 h-12 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg flex items-center justify-center transition duration-300 ease-in-out"
+            aria-label="Scroll to SLD"
+          >
+            ↑
+          </button>
+        </div>
+      )}
 
       <div className="container-fluid mx-auto p-3">
         <div className="flex flex-col md:flex-row gap-4 mt-4">
@@ -362,9 +361,10 @@ function Dashboard() {
 
             <LocationInfoCard locationdata={locationData} />
 
-            <VisualInspection
+            <Inspection
               locationdata={locationData}
               selection={selection}
+              deviceId={selectedPoint?.id}
             />
             <div className="p-6 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
               <h2 className="text-2xl font-bold text-[#6c63ff] mb-4">

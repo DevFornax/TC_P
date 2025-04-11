@@ -2,6 +2,7 @@ import TCIcon from "../utils/TCIcon";
 import DotIcon from "../utils/DotIcon";
 import OTCIcon from "../utils/OTCIcon";
 import SPIcon from "../utils/SPIcon";
+import DotIconForLightArrestor from "../utils/DotIconForLightArrestor";
 
 //////////////////////////////-------------------------------TC-------------------------------------------////////////////////
 export const Transformerwaypoints = [
@@ -69,61 +70,105 @@ export const TransformervisiblePointIds = [
 ];
 
 export const Transformerscale = 50;
+
 export const TransformercustomIcons = {
-  S1A: (x, y, onClick) => (
+  L1A: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
     <g
       transform={`translate(${x - 10}, ${y - 10})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <DotIcon width={20} height={20} />
-    </g>
-  ),
-  S1B: (x, y, onClick) => (
-    <g
-      transform={`translate(${x - 10}, ${y - 10})`}
-      onClick={onClick}
-      style={{ cursor: "pointer" }}
-    >
-      <DotIcon width={20} height={20} />
-    </g>
-  ),
-  S1C: (x, y, onClick) => (
-    <g
-      transform={`translate(${x - 10}, ${y - 10})`}
-      onClick={onClick}
-      style={{ cursor: "pointer" }}
-    >
-      <DotIcon width={20} height={20} />
+      <DotIconForLightArrestor
+        width={20}
+        height={20}
+        fill={fill}
+        stroke={stroke}
+      />
     </g>
   ),
 
-  F1A: (x, y, onClick) => (
+  L1B: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
     <g
       transform={`translate(${x - 10}, ${y - 10})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <TCIcon width={20} height={20} />
+      <DotIconForLightArrestor
+        width={20}
+        height={20}
+        fill={fill}
+        stroke={stroke}
+      />
     </g>
   ),
-  F1B: (x, y, onClick) => (
+  L1C: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
     <g
       transform={`translate(${x - 10}, ${y - 10})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <TCIcon width={20} height={20} />
+      <DotIconForLightArrestor
+        width={20}
+        height={20}
+        fill={fill}
+        stroke={stroke}
+      />
+    </g>
+  ),
+  S1A: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
+    <g
+      transform={`translate(${x - 10}, ${y - 10})`}
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+    >
+      <DotIcon width={20} height={20} fill={fill} stroke={stroke} />
+    </g>
+  ),
+  S1B: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
+    <g
+      transform={`translate(${x - 10}, ${y - 10})`}
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+    >
+      <DotIcon width={20} height={20} fill={fill} stroke={stroke} />
+    </g>
+  ),
+  S1C: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
+    <g
+      transform={`translate(${x - 10}, ${y - 10})`}
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+    >
+      <DotIcon width={20} height={20} fill={fill} stroke={stroke} />
+    </g>
+  ),
+  F1A: (x, y, onClick, fill = "#4472c4", stroke = "#2f528f") => (
+    <g
+      transform={`translate(${x - 10}, ${y - 10})`}
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+    >
+      <TCIcon width={20} height={20} fill={fill} stroke={stroke} />
     </g>
   ),
 
-  F1C: (x, y, onClick) => (
+  F1B: (x, y, onClick, fill = "#4472c4", stroke = "#2f528f") => (
     <g
       transform={`translate(${x - 10}, ${y - 10})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <TCIcon width={20} height={20} />
+      <TCIcon width={20} height={20} fill={fill} stroke={stroke} />
+    </g>
+  ),
+
+  F1C: (x, y, onClick, fill = "#4472c4", stroke = "#2f528f") => (
+    <g
+      transform={`translate(${x - 10}, ${y - 10})`}
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+    >
+      <TCIcon width={20} height={20} fill={fill} stroke={stroke} />
     </g>
   ),
 
@@ -138,13 +183,13 @@ export const TransformercustomIcons = {
     </g>
   ),
 
-  DB: (x, y, onClick) => (
+  DB: (x, y, onClick, fill = "#4472c4", stroke = "#2f528f") => (
     <g
       transform={`translate(${x - 10}, ${y - 20})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <SPIcon width={10} height={10} />
+      <SPIcon fill={fill} stroke={stroke} />
     </g>
   ),
 };
