@@ -499,33 +499,33 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                     } else {
                       const points = [
                         {
-                          id: `TD1-${locationID}`,
+                          id: "TDV1",
                           x: baseX - 30,
                           y: baseY + 20,
                         },
-                        { id: `TD2-${locationID}`, x: baseX, y: baseY + 20 },
+                        { id: "TDV2", x: baseX, y: baseY + 20 },
                         {
-                          id: `TD3-${locationID}`,
+                          id: "TDV3",
                           x: baseX + 30,
                           y: baseY + 20,
                         },
                         {
-                          id: `TD4-${locationID}`,
+                          id: "TDN",
                           x: baseX - 45,
                           y: baseY + 50,
                         },
                         {
-                          id: `TD5-${locationID}`,
+                          id: "TDR",
                           x: baseX - 15,
                           y: baseY + 50,
                         },
                         {
-                          id: `TD6-${locationID}`,
+                          id: "TDY",
                           x: baseX + 15,
                           y: baseY + 50,
                         },
                         {
-                          id: `TD7-${locationID}`,
+                          id: "TDB",
                           x: baseX + 45,
                           y: baseY + 50,
                         },
@@ -587,9 +587,9 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                                 onClick={() => handleClick(pt.id)}
                               />
                               <text
-                                x={pt.x + 8}
-                                y={pt.y - 4}
-                                fontSize="10"
+                                x={pt.x + 5}
+                                y={pt.y - 5}
+                                fontSize="8"
                                 fill="#333"
                               >
                                 {pt.id}

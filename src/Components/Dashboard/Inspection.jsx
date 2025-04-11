@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { InfoItem } from "../UI/InfoItem";
 import { InspectionFields } from "../utils/InspectionFields";
@@ -11,14 +10,13 @@ InspectionFields.forEach((field) => {
 });
 
 function Inspection({ locationdata, selection, deviceId }) {
-
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState({});
   const [thermalEnabled, setThermalEnabled] = useState(false);
   const [thermalRecords, setThermalRecords] = useState([]);
 
   useEffect(() => {
-    if (!thermalEnabled) return; 
+    if (!thermalEnabled) return;
     if (deviceId?.id && deviceId?.condition) {
       setThermalRecords((prev) => {
         const index = prev.findIndex((r) => r.id === deviceId.id);
@@ -68,12 +66,8 @@ function Inspection({ locationdata, selection, deviceId }) {
     }));
   };
 
-
-
   const validate = () => {
     const newErrors = {};
-
-
     InspectionFields.filter((field) =>
       field.device.includes(selection)
     ).forEach((field) => {
@@ -82,7 +76,9 @@ function Inspection({ locationdata, selection, deviceId }) {
       }
     });
 
-
+    if (thermalEnabled && thermalRecords.length === 0) {
+      newErrors.thermal = "Please inspect at least one thermal point";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -94,34 +90,77 @@ function Inspection({ locationdata, selection, deviceId }) {
       resetData[field.name] = field.selectedOption || "";
     });
     setFormData(resetData);
-    setErrors({});
-
+    
+    setErrors({}); 
+    setThermalRecords([]); 
+    setThermalEnabled(false); 
   };
-
-
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validate()) {
-      let thermalData = [];
 
+    if (validate()) {
+      const visualKeys = [
+        "bus_bar",
+        "busbar_do_jumper",
+        "ug_cable_jumper",
+        "tc_condition",
+        "bird_guard",
+        "do_tc_jumper",
+        "ht_booting",
+        "lt_booting",
+        "breather_installed",
+        "silica_gel_color",
+        "oil_leakage",
+        "oil_level",
+        "tc_fencing",
+        "fuse_box_external",
+        "fuse_box_internal_burn",
+        "lt_cable_connection",
+      ];
+
+      const visualInspection = {};
+      visualKeys.forEach((key) => {
+        if (formData[key] !== undefined) {
+          visualInspection[key] = formData[key];
+        }
+      });
+
+      const LocationID = locationdata?.id;
+      const keysToAppendLocation = ["TDB", "TDV2", "TDR", "TDV3", "TDY", "TDN"];
+      let thermalInspection;
+      if (thermalEnabled) {
+        if (thermalRecords.length > 0) {
+          thermalInspection = Object.fromEntries(
+            thermalRecords.map((point) => {
+              const key = keysToAppendLocation.includes(point.id)
+                ? `${point.id}${LocationID}`
+                : point.id;
+
+              return [key, point.condition];
+            })
+          );
+        } else {
+          alert("⚠️ Thermal inspection is enabled but no data selected.");
+          return;
+        }
+      } else {
+        thermalInspection = "notdone";
+      }
 
       const finalData = {
-        ...formData,
-
-        deviceId,
-        locationdata
+        locationdata: locationdata,
+        visualInspection,
+        thermalInspection,
       };
-
-      console.log("✅ Final Submission Payload:", finalData);
-      alert("Inspection submitted!");
-      handleReset()
+      console.log("✅ Final Submission Payload:", finalData);    setThermalRecords([]); 
+      alert("Inspection submitted successfully!");
+      handleReset();
+      
     } else {
       console.log("❌ Validation failed:", errors);
     }
   };
-
-
 
   return (
     <div className="p-6 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
@@ -195,10 +234,8 @@ function Inspection({ locationdata, selection, deviceId }) {
         <div className="mt-6 flex flex-col sm:flex-row gap-2 sm:justify-end">
           <button
             type="submit"
-          
             className={`w-full sm:w-auto px-6 py-2 rounded transition-all duration-200 ${
-              thermalEnabled &&
-              deviceId?.id.startsWith("TD")
+              thermalEnabled && deviceId?.id.startsWith("TD")
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700 text-white"
             }`}
@@ -230,6 +267,9 @@ function Inspection({ locationdata, selection, deviceId }) {
         >
           {thermalEnabled ? "Yes" : "No"}
         </button>
+        {errors.thermal && (
+          <p className="text-red-500 text-xs mt-1">{errors.thermal}</p>
+        )}
       </div>
       {thermalEnabled && thermalRecords.length > 0 && (
         <div className="mt-4">
@@ -256,159 +296,3 @@ function Inspection({ locationdata, selection, deviceId }) {
 }
 
 export default Inspection;
-
-{/* {thermalEnabled && (
-        <div className="mt-6 border rounded-xl bg-gray-50 p-6 shadow-inner">
-          <h3 className="text-lg font-semibold text-indigo-600 mb-4">
-            🔥 Thermal Inspection Section
-          </h3>
-
-          <p className="text-sm text-gray-700 mb-4">
-            Please select the device to add the Thermal Report.
-          </p>
-
-          <p className="text-sm font-medium text-gray-600">
-            Device ID: {deviceId.id || "Not selected"}
-          </p>
-          <p className="text-sm font-medium text-gray-600">
-           Seviarity: {deviceId.condition|| "Not selected"}
-          </p>
-
-          {deviceId?.id.startsWith("TD") && (
-            <div className="mt-6 flex flex-col items-center gap-4">
-              <svg width="400" height="450" viewBox="0 0 400 250">
-              
-                <polygon
-                  points="120,50 310,50 250,190 50,190"
-                  fill="#e0e7ff"
-                  stroke="#4f46e5"
-                  strokeWidth="2"
-                />
-                <rect
-                  x="50"
-                  y="190"
-                  width="200"
-                  height="140"
-                  fill="white"
-                  stroke="#4f46e5"
-                  strokeWidth="2"
-                />
-                <text
-                  x="150"
-                  y="260"
-                  textAnchor="middle"
-                  fontSize="18"
-                  fill="#1f2937"
-                  fontWeight="bold"
-                >
-                  Transformer
-                </text>
-                <line
-                  x1="310"
-                  y1="50"
-                  x2="310"
-                  y2="190"
-                  stroke="#4f46e5"
-                  strokeWidth="2"
-                />
-                <line
-                  x1="250"
-                  y1="330"
-                  x2="310"
-                  y2="190"
-                  stroke="#4f46e5"
-                  strokeWidth="2"
-                />
-
-                {["V1", "V2", "V3"].map((id, idx) => (
-                  <g key={id}>
-                    <circle
-                      cx={140 + idx * 55}
-                      cy={75}
-                      r={10}
-                      fill={
-                        selectedThermalPoints.includes(id)
-                          ? "#ef4444"
-                          : "#6c63ff"
-                      }
-                      className="cursor-pointer transition hover:fill-pink-500"
-                      onClick={() => togglePoint(id)}
-                    />
-                    <text
-                      x={140 + idx * 55}
-                      y={94}
-                      textAnchor="middle"
-                      fontSize="10"
-                      fill="#1f2937"
-                    >
-                      {id}
-                    </text>
-                  </g>
-                ))}
-
-                {["N", "R", "Y", "B"].map((id, idx) => {
-                  const phaseColors = {
-                    N: "#000000",
-                    R: "#ff0000",
-                    Y: "#ffff00",
-                    B: "#0000ff",
-                  };
-                  const selectedColor = selectedThermalPoints.includes(id)
-                    ? "#ef4444"
-                    : phaseColors[id];
-
-                  return (
-                    <g key={id}>
-                      <circle
-                        cx={100 + idx * 42}
-                        cy={145}
-                        r={10}
-                        fill={selectedColor}
-                        className="cursor-pointer transition hover:fill-pink-500"
-                        onClick={() => togglePoint(id)}
-                      />
-                      <text
-                        x={100 + idx * 42}
-                        y={165}
-                        textAnchor="middle"
-                        fontSize="10"
-                        fill="#1f2937"
-                      >
-                        {id}
-                      </text>
-                    </g>
-                  );
-                })}
-              </svg>
-
-              {selectedThermalPoints.length > 0 && (
-                <div className="text-sm mt-4 font-semibold text-indigo-700 text-center space-y-2">
-                  <div>
-                    🔎{" "}
-                    <span className="text-gray-700">
-                      Selected Thermal Points:
-                    </span>{" "}
-                    <span className="text-gray-800">
-                      {selectedThermalPoints
-                        .map((pt) => `${pt}${deviceId.id}`)
-                        .join(", ")}
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={resetPoints}
-                    className="mt-2 px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 transition"
-                  >
-                    Reset
-                  </button>
-                </div>
-              )}
-              {errors.thermalScanPoints && (
-                <p className="text-red-500 text-sm mt-2 text-center">
-                  {errors.thermalScanPoints}
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-      )}  */}

@@ -15,6 +15,7 @@ export const InspectionFields = [
     options: ["Coated", "Barred Conductor", "Sleeve"],
     type: "select",
     device: ["Transformer", "Switch"],
+    selectedOption: "Coated",
   },
   {
     label: "UG Cable Jumper",
@@ -22,6 +23,7 @@ export const InspectionFields = [
     options: ["Lug", "Binding", "N/A"],
     type: "Switch",
     device: ["Transformer"],
+    selectedOption: "Lug",
   },
   {
     label: "TC Condition",
@@ -29,6 +31,7 @@ export const InspectionFields = [
     options: ["Straight", "Tilted", "Plinth", "Pole structure"],
     type: "select",
     device: ["Transformer"],
+    selectedOption: "Straight",
   },
   {
     label: "Bird Guard",
@@ -36,6 +39,7 @@ export const InspectionFields = [
     options: ["Yes", "No"],
     type: "radio",
     device: ["Transformer", "Switch"],
+    selectedOption: "Yes",
   },
   {
     label: "DO to TC Jumper",
@@ -43,6 +47,7 @@ export const InspectionFields = [
     options: ["Coated", "Barred Conductor", "Sleeve"],
     type: "select",
     device: ["Transformer"],
+    selectedOption: "Coated",
   },
   {
     label: "Transformer HT Booting",
@@ -50,6 +55,7 @@ export const InspectionFields = [
     options: ["Yes", "No"],
     type: "radio",
     device: ["Transformer"],
+    selectedOption: "No",
   },
   {
     label: "Transformer LT Booting",
@@ -57,6 +63,7 @@ export const InspectionFields = [
     options: ["Yes", "No"],
     type: "radio",
     device: ["Transformer"],
+    selectedOption: "No",
   },
   {
     label: "Breather Installed",
@@ -64,6 +71,7 @@ export const InspectionFields = [
     options: ["Yes", "No"],
     type: "radio",
     device: ["Transformer"],
+    selectedOption: "No",
   },
   {
     label: "Silica Gel Color",
@@ -71,6 +79,7 @@ export const InspectionFields = [
     options: ["Blue", "Orange"],
     type: "select",
     device: ["Transformer"],
+    selectedOption: "Blue",
   },
   {
     label: "Oil Leakage Visible",
@@ -78,6 +87,7 @@ export const InspectionFields = [
     options: ["Yes", "No"],
     type: "radio",
     device: ["Transformer"],
+    selectedOption: "No",
   },
   {
     label: "Oil Level",
@@ -85,6 +95,7 @@ export const InspectionFields = [
     options: ["Normal", "Low"],
     type: "select",
     device: ["Transformer"],
+    selectedOption: "Normal",
   },
   {
     label: "TC Fencing",
@@ -92,6 +103,7 @@ export const InspectionFields = [
     options: ["Yes", "No"],
     type: "radio",
     device: ["Transformer"],
+    selectedOption: "No",
   },
   {
     label: "Fuse Box (External) Condition",
@@ -99,6 +111,7 @@ export const InspectionFields = [
     options: ["Closed", "Open"],
     type: "radio",
     device: ["Fuse"],
+    selectedOption: "Closed",
   },
   {
     label: "Fuse Box (Internal) Burnt Part",
@@ -106,6 +119,7 @@ export const InspectionFields = [
     options: ["Yes", "No"],
     type: "radio",
     device: ["Fuse"],
+    selectedOption: "No",
   },
   {
     label: "LT Cable Connection",
@@ -113,5 +127,6 @@ export const InspectionFields = [
     options: ["Lug", "Patta", "Binding"],
     type: "select",
     device: ["Transformer"],
+    selectedOption: "Patta",
   },
 ];
