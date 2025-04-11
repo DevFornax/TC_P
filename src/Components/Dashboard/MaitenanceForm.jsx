@@ -113,7 +113,8 @@ useEffect(() => {
       <h2 className="text-2xl font-bold text-[#6c63ff] text-center mb-6">
         Maintenance Form
       </h2>
-
+      <h3>Device ID: {deviceId?.id}</h3>
+      <h4>Condition: {deviceId?.condition}</h4>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         <div className="flex flex-col">
           <label className="text-sm font-medium text-gray-700 mb-1">

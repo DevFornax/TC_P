@@ -1,8 +1,11 @@
-import TCIcon from "../utils/TCIcon";
-import DotIcon from "../utils/DotIcon";
+import TCIcon from "../utils/SquareIconForFuse";
+// import DotIcon from "../utils/DotIcon";
 import OTCIcon from "../utils/OTCIcon";
-import SPIcon from "../utils/SPIcon";
+import SPIcon from "../utils/DuoBoxIcon";
 import DotIconForLightArrestor from "../utils/DotIconForLightArrestor";
+import DotIconForSwitch from "../utils/DotIconForSwitch";
+import SquareIconForFuse from "../utils/SquareIconForFuse";
+import DuoBoxIcon from "../utils/DuoBoxIcon";
 
 //////////////////////////////-------------------------------TC-------------------------------------------////////////////////
 export const Transformerwaypoints = [
@@ -121,7 +124,7 @@ export const TransformercustomIcons = {
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <DotIcon width={20} height={20} fill={fill} stroke={stroke} />
+      <DotIconForSwitch width={20} height={20} fill={fill} stroke={stroke} />
     </g>
   ),
   S1B: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
@@ -130,7 +133,7 @@ export const TransformercustomIcons = {
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <DotIcon width={20} height={20} fill={fill} stroke={stroke} />
+      <DotIconForSwitch width={20} height={20} fill={fill} stroke={stroke} />
     </g>
   ),
   S1C: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
@@ -139,7 +142,7 @@ export const TransformercustomIcons = {
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <DotIcon width={20} height={20} fill={fill} stroke={stroke} />
+      <DotIconForSwitch width={20} height={20} fill={fill} stroke={stroke} />
     </g>
   ),
   F1A: (x, y, onClick, fill = "#4472c4", stroke = "#2f528f") => (
@@ -148,7 +151,7 @@ export const TransformercustomIcons = {
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <TCIcon width={20} height={20} fill={fill} stroke={stroke} />
+      <SquareIconForFuse width={20} height={20} fill={fill} stroke={stroke} />
     </g>
   ),
 
@@ -158,7 +161,7 @@ export const TransformercustomIcons = {
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <TCIcon width={20} height={20} fill={fill} stroke={stroke} />
+      <SquareIconForFuse width={20} height={20} fill={fill} stroke={stroke} />
     </g>
   ),
 
@@ -168,7 +171,7 @@ export const TransformercustomIcons = {
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <TCIcon width={20} height={20} fill={fill} stroke={stroke} />
+      <SquareIconForFuse width={20} height={20} fill={fill} stroke={stroke} />
     </g>
   ),
 
@@ -189,7 +192,7 @@ export const TransformercustomIcons = {
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <SPIcon fill={fill} stroke={stroke} />
+      <DuoBoxIcon fill={fill} stroke={stroke} />
     </g>
   ),
 };
@@ -247,33 +250,81 @@ export const switchVisiblePointIds = [
 ];
 
 export const switchCustomIcons = {
-  S1A: (x, y, onClick) => (
+  L1A: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
     <g
       transform={`translate(${x - 10}, ${y - 10})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <DotIcon width={20} height={20} />
+      <DotIconForLightArrestor
+        width={20}
+        height={20}
+        fill={fill}
+        stroke={stroke}
+      />
     </g>
   ),
-  S1B: (x, y, onClick) => (
+
+  L1B: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
     <g
       transform={`translate(${x - 10}, ${y - 10})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <DotIcon width={20} height={20} />
+      <DotIconForLightArrestor
+        width={20}
+        height={20}
+        fill={fill}
+        stroke={stroke}
+      />
     </g>
   ),
-  S1C: (x, y, onClick) => (
+  L1C: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
     <g
       transform={`translate(${x - 10}, ${y - 10})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <DotIcon width={20} height={20} />
+      <DotIconForLightArrestor
+        width={20}
+        height={20}
+        fill={fill}
+        stroke={stroke}
+      />
     </g>
   ),
+  S1A: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
+    <g
+      transform={`translate(${x - 10}, ${y - 10})`}
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+    >
+      <DotIconForSwitch width={20} height={20} fill={fill} stroke={stroke} />
+    </g>
+  ),
+  S1B: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
+    <g
+      transform={`translate(${x - 10}, ${y - 10})`}
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+    >
+      <DotIconForSwitch width={20} height={20} fill={fill} stroke={stroke} />
+    </g>
+  ),
+  S1C: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
+    <g
+      transform={`translate(${x - 10}, ${y - 10})`}
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+    >
+      <DotIconForSwitch width={20} height={20} fill={fill} stroke={stroke} />
+    </g>
+  ),
+  
+
+
+
+  
 };
 
 //////////////////////////////-------------------------------Fuse-------------------------------------------////////////////////
@@ -328,53 +379,87 @@ export const FuseVisiblePointIds = [
 ];
 
 export const FuseCustomIcons = {
-  F1A: (x, y, onClick) => (
+  L1A: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
     <g
       transform={`translate(${x - 10}, ${y - 10})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <TCIcon width={20} height={20} />
+      <DotIconForLightArrestor
+        width={20}
+        height={20}
+        fill={fill}
+        stroke={stroke}
+      />
     </g>
   ),
-  F1B: (x, y, onClick) => (
+
+  L1B: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
     <g
       transform={`translate(${x - 10}, ${y - 10})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <TCIcon width={20} height={20} />
+      <DotIconForLightArrestor
+        width={20}
+        height={20}
+        fill={fill}
+        stroke={stroke}
+      />
     </g>
   ),
-
-  F1C: (x, y, onClick) => (
+  L1C: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
     <g
       transform={`translate(${x - 10}, ${y - 10})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <TCIcon width={20} height={20} />
+      <DotIconForLightArrestor
+        width={20}
+        height={20}
+        fill={fill}
+        stroke={stroke}
+      />
     </g>
   ),
-
-  TD: (x, y, onClick) => (
+  S1A: (x, y, onClick, fill = "#6cae4a", stroke = "#4f6b3d") => (
     <g
-      transform={`translate(${x - 10}, ${y - 25})`}
+      transform={`translate(${x - 10}, ${y - 10})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <rect x={-5} y={-5} width={30} height={30} fill="transparent" />
-      <OTCIcon width={20} height={20} />
+      <DotIconForSwitch width={20} height={20} fill={fill} stroke={stroke} />
     </g>
   ),
 
-  DB: (x, y, onClick) => (
+  F1A: (x, y, onClick, fill = "#4472c4", stroke = "#2f528f") => (
     <g
-      transform={`translate(${x - 10}, ${y - 20})`}
+      transform={`translate(${x - 10}, ${y - 10})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      <SPIcon width={10} height={10} />
+      <SquareIconForFuse width={20} height={20} fill={fill} stroke={stroke} />
     </g>
   ),
+
+  F1B: (x, y, onClick, fill = "#4472c4", stroke = "#2f528f") => (
+    <g
+      transform={`translate(${x - 10}, ${y - 10})`}
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+    >
+      <SquareIconForFuse width={20} height={20} fill={fill} stroke={stroke} />
+    </g>
+  ),
+
+  F1C: (x, y, onClick, fill = "#4472c4", stroke = "#2f528f") => (
+    <g
+      transform={`translate(${x - 10}, ${y - 10})`}
+      onClick={onClick}
+      style={{ cursor: "pointer" }}
+    >
+      <SquareIconForFuse width={20} height={20} fill={fill} stroke={stroke} />
+    </g>
+  ),
+
 };

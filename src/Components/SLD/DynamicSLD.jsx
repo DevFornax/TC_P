@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 
 import {
@@ -116,120 +115,6 @@ const SLD = ({ locationID, selection, setSelectedPoint }) => {
           userSelect: "none",
         }}
       >
-        {/* {selection === "Transformer" && (
-          <svg
-            width="100%"
-            height="100%"
-            viewBox="0 0 700 700"
-            className=" bg-white rounded shadow"
-          >
-            <g transform={`translate(${offset.x}, ${offset.y}) scale(${zoom})`}>
-              {Transformerlines.map((line) => {
-                const [x1, y1] = line.from;
-                const [x2, y2] = line.to;
-
-                let dashPattern = "none";
-                if (
-                  line.id.includes("Underground") ||
-                  line.id === "Base_Ground_Line"
-                ) {
-                  dashPattern = "2 2";
-                }
-
-                const isMainPoleLine =
-                  (line.id === "A_Overground" && x1 === 0 && x2 === 0) ||
-                  (line.id === "B_Overground" && x1 === 8 && x2 === 8);
-                const isLoadLine =
-                  line.id === "LOADCONNECTORTC" ||
-                  line.id === "LOADYLINE" ||
-                  line.id === "LOADXLINE" ||
-                  line.id === "LDG1" ||
-                  line.id === "LDG2" ||
-                  line.id === "LDG3";
-                return (
-                  <line
-                    key={line.id}
-                    x1={x1 * Transformerscale}
-                    y1={-y1 * Transformerscale}
-                    x2={x2 * Transformerscale}
-                    y2={-y2 * Transformerscale}
-                    stroke={
-                      isMainPoleLine ? "#3498db" : isLoadLine ? "gray" : "black"
-                    }
-                    strokeWidth={isMainPoleLine ? 8 : 2}
-                    strokeDasharray={dashPattern}
-                  />
-                );
-              })}
-
-              {Transformerwaypoints.filter((wp) =>
-                TransformervisiblePointIds.includes(wp.id)
-              ).map((wp) => {
-                const [x, y] = wp.coordinates;
-                const cx = x * Transformerscale;
-                const cy = -y * Transformerscale;
-                const CustomIcon = TransformercustomIcons[wp.id];
-
-                const handleClick = (id) => {
-                  const validIds = new Set([
-                    "TD",
-                    "L1A",
-                    "L1B",
-                    "L1C",
-                    "S1A",
-                    "S1B",
-                    "S1C",
-                    "SP",
-                    "F1A",
-                    "F1B",
-                    "F1C",
-                    "TL",
-                    "TR",
-                    "DB",
-                  ]);
-
-                  if (validIds.has(id)) {
-                    setSelectedPoint({
-                      id: `${wp.id}${locationID}`,
-                    });
-                  } else {
-                    console.log(`Default click for ${id}`);
-                  }
-                };
-
-                return (
-                  <g key={wp.id}>
-                    {CustomIcon ? (
-                      CustomIcon(cx, cy, () => handleClick(wp.id))
-                    ) : (
-                      <circle
-                        cx={cx}
-                        cy={cy}
-                        r={5}
-                        fill="#3498db"
-                        stroke="black"
-                        strokeWidth={1}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleClick(wp.id)}
-                        onTouchStart={() => handleClick(wp.id)}
-                      />
-                    )}
-
-                    <text
-                      x={wp.id === "TD" ? cx + 22 : cx + 8}
-                      y={cy - 6}
-                      fontSize="10"
-                      fill="#333"
-                    >
-                      {`${wp.id}${locationID}`}
-                    </text>
-                  </g>
-                );
-              })}
-            </g>
-          </svg>
-        )} */}
-
         {selection === "Transformer" && (
           <svg
             width="100%"
@@ -313,11 +198,11 @@ const SLD = ({ locationID, selection, setSelectedPoint }) => {
 
                 const clickState = pointClickStates[wp.id] || 0;
                 if (clickState === 1) {
-                  fillColor = "red";
-                  strokeColor = "darkred";
+                  fillColor = "darkorange";
+                  strokeColor = "orange";
                 } else if (clickState === 2) {
-                  fillColor = "orange";
-                  strokeColor = "darkorange";
+                  fillColor = "red";
+                  strokeColor = "red";
                 }
 
                 const handleClick = (id) => {
@@ -348,11 +233,32 @@ const SLD = ({ locationID, selection, setSelectedPoint }) => {
                   ]);
 
                   if (validIds.has(id)) {
+                    const currentClickState = pointClickStates[id] || 0;
+
+                    const nextClickState = (currentClickState + 1) % 3;
+
+                    let condition = "none";
+                    let fillColor = "pink";
+
+                    if (nextClickState === 1) {
+                      condition = "normal";
+                      fillColor = "orange";
+                    } else if (nextClickState === 2) {
+                      condition = "high";
+                      fillColor = "red";
+                    }
+
+                    setPointClickStates((prev) => ({
+                      ...prev,
+                      [id]: nextClickState,
+                    }));
+
                     setSelectedPoint({
                       id: `${id}${locationID}`,
+                      condition: condition,
                     });
                   } else {
-                    console.log(`Default click for ${id}`);
+                    console.log(`Invalid ID clicked: ${id}`);
                   }
                 };
 
@@ -400,7 +306,7 @@ const SLD = ({ locationID, selection, setSelectedPoint }) => {
             width="100%"
             height="100%"
             viewBox="0 0 700 700"
-            className=" bg-white rounded shadow"
+            className="bg-white rounded shadow"
           >
             <g transform={`translate(${offset.x}, ${offset.y}) scale(${zoom})`}>
               {switchLines.map((line) => {
@@ -439,51 +345,111 @@ const SLD = ({ locationID, selection, setSelectedPoint }) => {
                   const [x, y] = wp.coordinates;
                   const cx = x * SwitchScale;
                   const cy = -y * SwitchScale;
-                  const CustomIcon = switchCustomIcons[wp.id]; // ← valid check
+                  const CustomIcon = switchCustomIcons[wp.id];
+
+                  const validIds = new Set([
+                    "TD",
+                    "L1A",
+                    "L1B",
+                    "L1C",
+                    "S1A",
+                    "S1B",
+                    "S1C",
+                    "SP",
+                    "F1A",
+                    "F1B",
+                    "F1C",
+                    "TL",
+                    "TR",
+                    "DB",
+                  ]);
+
+                  let fillColor = "#6cae4a";
+                  let strokeColor = "#4f6b3d";
+
+                  if (wp.id.startsWith("L1")) {
+                    fillColor = "#007BFF";
+                    strokeColor = "#003F8A";
+                  } else if (wp.id.startsWith("F1")) {
+                    fillColor = "#ff0080";
+                    strokeColor = "#CC8400";
+                  } else if (wp.id.startsWith("S1")) {
+                    fillColor = "#800080";
+                    strokeColor = "#4B004B";
+                  } else if (wp.id === "TD") {
+                    fillColor = "#28a745";
+                    strokeColor = "#1c6b2f";
+                  } else if (wp.id === "SP") {
+                    fillColor = "#FF69B4";
+                    strokeColor = "#C71585";
+                  } else if (wp.id.startsWith("TL") || wp.id.startsWith("TR")) {
+                    fillColor = "#00CED1";
+                    strokeColor = "#008B8B";
+                  } else if (wp.id === "DB") {
+                    fillColor = "#ff149d";
+                    strokeColor = "#B8860B";
+                  }
+
+                  const clickState = pointClickStates[wp.id] || 0;
+                  if (clickState === 1) {
+                    fillColor = "darkorange";
+                    strokeColor = "orange";
+                  } else if (clickState === 2) {
+                    fillColor = "red";
+                    strokeColor = "red";
+                  }
 
                   const handleClick = (id) => {
-                    const validIds = new Set([
-                      "TD",
-                      "L1A",
-                      "L1B",
-                      "L1C",
-                      "S1A",
-                      "S1B",
-                      "S1C",
-                      "SP",
-                      "F1A",
-                      "F1B",
-                      "F1C",
-                      "TL",
-                      "TR",
-                      "DB",
-                    ]);
+                    setPointClickStates((prev) => {
+                      const currentState = prev[id] || 0;
+                      const nextState = (currentState + 1) % 3;
+                      return {
+                        ...prev,
+                        [id]: nextState,
+                      };
+                    });
+
                     if (validIds.has(id)) {
+                      const currentClickState = pointClickStates[id] || 0;
+                      const nextClickState = (currentClickState + 1) % 3;
+
+                      let condition = "none";
+                      if (nextClickState === 1) condition = "normal";
+                      else if (nextClickState === 2) condition = "high";
+
                       setSelectedPoint({
-                        id: `${wp.id}${locationID}`,
+                        id: `${id}${locationID}`,
+                        condition: condition,
                       });
                     } else {
-                      console.log(`Default click for ${id}`);
+                      console.log(`Invalid ID clicked: ${id}`);
                     }
                   };
 
                   return (
                     <g key={wp.id}>
                       {CustomIcon ? (
-                        CustomIcon(cx, cy, () => handleClick(wp.id))
+                        CustomIcon(
+                          cx,
+                          cy,
+                          () => handleClick(wp.id),
+                          fillColor,
+                          strokeColor
+                        )
                       ) : (
                         <circle
                           cx={cx}
                           cy={cy}
                           r={5}
-                          fill="#3498db"
-                          stroke="black"
+                          fill={fillColor}
+                          stroke={strokeColor}
                           strokeWidth={1}
                           style={{ cursor: "pointer" }}
                           onClick={() => handleClick(wp.id)}
                           onTouchStart={() => handleClick(wp.id)}
                         />
                       )}
+
                       <text
                         x={wp.id === "TD" ? cx + 22 : cx + 8}
                         y={cy - 6}
@@ -545,7 +511,51 @@ const SLD = ({ locationID, selection, setSelectedPoint }) => {
                 const cy = -y * FuseScale;
                 const CustomIcon = FuseCustomIcons[wp.id];
 
+                let fillColor = "#6cae4a";
+                let strokeColor = "#4f6b3d";
+
+                if (wp.id.startsWith("L1")) {
+                  fillColor = "#007BFF";
+                  strokeColor = "#003F8A";
+                } else if (wp.id.startsWith("F1")) {
+                  fillColor = "#ff0080";
+                  strokeColor = "#CC8400";
+                } else if (wp.id.startsWith("S1")) {
+                  fillColor = "#800080";
+                  strokeColor = "#4B004B";
+                } else if (wp.id === "TD") {
+                  fillColor = "#28a745";
+                  strokeColor = "#1c6b2f";
+                } else if (wp.id === "SP") {
+                  fillColor = "#FF69B4";
+                  strokeColor = "#C71585";
+                } else if (wp.id.startsWith("TL") || wp.id.startsWith("TR")) {
+                  fillColor = "#00CED1";
+                  strokeColor = "#008B8B";
+                } else if (wp.id === "DB") {
+                  fillColor = "#ff149d";
+                  strokeColor = "#B8860B";
+                }
+
+                const clickState = pointClickStates[wp.id] || 0;
+                if (clickState === 1) {
+                  fillColor = "darkorange";
+                  strokeColor = "orange";
+                } else if (clickState === 2) {
+                  fillColor = "red";
+                  strokeColor = "red";
+                }
+
                 const handleClick = (id) => {
+                  setPointClickStates((prevStates) => {
+                    const currentState = prevStates[id] || 0;
+                    const nextState = (currentState + 1) % 3;
+                    return {
+                      ...prevStates,
+                      [id]: nextState,
+                    };
+                  });
+
                   const validIds = new Set([
                     "TD",
                     "L1A",
@@ -563,31 +573,59 @@ const SLD = ({ locationID, selection, setSelectedPoint }) => {
                     "DB",
                   ]);
                   if (validIds.has(id)) {
+                    const currentClickState = pointClickStates[id] || 0;
+
+                    const nextClickState = (currentClickState + 1) % 3;
+
+                    let condition = "none";
+                    let fillColor = "pink";
+
+                    if (nextClickState === 1) {
+                      condition = "normal";
+                      fillColor = "orange";
+                    } else if (nextClickState === 2) {
+                      condition = "high";
+                      fillColor = "red";
+                    }
+
+                    setPointClickStates((prev) => ({
+                      ...prev,
+                      [id]: nextClickState,
+                    }));
+
                     setSelectedPoint({
-                      id: `${wp.id}${locationID}`,
+                      id: `${id}${locationID}`,
+                      condition: condition,
                     });
                   } else {
-                    console.log(`Default click for ${id}`);
+                    console.log(`Invalid ID clicked: ${id}`);
                   }
                 };
 
                 return (
                   <g key={wp.id}>
                     {CustomIcon ? (
-                      CustomIcon(cx, cy, () => handleClick(wp.id))
+                      CustomIcon(
+                        cx,
+                        cy,
+                        () => handleClick(wp.id),
+                        fillColor,
+                        strokeColor
+                      )
                     ) : (
                       <circle
                         cx={cx}
                         cy={cy}
                         r={5}
-                        fill="#3498db"
-                        stroke="black"
+                        fill={fillColor}
+                        stroke={strokeColor}
                         strokeWidth={1}
                         style={{ cursor: "pointer" }}
                         onClick={() => handleClick(wp.id)}
                         onTouchStart={() => handleClick(wp.id)}
                       />
                     )}
+
                     <text
                       x={wp.id === "TD" ? cx + 22 : cx + 8}
                       y={cy - 6}

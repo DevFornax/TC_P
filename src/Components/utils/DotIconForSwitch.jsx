@@ -1,4 +1,4 @@
-const DotIcon = ({
+const DotIconForSwitch = ({
   width = 24,
   height = 35,
   fill = "#6cae4a",
@@ -17,4 +17,4 @@ const DotIcon = ({
   </svg>
 );
 
-export default DotIcon;
+export default DotIconForSwitch;

@@ -331,6 +331,7 @@ function Dashboard() {
           </button>
         </div>
       )}
+     
 
       <div className="container-fluid mx-auto p-3">
         <div className="flex flex-col md:flex-row gap-4 mt-4">
@@ -364,7 +365,7 @@ function Dashboard() {
             <Inspection
               locationdata={locationData}
               selection={selection}
-              deviceId={selectedPoint?.id}
+              deviceId={selectedPoint}
             />
             <div className="p-6 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
               <h2 className="text-2xl font-bold text-[#6c63ff] mb-4">
@@ -396,7 +397,7 @@ function Dashboard() {
                       {activeView === "form" && (
                         <MaitenanceForm
                           locationId={locationIDforchild}
-                          deviceId={selectedPoint?.id}
+                          deviceId={selectedPoint}
                           projectId={projectId}
                         />
                       )}

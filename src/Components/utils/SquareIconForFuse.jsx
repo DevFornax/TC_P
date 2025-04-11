@@ -1,4 +1,4 @@
-const TCIcon = ({
+const SquareIconForFuse = ({
   width = 24,
   height = 35,
   fill = "#4472c4",
@@ -22,4 +22,4 @@ const TCIcon = ({
   </svg>
 );
 
-export default TCIcon;
+export default SquareIconForFuse;

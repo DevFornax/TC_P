@@ -1,4 +1,4 @@
-const SPIcon = ({
+const DuoBoxIcon = ({
   width = 24,
   height = 35,
   fill = "#ffd78f",
@@ -17,4 +17,4 @@ const SPIcon = ({
   </svg>
 );
 
-export default SPIcon;
+export default DuoBoxIcon;
