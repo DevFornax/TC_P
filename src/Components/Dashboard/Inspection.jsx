@@ -18,7 +18,7 @@ function Inspection({ locationdata, selection, deviceId }) {
   const [thermalRecords, setThermalRecords] = useState([]);
 
   useEffect(() => {
-    if (!thermalEnabled) return; // 🔒 Only allow when enabled
+    if (!thermalEnabled) return; 
     if (deviceId?.id && deviceId?.condition) {
       setThermalRecords((prev) => {
         const index = prev.findIndex((r) => r.id === deviceId.id);
@@ -195,15 +195,10 @@ function Inspection({ locationdata, selection, deviceId }) {
         <div className="mt-6 flex flex-col sm:flex-row gap-2 sm:justify-end">
           <button
             type="submit"
-            disabled={
-              thermalEnabled &&
-              deviceId?.id.startsWith("TD") &&
-              selectedThermalPoints.length === 0
-            }
+          
             className={`w-full sm:w-auto px-6 py-2 rounded transition-all duration-200 ${
               thermalEnabled &&
-              deviceId?.id.startsWith("TD") &&
-              selectedThermalPoints.length === 0
+              deviceId?.id.startsWith("TD")
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700 text-white"
             }`}

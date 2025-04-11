@@ -27,6 +27,8 @@ const SLD = ({ locationID, selection, setSelectedPoint }) => {
   const handleMouseUp = () => setIsDragging(false);
   const handleTouchEnd = () => setIsDragging(false);
   const [pointClickStates, setPointClickStates] = useState({});
+const [thermalTDPoints, setThermalTDPoints] = useState([]);
+
 
   useEffect(() => {
     const container = containerRef.current;
@@ -115,6 +117,244 @@ const SLD = ({ locationID, selection, setSelectedPoint }) => {
           userSelect: "none",
         }}
       >
+        {/* {selection === "Transformer" && (
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 700 700"
+            className="bg-white rounded shadow"
+          >
+            <g transform={`translate(${offset.x}, ${offset.y}) scale(${zoom})`}>
+              {Transformerlines.map((line) => {
+                const [x1, y1] = line.from;
+                const [x2, y2] = line.to;
+
+                let dashPattern = "none";
+                if (
+                  line.id.includes("Underground") ||
+                  line.id === "Base_Ground_Line"
+                ) {
+                  dashPattern = "2 2";
+                }
+
+                const isMainPoleLine =
+                  (line.id === "A_Overground" && x1 === 0 && x2 === 0) ||
+                  (line.id === "B_Overground" && x1 === 8 && x2 === 8);
+                const isLoadLine =
+                  line.id === "LOADCONNECTORTC" ||
+                  line.id === "LOADYLINE" ||
+                  line.id === "LOADXLINE" ||
+                  line.id === "LDG1" ||
+                  line.id === "LDG2" ||
+                  line.id === "LDG3";
+
+                return (
+                  <line
+                    key={line.id}
+                    x1={x1 * Transformerscale}
+                    y1={-y1 * Transformerscale}
+                    x2={x2 * Transformerscale}
+                    y2={-y2 * Transformerscale}
+                    stroke={
+                      isMainPoleLine ? "#3498db" : isLoadLine ? "gray" : "black"
+                    }
+                    strokeWidth={isMainPoleLine ? 8 : 2}
+                    strokeDasharray={dashPattern}
+                  />
+                );
+              })}
+
+              {Transformerwaypoints.filter((wp) =>
+                TransformervisiblePointIds.includes(wp.id)
+              ).map((wp) => {
+                const [x, y] = wp.coordinates;
+                const cx = x * Transformerscale;
+                const cy = -y * Transformerscale;
+                const CustomIcon = TransformercustomIcons[wp.id];
+
+                let fillColor = "#6cae4a";
+                let strokeColor = "#4f6b3d";
+
+                if (wp.id.startsWith("L1")) {
+                  fillColor = "#007BFF";
+                  strokeColor = "#003F8A";
+                } else if (wp.id.startsWith("F1")) {
+                  fillColor = "#ff0080";
+                  strokeColor = "#CC8400";
+                } else if (wp.id.startsWith("S1")) {
+                  fillColor = "#800080";
+                  strokeColor = "#4B004B";
+                } else if (wp.id === "TD") {
+                  fillColor = "#28a745";
+                  strokeColor = "#1c6b2f";
+                } else if (wp.id === "SP") {
+                  fillColor = "#FF69B4";
+                  strokeColor = "#C71585";
+                } else if (wp.id.startsWith("TL") || wp.id.startsWith("TR")) {
+                  fillColor = "#00CED1";
+                  strokeColor = "#008B8B";
+                } else if (wp.id === "DB") {
+                  fillColor = "#ff149d";
+                  strokeColor = "#B8860B";
+                }
+
+                const clickState = pointClickStates[wp.id] || 0;
+                if (clickState === 1) {
+                  fillColor = "darkorange";
+                  strokeColor = "orange";
+                } else if (clickState === 2) {
+                  fillColor = "red";
+                  strokeColor = "red";
+                }
+
+                const handleClick = (id) => {
+                  const nextClickState = ((pointClickStates[id] || 0) + 1) % 3;
+                  setPointClickStates((prev) => ({
+                    ...prev,
+                    [id]: nextClickState,
+                  }));
+
+                
+                  if (
+                    [
+                      "TD",
+                      "L1A",
+                      "L1B",
+                      "L1C",
+                      "S1A",
+                      "S1B",
+                      "S1C",
+                      "SP",
+                      "F1A",
+                      "F1B",
+                      "F1C",
+                      "TL",
+                      "TR",
+                      "DB",
+                    ].includes(id)
+                  ) {
+                    let condition = "none";
+                    if (nextClickState === 1) condition = "normal";
+                    if (nextClickState === 2) condition = "high";
+
+                    setSelectedPoint({
+                      id: `${id}${locationID}`,
+                      condition,
+                    });
+                  } else {
+                    console.warn("Invalid ID clicked:", id);
+                  }
+
+                  if (id === "TD") {
+                    const baseX = wp.coordinates[0] * Transformerscale;
+                    const baseY = -wp.coordinates[1] * Transformerscale;
+
+                    console.log("Base X:", baseX, "Base Y:", baseY); 
+
+                    if (thermalTDPoints.length > 0) {
+                      setThermalTDPoints([]);
+                      console.log("Hiding thermal points");
+                    } else {
+                      const points = [
+                        {
+                          id: `TD1-${locationID}`,
+                          x: baseX - 30,
+                          y: baseY + 20,
+                        },
+                        { id: `TD2-${locationID}`, x: baseX, y: baseY + 20 },
+                        {
+                          id: `TD3-${locationID}`,
+                          x: baseX + 30,
+                          y: baseY + 20,
+                        },
+
+                      
+                        {
+                          id: `TD4-${locationID}`,
+                          x: baseX - 45,
+                          y: baseY + 50,
+                        },
+                        {
+                          id: `TD5-${locationID}`,
+                          x: baseX - 15,
+                          y: baseY + 50,
+                        },
+                        {
+                          id: `TD6-${locationID}`,
+                          x: baseX + 15,
+                          y: baseY + 50,
+                        },
+                        {
+                          id: `TD7-${locationID}`,
+                          x: baseX + 45,
+                          y: baseY + 50,
+                        },
+                      ];
+
+                      console.log("Thermal points being set:", points);
+                      setThermalTDPoints(points); 
+                    }
+                  }
+
+                 
+                  
+                };
+
+                return (
+                  <g key={wp.id}>
+                    {CustomIcon ? (
+                      CustomIcon(
+                        cx,
+                        cy,
+                        () => handleClick(wp.id),
+                        fillColor,
+                        strokeColor
+                      )
+                    ) : (
+                      <circle
+                        cx={cx}
+                        cy={cy}
+                        r={5}
+                        fill={fillColor}
+                        stroke={strokeColor}
+                        strokeWidth={1}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleClick(wp.id)}
+                        onTouchStart={() => handleClick(wp.id)}
+                      />
+                    )}
+
+                 
+                    {wp.id === "TD" && thermalTDPoints.length > 0 && (
+                      <g>
+                        {thermalTDPoints.map((pt) => (
+                          <circle
+                            key={pt.id}
+                            cx={pt.x}
+                            cy={pt.y}
+                            r={2}
+                            fill="red"
+                            style={{ pointerEvents: "none" }}
+                          />
+                        ))}
+                      </g>
+                    )}
+
+                    <text
+                      x={wp.id === "TD" ? cx + 22 : cx + 8}
+                      y={cy - 6}
+                      fontSize="10"
+                      fill="#333"
+                    >
+                      {`${wp.id}${locationID}`}
+                    </text>
+                  </g>
+                );
+              })}
+            </g>
+          </svg>
+        )} */}
+
         {selection === "Transformer" && (
           <svg
             width="100%"
@@ -206,59 +446,92 @@ const SLD = ({ locationID, selection, setSelectedPoint }) => {
                 }
 
                 const handleClick = (id) => {
-                  setPointClickStates((prevStates) => {
-                    const currentState = prevStates[id] || 0;
-                    const nextState = (currentState + 1) % 3;
-                    return {
-                      ...prevStates,
-                      [id]: nextState,
-                    };
-                  });
+                  const nextClickState = ((pointClickStates[id] || 0) + 1) % 3;
+                  setPointClickStates((prev) => ({
+                    ...prev,
+                    [id]: nextClickState,
+                  }));
 
-                  const validIds = new Set([
-                    "TD",
-                    "L1A",
-                    "L1B",
-                    "L1C",
-                    "S1A",
-                    "S1B",
-                    "S1C",
-                    "SP",
-                    "F1A",
-                    "F1B",
-                    "F1C",
-                    "TL",
-                    "TR",
-                    "DB",
-                  ]);
-
-                  if (validIds.has(id)) {
-                    const currentClickState = pointClickStates[id] || 0;
-
-                    const nextClickState = (currentClickState + 1) % 3;
-
+                  if (
+                    [
+                      "TD",
+                      "L1A",
+                      "L1B",
+                      "L1C",
+                      "S1A",
+                      "S1B",
+                      "S1C",
+                      "SP",
+                      "F1A",
+                      "F1B",
+                      "F1C",
+                      "TL",
+                      "TR",
+                      "DB",
+                    ].includes(id)
+                  ) {
                     let condition = "none";
-                    let fillColor = "pink";
-
-                    if (nextClickState === 1) {
-                      condition = "normal";
-                      fillColor = "orange";
-                    } else if (nextClickState === 2) {
-                      condition = "high";
-                      fillColor = "red";
-                    }
-
-                    setPointClickStates((prev) => ({
-                      ...prev,
-                      [id]: nextClickState,
-                    }));
+                    if (nextClickState === 1) condition = "normal";
+                    if (nextClickState === 2) condition = "high";
 
                     setSelectedPoint({
                       id: `${id}${locationID}`,
-                      condition: condition,
+                      condition,
                     });
-                  } else {
-                    console.log(`Invalid ID clicked: ${id}`);
+                  } else if (id.startsWith("TD")) {
+                    // for thermal subpoints like TD1, TD2...
+                    let condition = "none";
+                    if (nextClickState === 1) condition = "normal";
+                    if (nextClickState === 2) condition = "high";
+
+                    setSelectedPoint({
+                      id,
+                      condition,
+                    });
+                  }
+
+                  if (id === "TD") {
+                    const baseX = wp.coordinates[0] * Transformerscale;
+                    const baseY = -wp.coordinates[1] * Transformerscale;
+
+                    if (thermalTDPoints.length > 0) {
+                      setThermalTDPoints([]);
+                    } else {
+                      const points = [
+                        {
+                          id: `TD1-${locationID}`,
+                          x: baseX - 30,
+                          y: baseY + 20,
+                        },
+                        { id: `TD2-${locationID}`, x: baseX, y: baseY + 20 },
+                        {
+                          id: `TD3-${locationID}`,
+                          x: baseX + 30,
+                          y: baseY + 20,
+                        },
+                        {
+                          id: `TD4-${locationID}`,
+                          x: baseX - 45,
+                          y: baseY + 50,
+                        },
+                        {
+                          id: `TD5-${locationID}`,
+                          x: baseX - 15,
+                          y: baseY + 50,
+                        },
+                        {
+                          id: `TD6-${locationID}`,
+                          x: baseX + 15,
+                          y: baseY + 50,
+                        },
+                        {
+                          id: `TD7-${locationID}`,
+                          x: baseX + 45,
+                          y: baseY + 50,
+                        },
+                      ];
+                      setThermalTDPoints(points);
+                    }
                   }
                 };
 
@@ -284,6 +557,47 @@ const SLD = ({ locationID, selection, setSelectedPoint }) => {
                         onClick={() => handleClick(wp.id)}
                         onTouchStart={() => handleClick(wp.id)}
                       />
+                    )}
+
+                    {wp.id === "TD" && thermalTDPoints.length > 0 && (
+                      <g>
+                        {thermalTDPoints.map((pt) => {
+                          const thermalState = pointClickStates[pt.id] || 0;
+                          let fill = "#6cae4a";
+                          let stroke = "#4f6b3d";
+
+                          if (thermalState === 1) {
+                            fill = "darkorange";
+                            stroke = "orange";
+                          } else if (thermalState === 2) {
+                            fill = "red";
+                            stroke = "red";
+                          }
+
+                          return (
+                            <g key={pt.id}>
+                              <circle
+                                cx={pt.x}
+                                cy={pt.y}
+                                r={5}
+                                fill={fill}
+                                stroke={stroke}
+                                strokeWidth={1}
+                                style={{ cursor: "pointer" }}
+                                onClick={() => handleClick(pt.id)}
+                              />
+                              <text
+                                x={pt.x + 8}
+                                y={pt.y - 4}
+                                fontSize="10"
+                                fill="#333"
+                              >
+                                {pt.id}
+                              </text>
+                            </g>
+                          );
+                        })}
+                      </g>
                     )}
 
                     <text
