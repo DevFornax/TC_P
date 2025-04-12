@@ -17,14 +17,14 @@ function Dashboard() {
   const location = useLocation();
   const [newLocationID, setNewLocationID] = useState("");
   const [error, setError] = useState("");
-  const [activeView, setActiveView] = useState(null);
+ 
   const [loading, setLoading] = useState(false);
   const [locationData, setLocationData] = useState(null);
   const [selectedPoint, setselectedPoint] = useState(null);
   const [locationIDforchild, setLocationIDforchild] = useState("");
   const [projectId, setProjectId] = useState(null);
   const [showGoToSld, setShowGoToSld] = useState(false);
-  const [selection, setSelection] = useState("select");
+  const [selection, setSelection] = useState("Transformer");
   const [inspectionSubmitted, setInspectionSubmitted] = useState(false);
 
   const handleInspectionSubmit = () => {
@@ -35,7 +35,7 @@ function Dashboard() {
     if (inspectionSubmitted) {
       setLocationData(null);
       setselectedPoint(null);
-      setSelection("select");
+      setSelection("Transformer");
       setInspectionSubmitted(false);
     }
   }, [inspectionSubmitted]);
@@ -151,75 +151,16 @@ function Dashboard() {
               deviceId={inspectionSubmitted ? null : selectedPoint}
               onSubmit={handleInspectionSubmit}
             />
-            <div className="p-6 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
-              <h2 className="text-2xl font-bold text-[#6c63ff] mb-4">
-                Maintenance Information
-              </h2>
-
-              <div className="pt-4">
-                {selectedPoint?.id ? (
-                  <>
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                      <InfoItem label="Device ID" value={selectedPoint.id} />
-                      <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                        <button
-                          onClick={() => setActiveView("form")}
-                          className="w-full sm:w-auto px-4 py-2 bg-[#6c63ff] hover:bg-[#5951e6] text-white rounded-lg shadow"
-                        >
-                          Add Record
-                        </button>
-                        <button
-                          onClick={() => setActiveView("table")}
-                          className="w-full sm:w-auto px-4 py-2 bg-[#6c63ff] hover:bg-[#5951e6] text-white rounded-lg shadow"
-                        >
-                          View Latest Records
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="mt-6">
-                      {activeView === "form" && (
+           
+                     
                         <MaitenanceForm
                           locationId={locationIDforchild}
                           deviceId={selectedPoint}
                           projectId={projectId}
                         />
-                      )}
+                     
 
-                      {activeView === "table" && (
-                        <div className="overflow-x-auto">
-                          <table className="min-w-full border mt-4">
-                            <thead className="bg-gray-100">
-                              <tr>
-                                <th className="px-4 py-2 border">Date</th>
-                                <th className="px-4 py-2 border">Technician</th>
-                                <th className="px-4 py-2 border">Notes</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td className="px-4 py-2 border">2025-04-08</td>
-                                <td className="px-4 py-2 border">Yash</td>
-                                <td className="px-4 py-2 border">
-                                  Replaced fuse, tested circuit.
-                                </td>
-                              </tr>
-                              <tr>
-                                <td className="px-4 py-2 border">2025-04-01</td>
-                                <td className="px-4 py-2 border">Ravi</td>
-                                <td className="px-4 py-2 border">
-                                  Routine inspection, no issues.
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                ) }
-              </div>
-            </div>
+    
           </div>
         </div>
       </div>

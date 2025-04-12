@@ -1,8 +1,8 @@
-const OTCIcon = ({ width = 10, height = 14 }) => (
+const OTCIcon = () => (
  
 
 <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
- width="30px" height="30px" viewBox="0 0 128.000000 128.000000"
+ width="90px" height="90px" viewBox="0 0 128.000000 128.000000"
  preserveAspectRatio="xMidYMid meet">
 
 <g transform="translate(0.000000,128.000000) scale(0.100000,-0.100000)"

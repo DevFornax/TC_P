@@ -15,7 +15,7 @@ export default function LocationInfoCard({ locationdata }) {
             </h2>
           </div>
           <p className="text-gray-500 text-center font-semibold">
-            Please select a device For the Add Inspection Record records.
+            Please select a valid Location ID to view the location details.
           </p>
         </div>
       </div>

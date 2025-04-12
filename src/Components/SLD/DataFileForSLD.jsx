@@ -177,7 +177,7 @@ export const TransformercustomIcons = {
 
   TD: (x, y, onClick) => (
     <g
-      transform={`translate(${x - 10}, ${y - 25})`}
+      transform={`translate(${x - 45}, ${y - 80})`}
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >

@@ -98,12 +98,23 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
 
   return (
     <>
-      {selection === 'Select' ? (
-          <h2 className="text-2xl p-4 pt-6 font-bold text-gray-400 mb-4 sm:mb-0">
-     Please Select the device First
-        </h2>
+      {selection === "Select" ? (
+        <>
+          <div>
+            <div className="p-6  rounded-xl  bg-white space-y-6">
+              <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start">
+                <h2 className="text-2xl font-bold text-[#6c63ff] mb-4 sm:mb-0">
+                  Figure
+                </h2>
+              </div>
+              <p className="text-gray-500 text-center font-semibold">
+                Please select a device type to load the Single Line Diagram.
+              </p>
+            </div>
+          </div>
+        </>
       ) : (
-      <>
+        <>
           <h2 className="text-2xl p-4 pt-6 font-bold text-[#6c63ff] mb-4 sm:mb-0">
             {selection}
           </h2>
@@ -123,8 +134,6 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
               userSelect: "none",
             }}
           >
-            
-
             {selection === "Transformer" && (
               <svg
                 width="100%"
@@ -259,7 +268,6 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                           condition,
                         });
                       } else if (id.startsWith("TD")) {
-                        // for thermal subpoints like TD1, TD2...
                         let condition = "Normal";
                         if (nextClickState === 1) condition = "Medium";
                         if (nextClickState === 2) condition = "High";
@@ -381,7 +389,7 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                         )}
 
                         <text
-                          x={wp.id === "TD" ? cx + 22 : cx + 8}
+                          x={wp.id === "TD" ? cx + 54 : cx + 8}
                           y={cy - 6}
                           fontSize="10"
                           fill="#333"

@@ -14,7 +14,7 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
   const [errors, setErrors] = useState({});
   const [thermalEnabled, setThermalEnabled] = useState(false);
   const [thermalRecords, setThermalRecords] = useState([]);
-const [showCardOfInspection, setshowCardOfInspection] = useState(true);
+  const [showCardOfInspection, setshowCardOfInspection] = useState(true);
 
   useEffect(() => {
     if (!thermalEnabled) return;
@@ -90,7 +90,6 @@ const [showCardOfInspection, setshowCardOfInspection] = useState(true);
   const validate = () => {
     const newErrors = {};
 
-    // Check for required fields
     InspectionFields.filter((field) =>
       field.device.includes(selection)
     ).forEach((field) => {
@@ -104,10 +103,24 @@ const [showCardOfInspection, setshowCardOfInspection] = useState(true);
     }
     if (!formData.username || formData.username.trim() === "") {
       newErrors.username = "Username is required";
+    } // Validation for Inspection Date and Time
+    if (!formData.inspectionDateDate) {
+      newErrors.inspectionDateDate = "Inspection date is required.";
     }
-    if (!formData.inspectionDate || !formData.inspectionDate.includes("T")) {
-      newErrors.inspectionDate = "Inspection date & time are required";
+
+    if (!formData.inspectionDateTime) {
+      newErrors.inspectionDateTime = "Inspection time is required.";
     }
+
+    // If both are provided, combine them into a single inspection date & time
+    if (formData.inspectionDateDate && formData.inspectionDateTime) {
+      const inspectionDateTime = `${formData.inspectionDateDate}T${formData.inspectionDateTime}`;
+      if (!inspectionDateTime.includes("T")) {
+        newErrors.inspectionDate =
+          "Inspection date & time are required in valid format.";
+      }
+    }
+    
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -239,10 +252,11 @@ const [showCardOfInspection, setshowCardOfInspection] = useState(true);
               Visual & Thermal Inspection
             </h2>
           </div>
-
           <p className="text-gray-500 text-center font-semibold">
-            Please select a device For the Add Inspection Record records.
+            Please enter a valid Location ID to submit the visual and thermal
+            inspection report.
           </p>
+          
         </div>
       </div>
     );
@@ -275,151 +289,216 @@ const [showCardOfInspection, setshowCardOfInspection] = useState(true);
         {showCardOfInspection && (
           <div className="p-6 rounded-xl shadow-lg bg-white space-y-6">
             <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="border p-4 rounded-xl shadow bg-white">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Maintained By
-                  </label>
-                  <input
-                    type="text"
-                    name="username"
-                    value={formData.username || ""}
-                    onChange={(e) => handleChange("username", e.target.value)}
-                    className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
-                      errors.username ? "border-red-500" : "border-gray-300"
-                    }`}
-                    placeholder="Enter your name"
-                  />
-                  {errors.username && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.username}
-                    </p>
-                  )}
-                </div>
-
-                <input
-                  type="date"
-                  name="inspectionDateDate"
-                  value={formData.inspectionDateDate || ""}
-                  onChange={(e) =>
-                    handleChange("inspectionDateDate", e.target.value)
-                  }
-                  className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
-                    errors.inspectionDate ? "border-red-500" : "border-gray-300"
-                  }`}
-                />
-
-                <input
-                  type="time"
-                  name="inspectionDateTime"
-                  value={formData.inspectionDateTime || ""}
-                  onChange={(e) =>
-                    handleChange("inspectionDateTime", e.target.value)
-                  }
-                  className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
-                    errors.inspectionDate ? "border-red-500" : "border-gray-300"
-                  }`}
-                />
-
-                {InspectionFields.filter((field) =>
-                  field.device.includes(selection)
-                ).map((field) => (
-                  <div
-                    key={field.name}
-                    className="border p-4 rounded-xl shadow bg-white"
-                  >
-                    <InfoItem label={field.label} value={""} />
-                    {field.type === "radio" ? (
-                      <div className="flex flex-wrap gap-3 pt-2">
-                        {field.options.map((option) => (
-                          <label
-                            key={option}
-                            className="inline-flex items-center space-x-2"
-                          >
-                            <input
-                              type="radio"
-                              name={field.name}
-                              value={option}
-                              checked={formData[field.name] === option}
-                              onChange={() => handleChange(field.name, option)}
-                              className="form-radio text-indigo-600"
-                            />
-                            <span className="text-sm">{option}</span>
-                          </label>
-                        ))}
-                      </div>
-                    ) : (
-                      <select
-                        name={field.name}
-                        value={formData[field.name] || ""}
-                        onChange={(e) =>
-                          handleChange(field.name, e.target.value)
-                        }
-                        className={`w-full py-2 text-sm border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
-                          errors[field.name]
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        }`}
-                      >
-                        <option value="">Select</option>
-                        {field.options.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                    )}
-                    {errors[field.name] && (
+              <div className=" shadow ">
+                <label className="block font-bold mb-1">
+                  Visual Inspection Records
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="border p-4 rounded-xl shadow bg-white">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Inspected By
+                    </label>
+                    <input
+                      type="text"
+                      name="username"
+                      value={formData.username || ""}
+                      onChange={(e) => handleChange("username", e.target.value)}
+                      className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+                        errors.username ? "border-red-500" : "border-gray-300"
+                      }`}
+                      placeholder="Enter your name"
+                    />
+                    {errors.username && (
                       <p className="text-red-500 text-xs mt-1">
-                        {errors[field.name]}
+                        {errors.username}
                       </p>
                     )}
                   </div>
-                ))}
+               
+                  <div className="border p-4 rounded-xl shadow bg-white">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Inspected Date
+                    </label>
+                    <input
+                      type="date"
+                      name="inspectionDateDate"
+                      value={formData.inspectionDateDate || ""}
+                      onChange={(e) =>
+                        handleChange("inspectionDateDate", e.target.value)
+                      }
+                      className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+                        errors.inspectionDateDate
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors.inspectionDateDate && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.inspectionDateDate}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="border p-4 rounded-xl shadow bg-white">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Inspected On
+                    </label>
+                    <input
+                      type="time"
+                      name="inspectionDateTime"
+                      value={formData.inspectionDateTime || ""}
+                      onChange={(e) =>
+                        handleChange("inspectionDateTime", e.target.value)
+                      }
+                      className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+                        errors.inspectionDateTime
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors.inspectionDateTime && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.inspectionDateTime}
+                      </p>
+                    )}
+                  </div>
+
+                  {InspectionFields.filter((field) =>
+                    field.device.includes(selection)
+                  ).map((field) => (
+                    <div
+                      key={field.name}
+                      className="border p-4 rounded-xl shadow bg-white"
+                    >
+                      <InfoItem label={field.label} value={""} />
+                      {field.type === "radio" ? (
+                        <div className="flex flex-wrap gap-3 pt-2">
+                          {field.options.map((option) => (
+                            <label
+                              key={option}
+                              className="inline-flex items-center space-x-2"
+                            >
+                              <input
+                                type="radio"
+                                name={field.name}
+                                value={option}
+                                checked={formData[field.name] === option}
+                                onChange={() =>
+                                  handleChange(field.name, option)
+                                }
+                                className="form-radio text-indigo-600"
+                              />
+                              <span className="text-sm">{option}</span>
+                            </label>
+                          ))}
+                        </div>
+                      ) : (
+                        <select
+                          name={field.name}
+                          value={formData[field.name] || ""}
+                          onChange={(e) =>
+                            handleChange(field.name, e.target.value)
+                          }
+                          className={`w-full py-2 text-sm border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+                            errors[field.name]
+                              ? "border-red-500"
+                              : "border-gray-300"
+                          }`}
+                        >
+                          <option value="">Select</option>
+                          {field.options.map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                      {errors[field.name] && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {errors[field.name]}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="mt-6 border-t pt-6 flex items-center gap-4">
-                <span className="font-medium text-gray-700">
-                  Thermal Inspection Done?
-                </span>
-                <button
-                  onClick={() => {
-                    setThermalEnabled((prev) => !prev);
-                  }}
-                  className={`px-4 py-1 rounded-full text-sm font-medium ${
-                    thermalEnabled
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-300 text-gray-700"
-                  }`}
-                >
-                  {thermalEnabled ? "Yes" : "No"}
-                </button>
-                {errors.thermal && (
-                  <p className="text-red-500 text-xs mt-1">{errors.thermal}</p>
+              <div className=" mt-6 p-6 pl-0 rounded-xl bg-white shadow">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  Thermal Inspection Records
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Thermal Inspection Done?
+                    </label>
+                    <select
+                      name="thermalInspection"
+                      value={thermalEnabled ? "yes" : "no"}
+                      onChange={(e) =>
+                        setThermalEnabled(e.target.value === "yes")
+                      }
+                      className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none ${
+                        errors.thermal ? "border-red-500" : "border-gray-300"
+                      }`}
+                    >
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                    {errors.thermal && (
+                      <p className="text-red-500 text-xs mt-2">
+                        {errors.thermal}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {thermalEnabled && thermalRecords.length > 0 && (
+                  <div className="mt-6 border-t pt-6">
+                    <h4 className="text-md font-semibold text-gray-800 mb-2">
+                      Recorded Points
+                    </h4>
+                    <ul className="space-y-2 text-sm text-gray-700">
+                      {thermalRecords.length > 0 ? (
+                        thermalRecords.map((record, idx) => (
+                          <li
+                            key={idx}
+                            className="bg-gray-100 border border-gray-300 rounded-md px-4 py-2"
+                          >
+                            <span className="font-medium">ID:</span> {record.id}{" "}
+                            <span className="ml-4 font-medium">Condition:</span>{" "}
+                            <span
+                              className={`inline-block px-2 py-1 rounded text-xs font-semibold ${
+                                record.condition === "High"
+                                  ? "bg-red-100 text-red-600"
+                                  : record.condition === "Medium"
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-gray-200 text-gray-600"
+                              }`}
+                            >
+                              {record.condition}
+                            </span>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="text-gray-500 italic">
+                          No thermal records found.
+                        </li>
+                      )}
+                    </ul>
+
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        onClick={() => setThermalRecords([])}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg shadow"
+                      >
+                        🧹 Clear Thermal Records
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
-              {thermalEnabled && thermalRecords.length > 0 && (
-                <div className="mt-4">
-                  <h4 className="font-semibold mb-2 text-gray-700">
-                    Thermal Records
-                  </h4>
-                  <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                    {thermalRecords.map((record, idx) => (
-                      <li key={idx}>
-                        <strong>ID:</strong> {record.id} |{" "}
-                        <strong>Condition:</strong> {record.condition}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <button
-                    onClick={() => setThermalRecords([])}
-                    className="mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm rounded shadow"
-                  >
-                    🧹 Clear Thermal Records
-                  </button>
-                </div>
-              )}
 
               <div className="mt-6 flex flex-col sm:flex-row gap-2 sm:justify-end">
                 <button
@@ -444,6 +523,5 @@ const [showCardOfInspection, setshowCardOfInspection] = useState(true);
     </div>
   );
 }
-
 
 export default Inspection;
