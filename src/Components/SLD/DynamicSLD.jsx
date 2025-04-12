@@ -499,13 +499,13 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                     } else {
                       const points = [
                         {
-                          id: "TDV1",
+                          id: "TDU1",
                           x: baseX - 30,
                           y: baseY + 20,
                         },
-                        { id: "TDV2", x: baseX, y: baseY + 20 },
+                        { id: "TDU2", x: baseX, y: baseY + 20 },
                         {
-                          id: "TDV3",
+                          id: "TDU3",
                           x: baseX + 30,
                           y: baseY + 20,
                         },

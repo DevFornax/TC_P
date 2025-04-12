@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Homepage from "./Components/Homepage";
+
 import SLD from "./Components/SLD/DynamicSLD";
 import TopBar from "./Components/Topbar";
 import Login from "./Components/Login"; // Add this
 import PrivateRoute from "./Components/PrivateRoute"; // Add this
 import Dashboard from "./Components/Dashboard/Dashboard";
+import EntryPage from "./Components/EntryPage";
 
 function App() {
   return (
@@ -14,14 +15,14 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
 
-        <Route
+        {/* <Route
           path="/"
           element={
             <PrivateRoute>
               <Homepage />
             </PrivateRoute>
           }
-        />
+        /> */}
 
         <Route
           path="/sld-view"
@@ -36,8 +37,16 @@ function App() {
           path="/dashboard"
           element={
             <PrivateRoute>
-              <Dashboard/>
-                          </PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+            <EntryPage/>
+            </PrivateRoute>
           }
         />
       </Routes>

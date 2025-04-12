@@ -84,18 +84,19 @@ function Inspection({ locationdata, selection, deviceId }) {
     return Object.keys(newErrors).length === 0;
   };
 
+
   const handleReset = () => {
     const resetData = {};
     InspectionFields.forEach((field) => {
       resetData[field.name] = field.selectedOption || "";
     });
+
     setFormData(resetData);
-    
-    setErrors({}); 
-    setThermalRecords([]); 
+    setErrors({});
+    setThermalRecords([]);
     setThermalEnabled(false); 
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -234,11 +235,7 @@ function Inspection({ locationdata, selection, deviceId }) {
         <div className="mt-6 flex flex-col sm:flex-row gap-2 sm:justify-end">
           <button
             type="submit"
-            className={`w-full sm:w-auto px-6 py-2 rounded transition-all duration-200 ${
-              thermalEnabled && deviceId?.id.startsWith("TD")
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700 text-white"
-            }`}
+            className={`w-full sm:w-auto px-6 py-2 rounded transition-all duration-200 bg-indigo-600 hover:bg-indigo-700 text-white `}
           >
             Submit Inspection
           </button>

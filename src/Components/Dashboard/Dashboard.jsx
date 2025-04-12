@@ -211,8 +211,8 @@ function Dashboard() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { locationID, selection: navSelection } = location.state || {};
-  const [selection, setSelection] = useState(navSelection || "Select");
+  // const { locationID, selection: navSelection } = location.state || {};
+  // const [selection, setSelection] = useState(navSelection || "Select");
   const [newLocationID, setNewLocationID] = useState("");
   const [error, setError] = useState("");
   const [activeView, setActiveView] = useState(null);
@@ -222,6 +222,7 @@ function Dashboard() {
   const [locationIDforchild, setLocationIDforchild] = useState("");
   const [projectId, setProjectId] = useState(null);
   const [showGoToSld, setShowGoToSld] = useState(false);
+const [selection, setSelection]  = useState("select");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -235,40 +236,43 @@ function Dashboard() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!locationID || !selection) {
-        navigate("/");
-        return;
-      }
-      try {
-        const token = localStorage.getItem("token");
-        const API_URL = import.meta.env.VITE_API_BASE_URL;
-        const res = await fetch(`${API_URL}/get-location-data`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ location_id: locationID }),
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          setError(data.message || "Location not found");
-          return;
-        }
-        setLocationIDforchild(locationID);
-        setLocationData(data);
-        setProjectId(data.project_id);
-        console.log(data.project_id, "project id from the useeffect");
-        console.log(data, "api called from sld");
-      } catch (err) {
-        console.error("SLD Page API error:", err);
-        setError("Something went wrong while loading SLD.");
-      }
-    };
-    fetchData();
-  }, [locationID, navigate]);
+
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     // if (!locationID || !selection) {
+  //     //   navigate("/");
+  //     //   return;
+  //     // }
+  //     try {
+  //       const token = localStorage.getItem("token");
+  //       const API_URL = import.meta.env.VITE_API_BASE_URL;
+  //       const res = await fetch(`${API_URL}/get-location-data`, {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         body: JSON.stringify({ location_id: locationID }),
+  //       });
+  //       const data = await res.json();
+  //       if (!res.ok) {
+  //         setError(data.message || "Location not found");
+  //         return;
+  //       }
+
+  //       setLocationIDforchild(data.id);
+  //       setLocationData(data);
+  //       setProjectId(data.project_id);
+  //       console.log(data.project_id, "project id from the useeffect");
+  //       console.log(data, "api called from sld");
+  //     } catch (err) {
+  //       console.error("SLD Page API error:", err);
+  //       setError("Something went wrong while loading SLD.");
+  //     }
+  //   };
+  //   fetchData();
+  // }, [ navigate]);
 
   const handleLocationSearch = async () => {
     if (!newLocationID || isNaN(newLocationID)) {
@@ -301,6 +305,7 @@ function Dashboard() {
       setLocationData(data);
       setSelection(data.attributes.point_type);
 
+      
       setProjectId(data.project_id);
       setLocationIDforchild(parseInt(newLocationID));
       console.log("Api called from dashbpard");
