@@ -8,6 +8,8 @@ function MaitenanceForm({ locationId, deviceId, projectId }) {
   const [availableTasks, setAvailableTasks] = useState([]);
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [createdBy, setCreatedBy] = useState("");
+const [showCardOfMaintenanceData, setshowCardOfMaintenanceData
+] = useState(false);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -108,160 +110,363 @@ useEffect(() => {
     console.log("📝 Form Submitted:", payload);
   };
 
+//   return (
+//     <div className="border border-gray-300 rounded-xl shadow-md overflow-hidden transition-all duration-500 ease-in-out">
+//       <div
+//         onClick={() => setshowCardOfMaintenanceData(!showCardOfMaintenanceData)}
+//         className="cursor-pointer bg-[#6c63ff] text-white px-6 py-3 flex justify-between items-center text-lg font-semibold"
+//       >
+//         <span>Location Information</span>
+//         <span>{showCardOfMaintenanceData ? "▲" : "▼"}</span>
+//       </div>
+
+//       <div
+//         className={`transition-all duration-500 ease-in-out ${
+//           showCardOfMaintenanceData
+//             ? "opacity-100 scale-y-100"
+//             : "opacity-0 scale-y-0 h-0"
+//         } origin-top transform`}
+//       >
+//         {showCardOfMaintenanceData && (
+//           <form
+//             onSubmit={handleSubmit}
+//             className="w-full mx-auto mt-6 bg-white"
+//           >
+//             <h2 className="text-2xl font-bold text-[#6c63ff] text-center mb-6">
+//               Maintenance Form
+//             </h2>
+//             <h3>Device ID: {deviceId?.id}</h3>
+//             <h4>Condition: {deviceId?.condition}</h4>
+//             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+//               <div className="flex flex-col">
+//                 <label className="text-sm font-medium text-gray-700 mb-1">
+//                   Device ID
+//                 </label>
+//                 <input
+//                   type="text"
+//                   value={deviceId}
+//                   className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+//                   readOnly
+//                 />
+//               </div>
+//               <div className="flex flex-col">
+//                 <label className="text-sm font-medium text-gray-700 mb-1">
+//                   Location ID
+//                 </label>
+//                 <input
+//                   type="text"
+//                   value={locationId}
+//                   className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+//                   readOnly
+//                 />
+//               </div>
+//               <div className="flex flex-col">
+//                 <label className="text-sm font-medium text-gray-700 mb-1">
+//                   Project ID
+//                 </label>
+//                 <input
+//                   type="text"
+//                   value={projectId || ""}
+//                   className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+//                   readOnly
+//                 />
+//               </div>
+//             </div>
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+//               <div>
+//                 <label className="block text-sm font-medium text-gray-700 mb-1">
+//                   Created By
+//                 </label>
+//                 <input
+//                   type="text"
+//                   name="createdBy"
+//                   placeholder="Enter creator's name"
+//                   value={createdBy}
+//                   onChange={(e) => setCreatedBy(e.target.value)}
+//                   className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+//                 />
+//               </div>
+
+//               <div>
+//                 <label className="block text-sm font-medium text-gray-700 mb-1">
+//                   Expected Due Date
+//                 </label>
+//                 <input
+//                   type="date"
+//                   name="dueDate"
+//                   className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+//                 />
+//               </div>
+//             </div>
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+//               <div className="flex flex-col">
+//                 <label
+//                   htmlFor="date"
+//                   className="text-sm font-medium text-gray-700 mb-1"
+//                 >
+//                   Created On
+//                 </label>
+//                 <input
+//                   type="date"
+//                   id="date"
+//                   value={date}
+//                   onChange={(e) => setDate(e.target.value)}
+//                   required
+//                   className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+//                 />
+//               </div>
+
+//               <div className="flex flex-col">
+//                 <label className="text-sm font-medium text-gray-700 mb-1">
+//                   Maintenance Type
+//                 </label>
+//                 <select
+//                   value={maintenanceType}
+//                   onChange={(e) => setMaintenanceType(e.target.value)}
+//                   className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+//                 >
+//                   <option value="">Select Maintenance Type</option>
+//                   <option value="emergency">🔥 Emergency</option>
+//                   <option value="scheduled">📅 Scheduled Maintenance</option>
+//                   <option value="special">✨ Special</option>
+//                 </select>
+//               </div>
+//             </div>
+
+//             {maintenanceType && (
+//               <>
+//                 <div className="grid grid-cols-2 gap-4 mt-6">
+//                   <div className="border border-gray-300 rounded-l h-72 overflow-y-auto">
+//                     <h3 className="text-sm font-medium text-gray-700 mb-2 p-3 border-b sticky top-0 bg-white z-10">
+//                       Available Tasks
+//                     </h3>
+//                     <div className="px-2">
+//                       {availableTasks.map((task) => (
+//                         <label
+//                           key={task.task_id}
+//                           className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded transition"
+//                           onClick={() => handleSelectTask(task)}
+//                         >
+//                           <input type="checkbox" readOnly />
+//                           {task.task_name}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </div>
+
+//                   <div className="border border-gray-300 rounded-l h-72 overflow-y-auto">
+//                     <h3 className="text-sm font-medium text-gray-700 mb-2 p-3 border-b sticky top-0 bg-white z-10">
+//                       Selected Tasks
+//                     </h3>
+//                     <div className="px-2">
+//                       {selectedTasks.map((task) => (
+//                         <label
+//                           key={task.task_id}
+//                           className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded transition"
+//                           onClick={() => handleUnselectTask(task)}
+//                         >
+//                           <input type="checkbox" checked readOnly />
+//                           {task.task_name}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </div>
+//                 </div>
+//               </>
+//             )}
+//             <div className="mt-8 flex justify-end">
+//               <button
+//                 type="submit"
+//                 className="px-6 py-2 bg-[#6c63ff] text-white font-semibold rounded-lg shadow-md hover:bg-[#5951e6]"
+//               >
+//                 Submit
+//               </button>
+//             </div>
+//           </form>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
   return (
-    <form onSubmit={handleSubmit} className="w-full mx-auto mt-6 bg-white">
-      <h2 className="text-2xl font-bold text-[#6c63ff] text-center mb-6">
-        Maintenance Form
-      </h2>
-      <h3>Device ID: {deviceId?.id}</h3>
-      <h4>Condition: {deviceId?.condition}</h4>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-        <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-700 mb-1">
-            Device ID
-          </label>
-          <input
-            type="text"
-            value={deviceId}
-            className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
-            readOnly
-          />
-        </div>
-        <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-700 mb-1">
-            Location ID
-          </label>
-          <input
-            type="text"
-            value={locationId}
-            className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
-            readOnly
-          />
-        </div>
-        <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-700 mb-1">
-            Project ID
-          </label>
-          <input
-            type="text"
-            value={projectId || ""}
-            className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
-            readOnly
-          />
-        </div>
+    <div className="border border-gray-300 rounded-xl shadow-md overflow-hidden transition-all duration-500 ease-in-out">
+      <div
+        onClick={() => setShowCardOfMaintenanceData(!showCardOfMaintenanceData)}
+        className="cursor-pointer bg-[#6c63ff] text-white px-6 py-3 flex justify-between items-center text-lg font-semibold"
+      >
+        <span>Location Information</span>
+        <span>{showCardOfMaintenanceData ? "▲" : "▼"}</span>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Created By
-          </label>
-          <input
-            type="text"
-            name="createdBy"
-            placeholder="Enter creator's name"
-            value={createdBy}
-            onChange={(e) => setCreatedBy(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
-          />
-        </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Expected Due Date
-          </label>
-          <input
-            type="date"
-            name="dueDate"
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
-          />
-        </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div className="flex flex-col">
-          <label
-            htmlFor="date"
-            className="text-sm font-medium text-gray-700 mb-1"
+      <div
+        className={`transition-all duration-500 ease-in-out ${
+          showCardOfMaintenanceData
+            ? "opacity-100 scale-y-100"
+            : "opacity-0 scale-y-0 h-0"
+        } origin-top transform`}
+      >
+        {showCardOfMaintenanceData && (
+          <form
+            onSubmit={handleSubmit}
+            className="w-full mx-auto mt-6 bg-white"
           >
-            Created On
-          </label>
-          <input
-            type="date"
-            id="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-            className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
-          />
-        </div>
+            <h2 className="text-2xl font-bold text-[#6c63ff] text-center mb-6">
+              Maintenance Form
+            </h2>
+            <h3>Device ID: {deviceId?.id}</h3>
+            <h4>Condition: {deviceId?.condition}</h4>
 
-        <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-700 mb-1">
-            Maintenance Type
-          </label>
-          <select
-            value={maintenanceType}
-            onChange={(e) => setMaintenanceType(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
-          >
-            <option value="">Select Maintenance Type</option>
-            <option value="emergency">🔥 Emergency</option>
-            <option value="scheduled">📅 Scheduled Maintenance</option>
-            <option value="special">✨ Special</option>
-          </select>
-        </div>
-      </div>
-
-      {maintenanceType && (
-        <>
-          <div className="grid grid-cols-2 gap-4 mt-6">
-            <div className="border border-gray-300 rounded-l h-72 overflow-y-auto">
-              <h3 className="text-sm font-medium text-gray-700 mb-2 p-3 border-b sticky top-0 bg-white z-10">
-                Available Tasks
-              </h3>
-              <div className="px-2">
-                {availableTasks.map((task) => (
-                  <label
-                    key={task.task_id}
-                    className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded transition"
-                    onClick={() => handleSelectTask(task)}
-                  >
-                    <input type="checkbox" readOnly />
-                    {task.task_name}
-                  </label>
-                ))}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  Device ID
+                </label>
+                <input
+                  type="text"
+                  value={deviceId?.id || ""}
+                  readOnly
+                  className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  Location ID
+                </label>
+                <input
+                  type="text"
+                  value={locationId}
+                  readOnly
+                  className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  Project ID
+                </label>
+                <input
+                  type="text"
+                  value={projectId || ""}
+                  readOnly
+                  className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+                />
               </div>
             </div>
 
-            <div className="border border-gray-300 rounded-l h-72 overflow-y-auto">
-              <h3 className="text-sm font-medium text-gray-700 mb-2 p-3 border-b sticky top-0 bg-white z-10">
-                Selected Tasks
-              </h3>
-              <div className="px-2">
-                {selectedTasks.map((task) => (
-                  <label
-                    key={task.task_id}
-                    className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded transition"
-                    onClick={() => handleUnselectTask(task)}
-                  >
-                    <input type="checkbox" checked readOnly />
-                    {task.task_name}
-                  </label>
-                ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Created By
+                </label>
+                <input
+                  type="text"
+                  name="createdBy"
+                  placeholder="Enter creator's name"
+                  value={createdBy}
+                  onChange={(e) => setCreatedBy(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Expected Due Date
+                </label>
+                <input
+                  type="date"
+                  name="dueDate"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+                />
               </div>
             </div>
-          </div>
-        </>
-      )}
-      <div className="mt-8 flex justify-end">
-        <button
-          type="submit"
-          className="px-6 py-2 bg-[#6c63ff] text-white font-semibold rounded-lg shadow-md hover:bg-[#5951e6]"
-        >
-          Submit
-        </button>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <div className="flex flex-col">
+                <label htmlFor="date" className="text-sm font-medium text-gray-700 mb-1">
+                  Created On
+                </label>
+                <input
+                  type="date"
+                  id="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  required
+                  className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  Maintenance Type
+                </label>
+                <select
+                  value={maintenanceType}
+                  onChange={(e) => setMaintenanceType(e.target.value)}
+                  className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
+                >
+                  <option value="">Select Maintenance Type</option>
+                  <option value="emergency">🔥 Emergency</option>
+                  <option value="scheduled">📅 Scheduled Maintenance</option>
+                  <option value="special">✨ Special</option>
+                </select>
+              </div>
+            </div>
+
+            {maintenanceType && (
+              <div className="grid grid-cols-2 gap-4 mt-6">
+                <div className="border border-gray-300 rounded-l h-72 overflow-y-auto">
+                  <h3 className="text-sm font-medium text-gray-700 mb-2 p-3 border-b sticky top-0 bg-white z-10">
+                    Available Tasks
+                  </h3>
+                  <div className="px-2">
+                    {availableTasks.map((task) => (
+                      <label
+                        key={task.task_id}
+                        className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded transition"
+                        onClick={() => handleSelectTask(task)}
+                      >
+                        <input type="checkbox" readOnly />
+                        {task.task_name}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="border border-gray-300 rounded-l h-72 overflow-y-auto">
+                  <h3 className="text-sm font-medium text-gray-700 mb-2 p-3 border-b sticky top-0 bg-white z-10">
+                    Selected Tasks
+                  </h3>
+                  <div className="px-2">
+                    {selectedTasks.map((task) => (
+                      <label
+                        key={task.task_id}
+                        className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded transition"
+                        onClick={() => handleUnselectTask(task)}
+                      >
+                        <input type="checkbox" checked readOnly />
+                        {task.task_name}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-8 flex justify-end">
+              <button
+                type="submit"
+                className="px-6 py-2 bg-[#6c63ff] text-white font-semibold rounded-lg shadow-md hover:bg-[#5951e6]"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        )}
       </div>
-    </form>
+    </div>
   );
-}
+};
 
 export default MaitenanceForm;

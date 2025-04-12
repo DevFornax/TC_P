@@ -217,12 +217,7 @@ function Dashboard() {
                       )}
                     </div>
                   </>
-                ) : (
-                  <p className="text-gray-500 text-center font-semibold">
-                    Please select a device from the SLD to view or add
-                    maintenance records.
-                  </p>
-                )}
+                ) }
               </div>
             </div>
           </div>
