@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { InfoItem } from "../UI/InfoItem";
 import { InspectionFields } from "../utils/InspectionFields";
-
+import { compressVisualData } from "../utils/VisualTemplateForVisualInspection";
 const initialFormData = {};
 InspectionFields.forEach((field) => {
   if (field.selectedOption) {
@@ -9,11 +9,15 @@ InspectionFields.forEach((field) => {
   }
 });
 
-function Inspection({ locationdata, selection, deviceId }) {
+function Inspection({ locationdata, selection, deviceId, onSubmit }) {
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState({});
   const [thermalEnabled, setThermalEnabled] = useState(false);
   const [thermalRecords, setThermalRecords] = useState([]);
+
+
+
+    
 
   useEffect(() => {
     if (!thermalEnabled) return;
@@ -21,7 +25,7 @@ function Inspection({ locationdata, selection, deviceId }) {
       setThermalRecords((prev) => {
         const index = prev.findIndex((r) => r.id === deviceId.id);
 
-        if (deviceId.condition === "none") {
+        if (deviceId.condition === "Normal") {
           if (index !== -1) {
             const updated = [...prev];
             updated.splice(index, 1);
@@ -44,25 +48,48 @@ function Inspection({ locationdata, selection, deviceId }) {
     }
   }, [deviceId, thermalEnabled]);
 
-  if (!locationdata) return null;
-  const {
-    id,
-    project_id,
-    project_name,
-    substation_name,
-    attributes = {},
-  } = locationdata;
-  const { point_type, point_no, area_code } = attributes;
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if (userData?.username) {
+      setFormData((prev) => ({
+        ...prev,
+        username: userData.username,
+      }));
+    }
+  }, []);
+
 
   const handleChange = (name, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => {
+      const updatedForm = {
+        ...prev,
+        [name]: value,
+      };
+
+    
+      if (name === "inspectionDateDate" || name === "inspectionDateTime") {
+        const date =
+          name === "inspectionDateDate" ? value : prev.inspectionDateDate;
+        const time =
+          name === "inspectionDateTime" ? value : prev.inspectionDateTime;
+
+      
+        if (date && time) {
+          updatedForm.inspectionDate = `${date}T${time}`;
+        } else {
+          updatedForm.inspectionDate = "";
+        }
+      }
+
+      return updatedForm;
+    });
 
     setErrors((prev) => ({
       ...prev,
       [name]: "",
+      ...(name === "inspectionDateDate" || name === "inspectionDateTime"
+        ? { inspectionDate: "" }
+        : {}),
     }));
   };
 
@@ -79,11 +106,16 @@ function Inspection({ locationdata, selection, deviceId }) {
     if (thermalEnabled && thermalRecords.length === 0) {
       newErrors.thermal = "Please inspect at least one thermal point";
     }
+    if (!formData.username || formData.username.trim() === "") {
+      newErrors.username = "Username is required";
+    }
+    if (!formData.inspectionDate || !formData.inspectionDate.includes("T")) {
+      newErrors.inspectionDate = "Inspection date & time are required";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
 
   const handleReset = () => {
     const resetData = {};
@@ -94,42 +126,36 @@ function Inspection({ locationdata, selection, deviceId }) {
     setFormData(resetData);
     setErrors({});
     setThermalRecords([]);
-    setThermalEnabled(false); 
+    setThermalEnabled(false);
   };
 
-  const handleSubmit = (e) => {
+
+
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (validate()) {
-      const visualKeys = [
-        "bus_bar",
-        "busbar_do_jumper",
-        "ug_cable_jumper",
-        "tc_condition",
-        "bird_guard",
-        "do_tc_jumper",
-        "ht_booting",
-        "lt_booting",
-        "breather_installed",
-        "silica_gel_color",
-        "oil_leakage",
-        "oil_level",
-        "tc_fencing",
-        "fuse_box_external",
-        "fuse_box_internal_burn",
-        "lt_cable_connection",
-      ];
-
-      const visualInspection = {};
-      visualKeys.forEach((key) => {
-        if (formData[key] !== undefined) {
-          visualInspection[key] = formData[key];
-        }
-      });
+      const compressedVisual = compressVisualData(formData);
 
       const LocationID = locationdata?.id;
-      const keysToAppendLocation = ["TDB", "TDV2", "TDR", "TDV3", "TDY", "TDN"];
+      const keysToAppendLocation = [
+        "TDB",
+        "TDV2",
+        "TDR",
+        "TDV3",
+        "TDY",
+        "TDN",
+        "TDU",
+      ];
       let thermalInspection;
+
+      const conditionMap = {
+        Medium: "M",
+        High: "H",
+        Normal: "N",
+      };
+
       if (thermalEnabled) {
         if (thermalRecords.length > 0) {
           thermalInspection = Object.fromEntries(
@@ -138,7 +164,10 @@ function Inspection({ locationdata, selection, deviceId }) {
                 ? `${point.id}${LocationID}`
                 : point.id;
 
-              return [key, point.condition];
+              const shortCondition =
+                conditionMap[point.condition] || point.condition;
+
+              return [key, shortCondition];
             })
           );
         } else {
@@ -146,23 +175,94 @@ function Inspection({ locationdata, selection, deviceId }) {
           return;
         }
       } else {
-        thermalInspection = "notdone";
+        thermalInspection = JSON.stringify({ status: "notdone" });
       }
 
+      const minimalLocationData = {
+        id: locationdata?.id,
+        parent_id: locationdata?.parent_id,
+        project_id: locationdata?.project_id,
+        project_name: locationdata?.project_name,
+        substation_id: locationdata?.substation_id,
+        substation_name: locationdata?.substation_name,
+        attributes: {
+          point_type: locationdata?.attributes?.point_type,
+          point_no: locationdata?.attributes?.point_no,
+          area_code: locationdata?.attributes?.area_code,
+          ulid: locationdata?.attributes?.ulid,
+        },
+      };
       const finalData = {
-        locationdata: locationdata,
-        visualInspection,
+        username: formData.username,
+        inspectionDate: formData.inspectionDate,
+        locationdata: minimalLocationData,
+        visualInspection: compressedVisual,
         thermalInspection,
       };
-      console.log("✅ Final Submission Payload:", finalData);    setThermalRecords([]); 
-      alert("Inspection submitted successfully!");
-      handleReset();
-      
+
+      console.log("✅ Final Submission Payload:", finalData);
+      const token = localStorage.getItem("token");
+      const API_URL = import.meta.env.VITE_API_BASE_URL;
+
+      try {
+        const response = await fetch(`${API_URL}/submit-inspection`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(finalData),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert("Inspection submitted successfully!");
+          console.log("Submission Result:", result);
+          setThermalRecords([]);
+          handleReset();
+          onSubmit();
+        } else {
+          alert(`❌ Error: ${result.error}`);
+          console.log("Error submitting inspection data:", result);
+        }
+      } catch (error) {
+        console.error("Error submitting inspection data:", error);
+        alert(
+          "⚠️ An error occurred while submitting the data. Please try again."
+        );
+      }
     } else {
       console.log("❌ Validation failed:", errors);
     }
   };
 
+  
+  if (!locationdata)
+    return (
+      <div>
+        <div className="p-6 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start">
+            <h2 className="text-2xl font-bold text-[#6c63ff] mb-4 sm:mb-0">
+              Visual & Thermal Inspection
+            </h2>
+          </div>
+
+          <p className="text-gray-500 text-center font-semibold">
+            Please select a device For the Add Inspection Record records.
+          </p>
+        </div>
+      </div>
+    );
+  const {
+    id,
+    project_id,
+    project_name,
+    substation_name,
+    attributes = {},
+  } = locationdata;
+  const { point_type, point_no, area_code } = attributes;
+  
   return (
     <div className="p-6 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start">
@@ -179,6 +279,47 @@ function Inspection({ locationdata, selection, deviceId }) {
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="border p-4 rounded-xl shadow bg-white">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Maintained By
+            </label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username || ""}
+              onChange={(e) => handleChange("username", e.target.value)}
+              className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+                errors.username ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="Enter your name"
+            />
+            {errors.username && (
+              <p className="text-red-500 text-xs mt-1">{errors.username}</p>
+            )}
+          </div>
+
+          {/* Date input */}
+          <input
+            type="date"
+            name="inspectionDateDate"
+            value={formData.inspectionDateDate || ""}
+            onChange={(e) => handleChange("inspectionDateDate", e.target.value)}
+            className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+              errors.inspectionDate ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+
+          {/* Time input */}
+          <input
+            type="time"
+            name="inspectionDateTime"
+            value={formData.inspectionDateTime || ""}
+            onChange={(e) => handleChange("inspectionDateTime", e.target.value)}
+            className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+              errors.inspectionDate ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+
           {InspectionFields.filter((field) =>
             field.device.includes(selection)
           ).map((field) => (

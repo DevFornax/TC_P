@@ -14,12 +14,12 @@ const LocationSearchFormCard = ({
     <div className="p-6 mb-5 border border-gray-300 rounded-xl shadow-lg bg-white">
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="flex flex-col">
-          <label className="block font-bold mb-1">Location ID</label>
+          <label className="block font-bold mb-1">Location ID 266102</label>
           <input
             type="text"
             placeholder="Enter Location ID"
             className="font-bold p-3 bg-gray-100 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff]"
-            value={ newLocationID}
+            value={newLocationID}
             onChange={(e) => setNewLocationID(e.target.value)}
           />
         </div>
