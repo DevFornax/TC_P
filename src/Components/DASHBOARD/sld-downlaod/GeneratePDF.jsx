@@ -141,7 +141,7 @@ const GeneratePDF = () => {
 
     let sldImage = null;
     if (sldRef.current) {
-      const canvas = await html2canvas(sldRef.current, { useCORS: true });
+      const canvas = await html2canvas(sldRef.current, { useCORS: true , scale: 2,});
       sldImage = canvas.toDataURL("image/png");
     }
 
@@ -215,15 +215,137 @@ const GeneratePDF = () => {
 
 
   return (
+    // <div className="p-6">
+    //   <h2 className="text-2xl font-bold mb-4 text-gray-800">
+    //     Inspection Data Preview
+    //   </h2>
+
+    //   <div className="flex space-x-8">
+    //     <div
+    //       ref={sldRef}
+
+    //     >
+    //       {(() => {
+    //         const parsedThermal =
+    //           typeof inspectionData?.thermal_inspection === "string"
+    //             ? JSON.parse(inspectionData.thermal_inspection)
+    //             : inspectionData?.thermal_inspection;
+
+    //         const locationType = inspectionData?.location_type;
+
+    //         if (parsedThermal?.status === "notdone") {
+    //           if (locationType === "Transformer") {
+    //             return <TcSldPrint />;
+    //           } else if (locationType === "Fuse") {
+    //             return <FuseSldPrint />;
+    //           }
+    //           else if (locationType === "Switch"){
+    //             return <SwitchSldPrint/>
+    //           }
+    //         }
+
+    //         if (locationType === "Transformer") {
+    //           return <TcSldPrint thermalInspection={parsedThermal} />;
+    //         } else if (locationType === "Fuse") {
+    //           return <FuseSldPrint thermalInspection={parsedThermal} />;
+    //         }
+
+    //        else if(locationType === "Switch"){
+    //           return <SwitchSldPrint thermalInspection={parsedThermal} />;
+
+    //         }
+    //         return null;
+    //       })()}
+    //     </div>
+
+    //     <div className="flex-1 space-y-4 bg-gray-100 p-4 rounded shadow overflow-auto">
+    //       {!inspectionData ? (
+    //         <p className="text-red-600">Loading or no data found.</p>
+    //       ) : (
+    //         <>
+    //           <h3 className="text-lg font-semibold text-gray-700">
+    //             Raw Inspection Data
+    //           </h3>
+
+    //           <div className="space-y-2">
+    //             <p>
+    //               <strong>Inspection ID:</strong> {inspectionData.inspection_id}
+    //             </p>
+    //             <p>
+    //               <strong>Inspection Done By:</strong>{" "}
+    //               {inspectionData.inspection_done_by}
+    //             </p>
+    //             <p>
+    //               <strong>Inspection Date:</strong>{" "}
+    //               {new Date(inspectionData.inspection_date).toLocaleString()}
+    //             </p>
+    //             <p>
+    //               <strong>Location ID:</strong> {inspectionData.location_id}
+    //             </p>
+    //             <p>
+    //               <strong>Project ID:</strong> {inspectionData.project_id}
+    //             </p>
+    //             <p>
+    //               <strong>Location Type:</strong> {inspectionData.location_type}
+    //             </p>
+
+    //             <h4 className="font-semibold text-gray-600">
+    //               Visual Inspection:
+    //             </h4>
+    //             <ul className="list-disc pl-6">
+    //               {Object.entries(inspectionData.visual_inspection).map(
+    //                 ([key, value]) => (
+    //                   <li key={key}>
+    //                     <strong>
+    //                       {visualTemplate[key]?.name.replace(/_/g, " ")}
+    //                     </strong>
+    //                     : {getOptionText(key, value)}
+    //                   </li>
+    //                 )
+    //               )}
+    //             </ul>
+
+    //             <h4 className="font-semibold text-gray-600">
+    //               Thermal Inspection:
+    //             </h4>
+    //             <pre className="bg-gray-200 p-2 rounded text-sm text-gray-800">
+    //               {inspectionData.thermal_inspection === '{"status":"notdone"}'
+    //                 ? "Thermal Inspection: Not Done"
+    //                 : `Status: ${inspectionData.thermal_inspection.status}`}
+    //             </pre>
+
+    //             <p>
+    //               <strong>Created At:</strong>{" "}
+    //               {new Date(inspectionData.created_at).toLocaleString()}
+    //             </p>
+    //           </div>
+    //         </>
+    //       )}
+    //     </div>
+    //   </div>
+
+    //   {inspectionData && (
+    //     <div className="mt-6">
+    //       <button
+    //         onClick={generatePDF}
+    //         className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+    //       >
+    //         Download PDF Report
+    //       </button>
+    //     </div>
+    //   )}
+    // </div>
+
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4 text-gray-800">
         Inspection Data Preview
       </h2>
 
-      <div className="flex space-x-8">
+      <div className="flex flex-col lg:flex-row lg:space-x-8 space-y-6 lg:space-y-0">
+        
         <div
           ref={sldRef}
-          className="flex-1 mb-6 border rounded shadow p-4 bg-white"
+          className="w-full h-full lg:w-1/2  overflow-hidden  rounded shadow"
         >
           {(() => {
             const parsedThermal =
@@ -231,104 +353,91 @@ const GeneratePDF = () => {
                 ? JSON.parse(inspectionData.thermal_inspection)
                 : inspectionData?.thermal_inspection;
 
-          
             const locationType = inspectionData?.location_type;
 
-        
             if (parsedThermal?.status === "notdone") {
-              if (locationType === "Transformer") {
-                return <TcSldPrint />; 
-              } else if (locationType === "Fuse") {
-                return <FuseSldPrint />; 
-              }
-              else if (locationType === "Switch"){
-                return <SwitchSldPrint/>
-              }
+              if (locationType === "Transformer") return <TcSldPrint />;
+              else if (locationType === "Fuse") return <FuseSldPrint />;
+              else if (locationType === "Switch") return <SwitchSldPrint />;
             }
 
-            
-            if (locationType === "Transformer") {
+            if (locationType === "Transformer")
               return <TcSldPrint thermalInspection={parsedThermal} />;
-            } else if (locationType === "Fuse") {
+            else if (locationType === "Fuse")
               return <FuseSldPrint thermalInspection={parsedThermal} />;
-            }
-            
-           else if(locationType === "Switch"){
+            else if (locationType === "Switch")
               return <SwitchSldPrint thermalInspection={parsedThermal} />;
 
-            }
-            return null; 
+            return null;
           })()}
         </div>
 
-      
-        <div className="flex-1 space-y-4 bg-gray-100 p-4 rounded shadow overflow-auto">
+        {/* INSPECTION DETAILS */}
+        <div className="w-full lg:w-1/2 h-[500px] overflow-auto bg-gray-100 p-4 rounded shadow">
           {!inspectionData ? (
             <p className="text-red-600">Loading or no data found.</p>
           ) : (
-            <>
+            <div className="border border-pink-300 p-4 space-y-4">
               <h3 className="text-lg font-semibold text-gray-700">
                 Raw Inspection Data
               </h3>
 
-              <div className="space-y-2">
-                <p>
-                  <strong>Inspection ID:</strong> {inspectionData.inspection_id}
-                </p>
-                <p>
-                  <strong>Inspection Done By:</strong>{" "}
-                  {inspectionData.inspection_done_by}
-                </p>
-                <p>
-                  <strong>Inspection Date:</strong>{" "}
-                  {new Date(inspectionData.inspection_date).toLocaleString()}
-                </p>
-                <p>
-                  <strong>Location ID:</strong> {inspectionData.location_id}
-                </p>
-                <p>
-                  <strong>Project ID:</strong> {inspectionData.project_id}
-                </p>
-                <p>
-                  <strong>Location Type:</strong> {inspectionData.location_type}
-                </p>
+              <p>
+                <strong>Inspection ID:</strong> {inspectionData.inspection_id}
+              </p>
+              <p>
+                <strong>Inspection Done By:</strong>{" "}
+                {inspectionData.inspection_done_by}
+              </p>
+              <p>
+                <strong>Inspection Date:</strong>{" "}
+                {new Date(inspectionData.inspection_date).toLocaleString()}
+              </p>
+              <p>
+                <strong>Location ID:</strong> {inspectionData.location_id}
+              </p>
+              <p>
+                <strong>Project ID:</strong> {inspectionData.project_id}
+              </p>
+              <p>
+                <strong>Location Type:</strong> {inspectionData.location_type}
+              </p>
 
-                <h4 className="font-semibold text-gray-600">
-                  Visual Inspection:
-                </h4>
-                <ul className="list-disc pl-6">
-                  {Object.entries(inspectionData.visual_inspection).map(
-                    ([key, value]) => (
-                      <li key={key}>
-                        <strong>
-                          {visualTemplate[key]?.name.replace(/_/g, " ")}
-                        </strong>
-                        : {getOptionText(key, value)}
-                      </li>
-                    )
-                  )}
-                </ul>
+              <h4 className="font-semibold text-gray-600">
+                Visual Inspection:
+              </h4>
+              <ul className="list-disc pl-6">
+                {Object.entries(inspectionData.visual_inspection).map(
+                  ([key, value]) => (
+                    <li key={key}>
+                      <strong>
+                        {visualTemplate[key]?.name.replace(/_/g, " ")}
+                      </strong>
+                      : {getOptionText(key, value)}
+                    </li>
+                  )
+                )}
+              </ul>
 
-                <h4 className="font-semibold text-gray-600">
-                  Thermal Inspection:
-                </h4>
-                <pre className="bg-gray-200 p-2 rounded text-sm text-gray-800">
-                  {inspectionData.thermal_inspection === '{"status":"notdone"}'
-                    ? "Thermal Inspection: Not Done"
-                    : `Status: ${inspectionData.thermal_inspection.status}`}
-                </pre>
+              <h4 className="font-semibold text-gray-600">
+                Thermal Inspection:
+              </h4>
+              <pre className="bg-gray-200 p-2 rounded text-sm text-gray-800">
+                {inspectionData.thermal_inspection === '{"status":"notdone"}'
+                  ? "Thermal Inspection: Not Done"
+                  : `Status: ${inspectionData.thermal_inspection.status}`}
+              </pre>
 
-                <p>
-                  <strong>Created At:</strong>{" "}
-                  {new Date(inspectionData.created_at).toLocaleString()}
-                </p>
-              </div>
-            </>
+              <p>
+                <strong>Created At:</strong>{" "}
+                {new Date(inspectionData.created_at).toLocaleString()}
+              </p>
+            </div>
           )}
         </div>
       </div>
 
-    
+      {/* PDF BUTTON */}
       {inspectionData && (
         <div className="mt-6">
           <button
