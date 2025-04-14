@@ -12,7 +12,7 @@ import {
   Transformerscale,
   TransformercustomIcons,
   TransformervisiblePointIds,
-} from "../Components/SLD/DataFileForSLD";
+} from "../../SURVEY/sld-survey/DataFileForSLD";
 
 const markedPoints = [
   "S1A",

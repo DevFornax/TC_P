@@ -2,15 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import LocationSearchFormCard from "./LocationSearchFormCard";
-import SLD from "../SLD/DynamicSLD";
-import { InfoItem } from "../UI/InfoItem";
-import { SectionWithToggle } from "../UI/SectionwithToggle";
+import DynamicSld from "./sld-survey/DynamicSLD"
+
 import LocationInfoCard from "./LocationInfoCard";
 import MaitenanceForm from "./MaitenanceForm";
 import TopBar from "../Topbar";
 import Inspection from "./Inspection";
 
-function Dashboard() {
+function SurveyDashboard() {
   const sldRef = useRef(null);
 
   const navigate = useNavigate();
@@ -121,7 +120,7 @@ function Dashboard() {
             ref={sldRef}
             className="w-full md:w-1/3 flex flex-col md:max-h-[calc(100vh-100px)] md:sticky md:top-4 overflow-auto border border-gray-300 rounded-xl shadow-lg bg-white"
           >
-            <SLD
+            <DynamicSld
               locationData={locationData}
               setLocationData={setLocationData}
               locationID={locationIDforchild}
@@ -168,4 +167,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default SurveyDashboard;

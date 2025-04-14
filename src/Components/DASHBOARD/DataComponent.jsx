@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { visualTemplate } from "./utils/revert";
+import { visualTemplate } from "../utils/VisualTemplateforVisualFields";
 import { useNavigate } from "react-router-dom";
 export default function DataComponent() {
   const [data, setData] = useState([]);
@@ -75,7 +75,6 @@ const handleDownloadPDF = (item) => {
     );
   };
 
-  // Visual Inspection Formatting
   const getVisualInspectionStatus = (visualData) => {
     return Object.entries(visualTemplate).map(([key, { name, options }]) => {
       const value = visualData[key];

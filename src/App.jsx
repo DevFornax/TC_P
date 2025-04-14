@@ -1,18 +1,17 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import SLD from "./Components/SLD/DynamicSLD";
-import TopBar from "./Components/Topbar";
-import Login from "./Components/Login"; // Add this
-import PrivateRoute from "./Components/PrivateRoute"; // Add this
-import Dashboard from "./Components/Dashboard/Dashboard";
+
+import SurveyDashboard from "./Components/SURVEY/SurveyDashboard";
 import EntryPage from "./Components/EntryPage";
-import DataComponent from "./Components/DataComponent";
-import GeneratePDF from "./Components/GeneratePDF";
+import DataComponent from "./Components/DASHBOARD/DataComponent";
+import GeneratePDF from "./Components/DASHBOARD/sld-downlaod/GeneratePDF"
+ import Login from "./Components/Login";
+import PrivateRoute from "./Components/PrivateRoute";
 
 function App() {
   return (
     <BrowserRouter>
-      {/* {localStorage.getItem("isLoggedIn") === "true" && <TopBar />} */}
+    
 
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -29,7 +28,7 @@ function App() {
           path="/inspection"
           element={
             <PrivateRoute>
-              <Dashboard />
+              <SurveyDashboard/>
             </PrivateRoute>
           }
         />

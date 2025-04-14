@@ -18,7 +18,7 @@ import {
   FuseCustomIcons,
 } from "./DataFileForSLD";
 
-const SLD = ({ locationID, selection, setSelectedPoint }) => {
+const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
   const containerRef = useRef();
   const [zoom, setZoom] = useState(1);
   const [offset, setOffset] = useState({ x: 110, y: 410 });
@@ -791,4 +791,4 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
   );
 };
 
-export default SLD;
+export default DynamicSLD;
