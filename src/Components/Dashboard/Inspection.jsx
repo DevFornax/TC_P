@@ -103,7 +103,7 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
     }
     if (!formData.username || formData.username.trim() === "") {
       newErrors.username = "Username is required";
-    } // Validation for Inspection Date and Time
+    }
     if (!formData.inspectionDateDate) {
       newErrors.inspectionDateDate = "Inspection date is required.";
     }
@@ -112,7 +112,7 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
       newErrors.inspectionDateTime = "Inspection time is required.";
     }
 
-    // If both are provided, combine them into a single inspection date & time
+   
     if (formData.inspectionDateDate && formData.inspectionDateTime) {
       const inspectionDateTime = `${formData.inspectionDateDate}T${formData.inspectionDateTime}`;
       if (!inspectionDateTime.includes("T")) {
@@ -147,12 +147,13 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
       const LocationID = locationdata?.id;
       const keysToAppendLocation = [
         "TDB",
-        "TDV2",
+        "TDU1",
         "TDR",
-        "TDV3",
+        "TDU3",
         "TDY",
         "TDN",
-        "TDU",
+        "TDU2",
+        ""
       ];
       let thermalInspection;
 

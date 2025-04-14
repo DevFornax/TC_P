@@ -87,6 +87,10 @@ const GeneratePDF = () => {
       options: { 1: "Lug", 2: "Patta", 3: "Binding" },
     },
   };
+  const getOptionText = (point, value) => {
+    const option = visualTemplate[point]?.options[value];
+    return option ? option : "N/A";
+  };
 
   const generatePDF = async () => {
     if (!inspectionData) return;
@@ -203,45 +207,119 @@ const GeneratePDF = () => {
       .download(`inspection_${inspectionData.inspection_id}.pdf`);
   };
 
+
+
+
+
+
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4 text-gray-800">
         Inspection Data Preview
       </h2>
 
+      <div className="flex space-x-8">
+        <div
+          ref={sldRef}
+          className="flex-1 mb-6 border rounded shadow p-4 bg-white"
+        >
+          {(() => {
+            const parsedThermal =
+              typeof inspectionData?.thermal_inspection === "string"
+                ? JSON.parse(inspectionData.thermal_inspection)
+                : inspectionData?.thermal_inspection;
+
+            // Check if location type is Transformer or Fuse
+            const locationType = inspectionData?.location_type;
+
+        
+            if (parsedThermal?.status === "notdone") {
+              if (locationType === "Transformer") {
+                return <TcSldPrint />; 
+              } else if (locationType === "Fuse") {
+                return <FuseSldPrint />; 
+              }
+            }
+
+            
+            if (locationType === "Transformer") {
+              return <TcSldPrint thermalInspection={parsedThermal} />;
+            } else if (locationType === "Fuse") {
+              return <FuseSldPrint thermalInspection={parsedThermal} />;
+            }
+
+            return null; 
+          })()}
+        </div>
+
       
-      <div ref={sldRef} className="mb-6 border rounded shadow p-4 bg-white">
-        {(() => {
-          const parsedThermal =
-            typeof inspectionData?.thermal_inspection === "string"
-              ? JSON.parse(inspectionData.thermal_inspection)
-              : inspectionData?.thermal_inspection;
+        <div className="flex-1 space-y-4 bg-gray-100 p-4 rounded shadow overflow-auto">
+          {!inspectionData ? (
+            <p className="text-red-600">Loading or no data found.</p>
+          ) : (
+            <>
+              <h3 className="text-lg font-semibold text-gray-700">
+                Raw Inspection Data
+              </h3>
 
-         
-          if (parsedThermal?.status === "notdone") {
-            return <TcSldPrint />;
-          }
+              <div className="space-y-2">
+                <p>
+                  <strong>Inspection ID:</strong> {inspectionData.inspection_id}
+                </p>
+                <p>
+                  <strong>Inspection Done By:</strong>{" "}
+                  {inspectionData.inspection_done_by}
+                </p>
+                <p>
+                  <strong>Inspection Date:</strong>{" "}
+                  {new Date(inspectionData.inspection_date).toLocaleString()}
+                </p>
+                <p>
+                  <strong>Location ID:</strong> {inspectionData.location_id}
+                </p>
+                <p>
+                  <strong>Project ID:</strong> {inspectionData.project_id}
+                </p>
+                <p>
+                  <strong>Location Type:</strong> {inspectionData.location_type}
+                </p>
 
-         
-          return <TcSldPrint thermalInspection={parsedThermal} />;
-        })()}
+                <h4 className="font-semibold text-gray-600">
+                  Visual Inspection:
+                </h4>
+                <ul className="list-disc pl-6">
+                  {Object.entries(inspectionData.visual_inspection).map(
+                    ([key, value]) => (
+                      <li key={key}>
+                        <strong>
+                          {visualTemplate[key]?.name.replace(/_/g, " ")}
+                        </strong>
+                        : {getOptionText(key, value)}
+                      </li>
+                    )
+                  )}
+                </ul>
+
+                <h4 className="font-semibold text-gray-600">
+                  Thermal Inspection:
+                </h4>
+                <pre className="bg-gray-200 p-2 rounded text-sm text-gray-800">
+                  {inspectionData.thermal_inspection === '{"status":"notdone"}'
+                    ? "Thermal Inspection: Not Done"
+                    : `Status: ${inspectionData.thermal_inspection.status}`}
+                </pre>
+
+                <p>
+                  <strong>Created At:</strong>{" "}
+                  {new Date(inspectionData.created_at).toLocaleString()}
+                </p>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
-  
-      {!inspectionData ? (
-        <p className="text-red-600">Loading or no data found.</p>
-      ) : (
-        <div className="space-y-4 bg-gray-100 p-4 rounded shadow overflow-auto">
-          <h3 className="text-lg font-semibold text-gray-700">
-            Raw Inspection Data
-          </h3>
-          <pre className="whitespace-pre-wrap text-sm text-gray-800">
-            {JSON.stringify(inspectionData, null, 2)}
-          </pre>
-        </div>
-      )}
-
-      
+    
       {inspectionData && (
         <div className="mt-6">
           <button

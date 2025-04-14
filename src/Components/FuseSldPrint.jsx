@@ -7,11 +7,14 @@ import React, {
   forwardRef,
 } from "react";
 import {
-  Transformerwaypoints,
-  Transformerlines,
-  Transformerscale,
-  TransformercustomIcons,
-  TransformervisiblePointIds,
+  FuseWaypoints,
+  FuseLines,
+  FuseScale,
+  
+  FuseCustomIcons,
+  
+  FuseVisiblePointIds,
+  
 } from "../Components/SLD/DataFileForSLD";
 
 const markedPoints = [
@@ -35,8 +38,8 @@ const getThermalColor = (value) => {
   return null;
 };
 
-const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
-  const scale = Transformerscale;
+const FuseSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
+  const scale = FuseScale;
   const svgRef = useRef(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -59,22 +62,31 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
 
   const handleMouseUp = () => setIsDragging(false);
 
- const thermalPointData = Object.entries(thermalInspection).reduce(
-   (acc, [fullId, value]) => {
-     const matchedPrefix = markedPoints.find((prefix) =>
-       fullId.startsWith(prefix)
-     );
-     if (matchedPrefix) {
-       acc[matchedPrefix] = value;
-     }
-     return acc;
-   },
-   {}
- );
+//   const thermalPointData = Object.entries(thermalInspection).reduce(
+//     (acc, [fullId, value]) => {
+//       const prefix = fullId.slice(0, 3);
+//       if (markedPoints.includes(prefix)) {
+//         acc[prefix] = value;
+//       }
+//       return acc;
+//     },
+//     {}
+//   );
 
 
+const thermalPointData = Object.entries(thermalInspection).reduce(
+  (acc, [fullId, value]) => {
+    const prefix = fullId.slice(0, 3);
 
+    // Check if prefix matches any of the marked points or starts with "TR" or "TL"
+    if (markedPoints.includes(prefix) || prefix === "TR" || prefix === "TL") {
+      acc[prefix] = value;
+    }
 
+    return acc;
+  },
+  {}
+);
 
   useImperativeHandle(ref, () => ({
     exportAsImage: () => {
@@ -143,7 +155,7 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
       </g>
 
       <g transform={`translate(${dragOffset.x}, ${dragOffset.y})`}>
-        {Transformerlines.map((line) => {
+        {FuseLines.map((line) => {
           const [x1, y1] = getScaled(line.from);
           const [x2, y2] = getScaled(line.to);
           return (
@@ -159,11 +171,11 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
           );
         })}
 
-        {Transformerwaypoints.map((point) => {
-          if (!TransformervisiblePointIds.includes(point.id)) return null;
+        {FuseWaypoints.map((point) => {
+          if (!FuseVisiblePointIds.includes(point.id)) return null;
 
           const [x, y] = getScaled(point.coordinates);
-          const Icon = TransformercustomIcons[point.id];
+          const Icon = FuseCustomIcons[point.id];
           const thermalValue = thermalPointData[point.id];
           const thermalColor = getThermalColor(thermalValue);
 
@@ -242,4 +254,4 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
   );
 });
 
-export default TcSldPrint;
+export default FuseSldPrint;
