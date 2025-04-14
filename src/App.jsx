@@ -6,6 +6,8 @@ import Login from "./Components/Login"; // Add this
 import PrivateRoute from "./Components/PrivateRoute"; // Add this
 import Dashboard from "./Components/Dashboard/Dashboard";
 import EntryPage from "./Components/EntryPage";
+import DataComponent from "./Components/DataComponent";
+import GeneratePDF from "./Components/GeneratePDF";
 
 function App() {
   return (
@@ -15,26 +17,16 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
 
-        {/* <Route
+        <Route
           path="/"
           element={
             <PrivateRoute>
-              <Homepage />
-            </PrivateRoute>
-          }
-        /> */}
-
-        <Route
-          path="/sld-view"
-          element={
-            <PrivateRoute>
-              <SLD />
+              <EntryPage />
             </PrivateRoute>
           }
         />
-
         <Route
-          path="/dashboard"
+          path="/inspection"
           element={
             <PrivateRoute>
               <Dashboard />
@@ -42,13 +34,23 @@ function App() {
           }
         />
         <Route
-          path="/"
+          path="/data-inspection"
           element={
             <PrivateRoute>
-            <EntryPage/>
+              <DataComponent />
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="/generate-pdf"
+          element={
+            <PrivateRoute>
+<GeneratePDF />
+            </PrivateRoute>
+          }
+        />
+
       </Routes>
     </BrowserRouter>
   );
