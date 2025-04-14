@@ -94,121 +94,319 @@ const GeneratePDF = () => {
     return option ? option : "N/A";
   };
 
-  const generatePDF = async () => {
-    if (!inspectionData) return;
+  // const generatePDF = async () => {
+  //   if (!inspectionData) return;
 
-    const visualInspectionData = Object.entries(
-      inspectionData.visual_inspection || {}
-    ).map(([templateId, selectedValue]) => {
-      const template = visualTemplate[templateId];
-      if (!template)
-        return { text: `Unknown Item (${templateId})`, margin: [0, 2] };
+  //   const visualInspectionData = Object.entries(
+  //     inspectionData.visual_inspection || {}
+  //   ).map(([templateId, selectedValue]) => {
+  //     const template = visualTemplate[templateId];
+  //     if (!template)
+  //       return { text: `Unknown Item (${templateId})`, margin: [0, 2] };
 
-      const label = template.name.replace(/_/g, " ");
-      const humanReadable = template.options[selectedValue] || "Not Available";
+  //     const label = template.name.replace(/_/g, " ");
+  //     const humanReadable = template.options[selectedValue] || "Not Available";
 
-      return {
-        text: `${
-          label.charAt(0).toUpperCase() + label.slice(1)
-        }: ${humanReadable}`,
-        margin: [0, 2],
-      };
+  //     return {
+  //       text: `${
+  //         label.charAt(0).toUpperCase() + label.slice(1)
+  //       }: ${humanReadable}`,
+  //       margin: [0, 2],
+  //     };
+  //   });
+
+  //   let thermalInspection = [];
+
+  //   if (typeof inspectionData.thermal_inspection === "string") {
+  //     try {
+  //       const thermalStatus = JSON.parse(inspectionData.thermal_inspection);
+  //       thermalInspection.push({
+  //         text: `Status: ${
+  //           formatThermalStatus(thermalStatus.status) || "Unknown"
+  //         }`,
+  //       });
+  //     } catch (e) {
+  //       thermalInspection.push({ text: "Invalid thermal inspection data" });
+  //     }
+  //   } else if (typeof inspectionData.thermal_inspection === "object") {
+  //     thermalInspection = Object.entries(inspectionData.thermal_inspection).map(
+  //       ([deviceId, status]) => ({
+  //         text: `${deviceId}: ${formatThermalStatus(status)}`,
+  //         margin: [0, 2],
+  //       })
+  //     );
+  //   } else {
+  //     thermalInspection.push({ text: "Unknown thermal data format" });
+  //   }
+
+  //   let sldImage = null;
+  //   if (sldRef.current) {
+  //     const canvas = await html2canvas(sldRef.current, { useCORS: true , scale: 2,});
+  //     sldImage = canvas.toDataURL("image/png");
+  //   }
+
+  //   const docDefinition = {
+  //     content: [
+  //       { text: "Inspection Report", style: "header" },
+  //       {
+  //         text: `Inspection ID: ${inspectionData.inspection_id}`,
+  //         style: "subheader",
+  //       },
+  //       { text: `Date: ${inspectionData.inspection_date}` },
+  //       { text: `Location: ${inspectionData.location_id}` },
+
+  //       {
+  //         text: "Visual Inspection",
+  //         style: "sectionHeader",
+  //         margin: [0, 15, 0, 5],
+  //       },
+  //       ...visualInspectionData,
+
+  //       {
+  //         text: "Thermal Inspection",
+  //         style: "sectionHeader",
+  //         margin: [0, 15, 0, 5],
+  //       },
+  //       ...thermalInspection,
+
+  //       sldImage
+  //         ? {
+  //             text: "Thermal View (SLD)",
+  //             style: "sectionHeader",
+  //             margin: [0, 20, 0, 5],
+  //           }
+  //         : null,
+  //       sldImage
+  //         ? {
+  //             image: sldImage,
+  //             width: 500,
+  //             margin: [0, 5, 0, 0],
+  //           }
+  //         : null,
+  //     ].filter(Boolean),
+  //     styles: {
+  //       header: {
+  //         fontSize: 22,
+  //         bold: true,
+  //         alignment: "center",
+  //         margin: [0, 0, 0, 20],
+  //       },
+  //       subheader: {
+  //         fontSize: 14,
+  //         bold: true,
+  //         margin: [0, 10, 0, 5],
+  //       },
+  //       sectionHeader: {
+  //         fontSize: 16,
+  //         bold: true,
+  //         decoration: "underline",
+  //       },
+  //     },
+  //   };
+
+  //   pdfMake
+  //     .createPdf(docDefinition)
+  //     .download(`inspection_${inspectionData.inspection_id}.pdf`);
+  // };
+
+
+
+const generatePDF = async () => {
+  if (!inspectionData) return;
+
+  // Prepare visual inspection data
+  const visualInspectionData = Object.entries(
+    inspectionData.visual_inspection || {}
+  ).map(([templateId, selectedValue]) => {
+    const template = visualTemplate[templateId];
+    if (!template) return { label: `Unknown (${templateId})`, value: "N/A" };
+
+    const label = template.name.replace(/_/g, " ");
+    const humanReadable = template.options[selectedValue] || "Not Available";
+
+    return {
+      label: label.charAt(0).toUpperCase() + label.slice(1),
+      value: humanReadable,
+    };
+  });
+
+  // Chunk visual inspection data into rows of 2 items (for 4 columns)
+  const chunkedVisualRows = [];
+  for (let i = 0; i < visualInspectionData.length; i += 2) {
+    const left = visualInspectionData[i];
+    const right = visualInspectionData[i + 1];
+
+    chunkedVisualRows.push([
+      { text: left?.label || "", bold: true },
+      { text: left?.value || "" },
+      { text: right?.label || "", bold: true },
+      { text: right?.value || "" },
+    ]);
+  }
+
+  // Prepare the SLD image
+  let sldImage = null;
+  if (sldRef.current) {
+    const canvas = await html2canvas(sldRef.current, {
+      useCORS: true,
+      scale: 2,
     });
+    sldImage = canvas.toDataURL("image/png");
+  }
+function formatTime(time) {
+  const hours = time.getHours();
+  const minutes = time.getMinutes();
+  const suffix = hours < 12 ? "AM" : "PM";
+  const formattedTime = `${hours % 12 || 12}:${
+    minutes < 10 ? "0" + minutes : minutes
+  } ${suffix}`;
 
-    let thermalInspection = [];
+  // Determine part of the day (Morning, Afternoon, Evening)
+  let partOfDay = "";
+  if (hours >= 5 && hours < 12) {
+    partOfDay = "Morning";
+  } else if (hours >= 12 && hours < 17) {
+    partOfDay = "Afternoon";
+  } else if (hours >= 17 && hours < 21) {
+    partOfDay = "Evening";
+  } else {
+    partOfDay = "Night";
+  }
 
-    if (typeof inspectionData.thermal_inspection === "string") {
-      try {
-        const thermalStatus = JSON.parse(inspectionData.thermal_inspection);
-        thermalInspection.push({
-          text: `Status: ${
-            formatThermalStatus(thermalStatus.status) || "Unknown"
-          }`,
-        });
-      } catch (e) {
-        thermalInspection.push({ text: "Invalid thermal inspection data" });
-      }
-    } else if (typeof inspectionData.thermal_inspection === "object") {
-      thermalInspection = Object.entries(inspectionData.thermal_inspection).map(
-        ([deviceId, status]) => ({
-          text: `${deviceId}: ${formatThermalStatus(status)}`,
-          margin: [0, 2],
-        })
-      );
-    } else {
-      thermalInspection.push({ text: "Unknown thermal data format" });
-    }
+  return `${formattedTime} (${partOfDay})`;
+}
 
-    let sldImage = null;
-    if (sldRef.current) {
-      const canvas = await html2canvas(sldRef.current, { useCORS: true , scale: 2,});
-      sldImage = canvas.toDataURL("image/png");
-    }
+const docDefinition = {
+  content: [
+    {
+      text: "Inspection Report",
+      style: "header",
+    },
 
-    const docDefinition = {
-      content: [
-        { text: "Inspection Report", style: "header" },
-        {
-          text: `Inspection ID: ${inspectionData.inspection_id}`,
-          style: "subheader",
-        },
-        { text: `Date: ${inspectionData.inspection_date}` },
-        { text: `Location: ${inspectionData.location_id}` },
+    {
+      text: `Inspection ID: ${inspectionData.inspection_id}`,
+      margin: [0, 2, 0, 2],
+    },
+    {
+      text: `Inspection Done By: ${inspectionData.inspection_done_by}`,
+      margin: [0, 2, 0, 2],
+    },
+    {
+      text: `Date: ${new Date(
+        inspectionData.inspection_date
+      ).toLocaleDateString()}`,
+      margin: [0, 2, 0, 2],
+    },
+    {
+      // Using the formatTime function to format the time
+      text: `Time: ${formatTime(new Date(inspectionData.inspection_date))}`,
+      margin: [0, 2, 0, 2], // Reduced margin
+    },
+    {
+      text: `Location Id: ${inspectionData.location_id}`,
+      margin: [0, 2, 0, 2],
+    },
+    {
+      text: `Location Type: ${inspectionData.location_type}`,
+      margin: [0, 2, 0, 2],
+    },
+    {
+      text: `Project ID: ${inspectionData.project_id}`,
+      margin: [0, 2, 0, 10],
+    },
 
-        {
-          text: "Visual Inspection",
-          style: "sectionHeader",
-          margin: [0, 15, 0, 5],
-        },
-        ...visualInspectionData,
+    {
+      text: "Visual Inspection Results",
+      style: "sectionHeader",
+      margin: [0, 10, 0, 5],
+    },
 
-        {
-          text: "Thermal Inspection",
-          style: "sectionHeader",
-          margin: [0, 15, 0, 5],
-        },
-        ...thermalInspection,
-
-        sldImage
-          ? {
-              text: "Thermal View (SLD)",
-              style: "sectionHeader",
-              margin: [0, 20, 0, 5],
-            }
-          : null,
-        sldImage
-          ? {
-              image: sldImage,
-              width: 500,
-              margin: [0, 5, 0, 0],
-            }
-          : null,
-      ].filter(Boolean),
-      styles: {
-        header: {
-          fontSize: 22,
-          bold: true,
-          alignment: "center",
-          margin: [0, 0, 0, 20],
-        },
-        subheader: {
-          fontSize: 14,
-          bold: true,
-          margin: [0, 10, 0, 5],
-        },
-        sectionHeader: {
-          fontSize: 16,
-          bold: true,
-          decoration: "underline",
+    {
+      table: {
+        widths: ["25%", "25%", "25%", "25%"],
+        body: [
+          [
+            { text: "Item Type", style: "tableHeader" },
+            { text: "Data", style: "tableHeader" },
+            { text: "Item Type", style: "tableHeader" },
+            { text: "Data", style: "tableHeader" },
+          ],
+          ...chunkedVisualRows,
+        ],
+      },
+      layout: {
+        fillColor: function (rowIndex) {
+          return rowIndex === 0 ? "#eee" : null;
         },
       },
+    },
+
+    // SLD Image Section
+    sldImage
+      ? {
+          text: "Thermal Inspection Results",
+          style: "sectionHeader",
+          margin: [0, 15, 0, 5],
+        }
+      : null,
+    sldImage
+      ? {
+          image: sldImage,
+          width: 500,
+          margin: [0, 5, 0, 10],
+        }
+      : null,
+  ].filter(Boolean),
+
+  footer: function (currentPage, pageCount) {
+    return {
+      text: `ThermoVis - Powered by Fornax `,
+      alignment: "right",
+      style: "footer",
+      margin: [0, 10, 20, 10],
     };
+  },
 
-    pdfMake
-      .createPdf(docDefinition)
-      .download(`inspection_${inspectionData.inspection_id}.pdf`);
-  };
+  styles: {
+    // Header style
+    header: {
+      fontSize: 17,
+      bold: true,
+      alignment: "left",
+      margin: [0, 0, 0, 5],
+    },
+    // Subheader style
+    subheader: {
+      fontSize: 14,
+      bold: true,
+      margin: [0, 2, 0, 2], // Reduced margin for subheaders
+    },
+    // Section header style (for visual inspection, etc.)
+    sectionHeader: {
+      fontSize: 16,
+      bold: true,
+      decoration: "underline",
+    },
+    // Table header style
+    tableHeader: {
+      bold: true,
+      fontSize: 12,
+      color: "black",
+    },
+    // Footer style
+    footer: {
+      fontSize: 10,
+      italics: true,
+      alignment: "right",
+    },
+  },
+};
 
+  // Generate and download the PDF
+  pdfMake
+    .createPdf(docDefinition)
+    .download(`inspection_${inspectionData.inspection_id}.pdf`);
+};
 
 
 
@@ -342,7 +540,6 @@ const GeneratePDF = () => {
       </h2>
 
       <div className="flex flex-col lg:flex-row lg:space-x-8 space-y-6 lg:space-y-0">
-        
         <div
           ref={sldRef}
           className="w-full h-full lg:w-1/2  overflow-hidden  rounded shadow"
@@ -372,7 +569,6 @@ const GeneratePDF = () => {
           })()}
         </div>
 
-        {/* INSPECTION DETAILS */}
         <div className="w-full lg:w-1/2 h-[500px] overflow-auto bg-gray-100 p-4 rounded shadow">
           {!inspectionData ? (
             <p className="text-red-600">Loading or no data found.</p>
