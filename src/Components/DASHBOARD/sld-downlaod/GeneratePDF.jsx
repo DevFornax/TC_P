@@ -10,6 +10,7 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import html2canvas from "html2canvas";
 import TcSldPrint from "./TcSldPrint";
 import FuseSldPrint from "./FuseSldPrint";
+import SwitchSldPrint from "./SwitchSldPrint";
 
 pdfMake.vfs = pdfFonts.vfs;
 
@@ -230,7 +231,7 @@ const GeneratePDF = () => {
                 ? JSON.parse(inspectionData.thermal_inspection)
                 : inspectionData?.thermal_inspection;
 
-            // Check if location type is Transformer or Fuse
+          
             const locationType = inspectionData?.location_type;
 
         
@@ -240,6 +241,9 @@ const GeneratePDF = () => {
               } else if (locationType === "Fuse") {
                 return <FuseSldPrint />; 
               }
+              else if (locationType === "Switch"){
+                return <SwitchSldPrint/>
+              }
             }
 
             
@@ -248,7 +252,11 @@ const GeneratePDF = () => {
             } else if (locationType === "Fuse") {
               return <FuseSldPrint thermalInspection={parsedThermal} />;
             }
+            
+           else if(locationType === "Switch"){
+              return <SwitchSldPrint thermalInspection={parsedThermal} />;
 
+            }
             return null; 
           })()}
         </div>

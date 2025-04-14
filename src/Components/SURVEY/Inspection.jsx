@@ -245,28 +245,29 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
   //   } else {
   //     console.log("❌ Validation failed:", errors);
   //   }
-  // };console.log(selection); // Assuming this gives you the device type like "Transformer"
+  // };
+
+ 
 
 const handleSubmit = async (e) => {
   e.preventDefault();
 
   if (validate()) {
-    const selectedDevice = selection; // Get the selected device type
+    const selectedDevice = selection;
 
-    // 🔥 Filter visible fields based on the selected device (like "Fuse", "Transformer", etc.)
     const filteredInspectionFields = InspectionFields.filter(
-      (field) => field.device.includes(selectedDevice) // Ensure field.device includes the selected device type
+      (field) => field.device.includes(selectedDevice)
     );
 
     const filteredFormData = {};
     filteredInspectionFields.forEach((field) => {
-      // Include only the fields that have data in formData
+    
       if (formData[field.name] !== undefined) {
         filteredFormData[field.name] = formData[field.name];
       }
     });
 
-    // 👇 Compress only filtered (visible) data
+    
     const compressedVisual = compressVisualData(filteredFormData);
 
     const LocationID = locationdata?.id;
@@ -287,7 +288,6 @@ const handleSubmit = async (e) => {
       Normal: "N",
     };
 
-    // Handle thermal inspection if it's enabled
     if (thermalEnabled) {
       if (thermalRecords.length > 0) {
         thermalInspection = Object.fromEntries(
@@ -310,7 +310,7 @@ const handleSubmit = async (e) => {
       thermalInspection = JSON.stringify({ status: "notdone" });
     }
 
-    // Minimal location data for submission
+    
     const minimalLocationData = {
       id: locationdata?.id,
       parent_id: locationdata?.parent_id,
@@ -326,7 +326,7 @@ const handleSubmit = async (e) => {
       },
     };
 
-    // Final data to send to the API
+  
     const finalData = {
       username: formData.username,
       inspectionDate: formData.inspectionDate,
