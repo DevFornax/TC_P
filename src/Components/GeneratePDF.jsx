@@ -1,9 +1,14 @@
 
-import React, { useEffect, useState } from "react";
+
+
+
+
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-
+import html2canvas from "html2canvas";
+import TcSldPrint from "./TcSldPrint";
 
 pdfMake.vfs = pdfFonts.vfs;
 
@@ -31,6 +36,7 @@ pdfMake.fonts = {
 const GeneratePDF = () => {
   const location = useLocation();
   const [inspectionData, setInspectionData] = useState(null);
+  const sldRef = useRef(null);
 
   useEffect(() => {
     if (location.state) {
@@ -44,46 +50,47 @@ const GeneratePDF = () => {
     if (normalized === "h") return "High";
     return status;
   };
-const visualTemplate = {
-  1: {
-    name: "bus_bar",
-    options: { 1: "Coated", 2: "Barred Conductor/sleeve" },
-  },
-  2: {
-    name: "busbar_do_jumper",
-    options: { 1: "Coated", 2: "Barred Conductor/sleeve" },
-  },
-  3: {
-    name: "ug_cable_jumper",
-    options: { 1: "Lug", 2: "Binding", 0: "na" },
-  },
-  4: {
-    name: "tc_condition",
-    options: { 1: "Straight", 2: "Tilted", 3: "Plinth", 4: "Pole structure" },
-  },
-  5: { name: "bird_guard", options: { 1: "Yes", 0: "No" } },
-  6: {
-    name: "do_tc_jumper",
-    options: { 1: "Coated", 2: "Barred Conductor/sleeve" },
-  },
-  7: { name: "ht_booting", options: { 1: "Yes", 0: "No" } },
-  8: { name: "lt_booting", options: { 1: "Yes", 0: "No" } },
-  9: { name: "breather_installed", options: { 1: "Yes", 0: "No" } },
-  10: { name: "silica_gel_color", options: { 1: "Blue", 2: "Orange" } },
-  11: { name: "oil_leakage", options: { 1: "Yes", 0: "No" } },
-  12: { name: "oil_level", options: { 1: "Normal", 2: "Low" } },
-  13: { name: "tc_fencing", options: { 1: "Yes", 0: "No" } },
-  14: { name: "fuse_box_external", options: { 1: "Closed", 2: "Open" } },
-  15: { name: "fuse_box_internal_burn", options: { 1: "Yes", 0: "No" } },
-  16: {
-    name: "lt_cable_connection",
-    options: { 1: "Lug", 2: "Patta", 3: "Binding" },
-  },
-};
-  const generatePDF = () => {
+
+  const visualTemplate = {
+    1: {
+      name: "bus_bar",
+      options: { 1: "Coated", 2: "Barred Conductor/sleeve" },
+    },
+    2: {
+      name: "busbar_do_jumper",
+      options: { 1: "Coated", 2: "Barred Conductor/sleeve" },
+    },
+    3: {
+      name: "ug_cable_jumper",
+      options: { 1: "Lug", 2: "Binding", 0: "na" },
+    },
+    4: {
+      name: "tc_condition",
+      options: { 1: "Straight", 2: "Tilted", 3: "Plinth", 4: "Pole structure" },
+    },
+    5: { name: "bird_guard", options: { 1: "Yes", 0: "No" } },
+    6: {
+      name: "do_tc_jumper",
+      options: { 1: "Coated", 2: "Barred Conductor/sleeve" },
+    },
+    7: { name: "ht_booting", options: { 1: "Yes", 0: "No" } },
+    8: { name: "lt_booting", options: { 1: "Yes", 0: "No" } },
+    9: { name: "breather_installed", options: { 1: "Yes", 0: "No" } },
+    10: { name: "silica_gel_color", options: { 1: "Blue", 2: "Orange" } },
+    11: { name: "oil_leakage", options: { 1: "Yes", 0: "No" } },
+    12: { name: "oil_level", options: { 1: "Normal", 2: "Low" } },
+    13: { name: "tc_fencing", options: { 1: "Yes", 0: "No" } },
+    14: { name: "fuse_box_external", options: { 1: "Closed", 2: "Open" } },
+    15: { name: "fuse_box_internal_burn", options: { 1: "Yes", 0: "No" } },
+    16: {
+      name: "lt_cable_connection",
+      options: { 1: "Lug", 2: "Patta", 3: "Binding" },
+    },
+  };
+
+  const generatePDF = async () => {
     if (!inspectionData) return;
 
- 
     const visualInspectionData = Object.entries(
       inspectionData.visual_inspection || {}
     ).map(([templateId, selectedValue]) => {
@@ -102,30 +109,36 @@ const visualTemplate = {
       };
     });
 
- 
     let thermalInspection = [];
 
     if (typeof inspectionData.thermal_inspection === "string") {
       try {
         const thermalStatus = JSON.parse(inspectionData.thermal_inspection);
         thermalInspection.push({
-          text: `Status: ${formatThermalStatus(thermalStatus.status) || "Unknown"}`,
+          text: `Status: ${
+            formatThermalStatus(thermalStatus.status) || "Unknown"
+          }`,
         });
       } catch (e) {
         thermalInspection.push({ text: "Invalid thermal inspection data" });
       }
     } else if (typeof inspectionData.thermal_inspection === "object") {
-      thermalInspection = Object.entries(
-        inspectionData.thermal_inspection
-      ).map(([deviceId, status]) => ({
-        text: `${deviceId}: ${formatThermalStatus(status)}`,
-        margin: [0, 2],
-      }));
+      thermalInspection = Object.entries(inspectionData.thermal_inspection).map(
+        ([deviceId, status]) => ({
+          text: `${deviceId}: ${formatThermalStatus(status)}`,
+          margin: [0, 2],
+        })
+      );
     } else {
       thermalInspection.push({ text: "Unknown thermal data format" });
     }
 
-  
+    let sldImage = null;
+    if (sldRef.current) {
+      const canvas = await html2canvas(sldRef.current, { useCORS: true });
+      sldImage = canvas.toDataURL("image/png");
+    }
+
     const docDefinition = {
       content: [
         { text: "Inspection Report", style: "header" },
@@ -149,7 +162,22 @@ const visualTemplate = {
           margin: [0, 15, 0, 5],
         },
         ...thermalInspection,
-      ],
+
+        sldImage
+          ? {
+              text: "Thermal View (SLD)",
+              style: "sectionHeader",
+              margin: [0, 20, 0, 5],
+            }
+          : null,
+        sldImage
+          ? {
+              image: sldImage,
+              width: 500,
+              margin: [0, 5, 0, 0],
+            }
+          : null,
+      ].filter(Boolean),
       styles: {
         header: {
           fontSize: 22,
@@ -177,33 +205,55 @@ const visualTemplate = {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Inspection Data Preview</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">
+        Inspection Data Preview
+      </h2>
 
+      
+      <div ref={sldRef} className="mb-6 border rounded shadow p-4 bg-white">
+        {(() => {
+          const parsedThermal =
+            typeof inspectionData?.thermal_inspection === "string"
+              ? JSON.parse(inspectionData.thermal_inspection)
+              : inspectionData?.thermal_inspection;
+
+         
+          if (parsedThermal?.status === "notdone") {
+            return <TcSldPrint />;
+          }
+
+         
+          return <TcSldPrint thermalInspection={parsedThermal} />;
+        })()}
+      </div>
+
+  
       {!inspectionData ? (
-        <p>Loading or no data found.</p>
+        <p className="text-red-600">Loading or no data found.</p>
       ) : (
-        <div className="space-y-4 bg-gray-100 p-4 rounded shadow">
-          <pre className="whitespace-pre-wrap text-sm">
+        <div className="space-y-4 bg-gray-100 p-4 rounded shadow overflow-auto">
+          <h3 className="text-lg font-semibold text-gray-700">
+            Raw Inspection Data
+          </h3>
+          <pre className="whitespace-pre-wrap text-sm text-gray-800">
             {JSON.stringify(inspectionData, null, 2)}
           </pre>
         </div>
       )}
 
+      
       {inspectionData && (
-        <button
-          onClick={generatePDF}
-          className="mt-6 px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Download PDF
-        </button>
+        <div className="mt-6">
+          <button
+            onClick={generatePDF}
+            className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            Download PDF Report
+          </button>
+        </div>
       )}
     </div>
   );
 };
 
 export default GeneratePDF;
-
-
-
-
-

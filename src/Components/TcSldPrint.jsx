@@ -1,0 +1,674 @@
+
+
+// import React, { useRef, useState } from "react";
+// import {
+//   Transformerwaypoints,
+//   Transformerlines,
+//   Transformerscale,
+//   TransformercustomIcons,
+//   TransformervisiblePointIds,
+// } from "../Components/SLD/DataFileForSLD";
+
+// const markedPoints = [
+//   "S1A",
+//   "S1B",
+//   "S1C",
+//   "L1A",
+//   "L1B",
+//   "L1C",
+//   "F1A",
+//   "F1B",
+//   "F1C",
+//   "DB",
+//   "TR",
+//   "TL",
+// ];
+
+// const thermalInspection = {
+//   F1B266102: "M",
+//   S1B266102: "M",
+//   TDU1266102: "H",
+//   TDU2266102: "M",
+//   TDU32266102: "H",
+//   TDN266102: "H",
+//   TDY266102: "H",
+//   TDB266102: "H",
+// };
+
+// const getThermalColor = (value) => {
+//   if (value === "H") return "red";
+//   if (value === "M") return "green";
+//   return null;
+// };
+
+// const TcSldPrint = () => {
+//   const scale = Transformerscale;
+//   const svgRef = useRef(null);
+//   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+//   const [isDragging, setIsDragging] = useState(false);
+//   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+
+//   const getScaled = ([x, y]) => [x * scale, y * scale];
+
+//   const handleMouseDown = (e) => {
+//     setIsDragging(true);
+//     setStartPos({ x: e.clientX, y: e.clientY });
+//   };
+
+//   const handleMouseMove = (e) => {
+//     if (!isDragging) return;
+//     const dx = e.clientX - startPos.x;
+//     const dy = e.clientY - startPos.y;
+//     setDragOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+//     setStartPos({ x: e.clientX, y: e.clientY });
+//   };
+
+//   const handleMouseUp = () => setIsDragging(false);
+
+//   const thermalPointData = Object.entries(thermalInspection).reduce(
+//     (acc, [fullId, value]) => {
+//       const prefix = fullId.slice(0, 3);
+//       if (markedPoints.includes(prefix)) {
+//         acc[prefix] = value;
+//       }
+//       return acc;
+//     },
+//     {}
+//   );
+
+//   return (
+//     <svg
+//       ref={svgRef}
+//       width="1000"
+//       height="1000"
+//       viewBox="-100 -100 1200 1200"
+//       style={{
+//         border: "1px solid #ccc",
+//         background: "#fff",
+//         cursor: isDragging ? "grabbing" : "grab",
+//       }}
+//       onMouseDown={handleMouseDown}
+//       onMouseMove={handleMouseMove}
+//       onMouseUp={handleMouseUp}
+//       onMouseLeave={handleMouseUp}
+//     >
+//       <g transform="translate(0, 50)">
+//         <text x={10} y={0} fontSize="16" fontWeight="bold">
+//           Thermal Inspection Status:
+//         </text>
+//         {Object.entries(thermalInspection).map(([id, status], index) => (
+//           <text
+//             key={index}
+//             x={10}
+//             y={30 + index * 20}
+//             fontSize="14"
+//             fill={status === "H" ? "red" : status === "M" ? "green" : "black"}
+//           >
+//             {id}:{" "}
+//             {status === "H" ? "High" : status === "M" ? "Medium" : "No Data"}
+//           </text>
+//         ))}
+//       </g>
+
+  
+//       <g transform={`translate(${dragOffset.x}, ${dragOffset.y})`}>
+//         {Transformerlines.map((line) => {
+//           const [x1, y1] = getScaled(line.from);
+//           const [x2, y2] = getScaled(line.to);
+//           return (
+//             <line
+//               key={line.id}
+//               x1={x1}
+//               y1={-y1}
+//               x2={x2}
+//               y2={-y2}
+//               stroke="black"
+//               strokeWidth={2}
+//             />
+//           );
+//         })}
+
+//         {Transformerwaypoints.map((point) => {
+//           if (!TransformervisiblePointIds.includes(point.id)) return null;
+
+//           const [x, y] = getScaled(point.coordinates);
+//           const Icon = TransformercustomIcons[point.id];
+
+//           const thermalValue = thermalPointData[point.id];
+//           const thermalColor = getThermalColor(thermalValue);
+
+//           return (
+//             <g key={point.id}>
+//               {Icon ? (
+//                 Icon(x, -y, () => console.log("Clicked", point.id))
+//               ) : (
+//                 <circle
+//                   cx={x}
+//                   cy={-y}
+//                   r={6}
+//                   fill="#aaa"
+//                   stroke="#333"
+//                   strokeWidth={1.5}
+//                 />
+//               )}
+
+//               {thermalColor && (
+//                 <>
+//                   <text
+//                     x={x + 10}
+//                     y={-y - 4}
+//                     fontSize={18}
+//                     fill={thermalColor}
+//                     fontWeight="bold"
+//                   >
+//                     {thermalValue}{" "}
+//                   </text>
+//                 </>
+//               )}
+
+//               {point.id === "TD" && (
+//                 <g>
+//                   {[
+//                     { id: "TDU1", dx: -30, dy: 40 },
+//                     { id: "TDU2", dx: 0, dy: 40 },
+//                     { id: "TDU3", dx: 30, dy: 40 },
+//                     { id: "TDN", dx: -45, dy: 70 },
+//                     { id: "TDR", dx: -15, dy: 70 },
+//                     { id: "TDY", dx: 15, dy: 70 },
+//                     { id: "TDB", dx: 45, dy: 70 },
+//                   ].map((dot) => {
+//                     const dotThermalValue =
+//                       thermalInspection[dot.id + "266102"];
+//                     const dotThermalColor = getThermalColor(dotThermalValue);
+//                     return (
+//                       <g key={dot.id}>
+//                         <circle
+//                           cx={x + dot.dx}
+//                           cy={-y + dot.dy}
+//                           r={5}
+//                           fill={dotThermalColor || "#6cae4a"}
+//                           stroke="#4f6b3d"
+//                           strokeWidth={1}
+//                         />
+//                         <text
+//                           x={x + dot.dx + 6}
+//                           y={-y + dot.dy - 5}
+//                           fontSize="12"
+//                           fill={thermalColor}
+//                         >
+//                           {dotThermalValue}
+//                         </text>
+//                       </g>
+//                     );
+//                   })}
+//                 </g>
+//               )}
+//             </g>
+//           );
+//         })}
+//       </g>
+//     </svg>
+//   );
+// };
+// export default TcSldPrint;
+
+
+// import React, { useRef, useState } from "react";
+// import {
+//   Transformerwaypoints,
+//   Transformerlines,
+//   Transformerscale,
+//   TransformercustomIcons,
+//   TransformervisiblePointIds,
+// } from "../Components/SLD/DataFileForSLD";
+
+// const markedPoints = [
+//   "S1A",
+//   "S1B",
+//   "S1C",
+//   "L1A",
+//   "L1B",
+//   "L1C",
+//   "F1A",
+//   "F1B",
+//   "F1C",
+//   "DB",
+//   "TR",
+//   "TL",
+// ];
+
+// const thermalInspection = {
+//   F1B266102: "M",
+//   S1B266102: "M",
+//   TDU1266102: "H",
+//   TDU2266102: "M",
+//   TDU32266102: "H",
+//   TDN266102: "H",
+//   TDY266102: "H",
+//   TDB266102: "H",
+// };
+
+// const getThermalColor = (value) => {
+//   if (value === "H") return "red";
+//   if (value === "M") return "green";
+//   return null;
+// };
+
+// const TcSldPrint = () => {
+//   const scale = Transformerscale;
+//   const svgRef = useRef(null);
+//   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+//   const [isDragging, setIsDragging] = useState(false);
+//   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+
+//   const getScaled = ([x, y]) => [x * scale, y * scale];
+
+//   const handleMouseDown = (e) => {
+//     setIsDragging(true);
+//     setStartPos({ x: e.clientX, y: e.clientY });
+//   };
+
+//   const handleMouseMove = (e) => {
+//     if (!isDragging) return;
+//     const dx = e.clientX - startPos.x;
+//     const dy = e.clientY - startPos.y;
+//     setDragOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+//     setStartPos({ x: e.clientX, y: e.clientY });
+//   };
+
+//   const handleMouseUp = () => setIsDragging(false);
+
+//   const thermalPointData = Object.entries(thermalInspection).reduce(
+//     (acc, [fullId, value]) => {
+//       const prefix = fullId.slice(0, 3);
+//       if (markedPoints.includes(prefix)) {
+//         acc[prefix] = value;
+//       }
+//       return acc;
+//     },
+//     {}
+//   );
+
+
+  
+
+//   return (
+//     <svg
+//       ref={svgRef}
+//       width="1000"
+//       height="1000"
+//       viewBox="-100 -100 1200 1200"
+//       style={{
+//         border: "1px solid #ccc",
+//         background: "#fff",
+//         cursor: isDragging ? "grabbing" : "grab",
+//       }}
+//       onMouseDown={handleMouseDown}
+//       onMouseMove={handleMouseMove}
+//       onMouseUp={handleMouseUp}
+//       onMouseLeave={handleMouseUp}
+//     >
+//       <g transform="translate(0, 50)">
+//         <text x={10} y={0} fontSize="16" fontWeight="bold">
+//           Thermal Inspection Status:
+//         </text>
+//         {Object.entries(thermalInspection).map(([id, status], index) => (
+//           <text
+//             key={index}
+//             x={10}
+//             y={30 + index * 20}
+//             fontSize="14"
+//             fill={status === "H" ? "red" : status === "M" ? "green" : "black"}
+//           >
+//             {id}:{" "}
+//             {status === "H" ? "High" : status === "M" ? "Medium" : "No Data"}
+//           </text>
+//         ))}
+//       </g>
+
+  
+//       <g transform={`translate(${dragOffset.x}, ${dragOffset.y})`}>
+//         {Transformerlines.map((line) => {
+//           const [x1, y1] = getScaled(line.from);
+//           const [x2, y2] = getScaled(line.to);
+//           return (
+//             <line
+//               key={line.id}
+//               x1={x1}
+//               y1={-y1}
+//               x2={x2}
+//               y2={-y2}
+//               stroke="black"
+//               strokeWidth={2}
+//             />
+//           );
+//         })}
+
+//         {Transformerwaypoints.map((point) => {
+//           if (!TransformervisiblePointIds.includes(point.id)) return null;
+
+//           const [x, y] = getScaled(point.coordinates);
+//           const Icon = TransformercustomIcons[point.id];
+
+//           const thermalValue = thermalPointData[point.id];
+//           const thermalColor = getThermalColor(thermalValue);
+
+//           return (
+//             <g key={point.id}>
+//               {Icon ? (
+//                 Icon(x, -y, () => console.log("Clicked", point.id))
+//               ) : (
+//                 <circle
+//                   cx={x}
+//                   cy={-y}
+//                   r={6}
+//                   fill="#aaa"
+//                   stroke="#333"
+//                   strokeWidth={1.5}
+//                 />
+//               )}
+
+//               {thermalColor && (
+//                 <>
+//                   <text
+//                     x={x + 10}
+//                     y={-y - 4}
+//                     fontSize={18}
+//                     fill={thermalColor}
+//                     fontWeight="bold"
+//                   >
+//                     {thermalValue}{" "}
+//                   </text>
+//                 </>
+//               )}
+
+//               {point.id === "TD" && (
+//                 <g>
+//                   {[
+//                     { id: "TDU1", dx: -30, dy: 40 },
+//                     { id: "TDU2", dx: 0, dy: 40 },
+//                     { id: "TDU3", dx: 30, dy: 40 },
+//                     { id: "TDN", dx: -45, dy: 70 },
+//                     { id: "TDR", dx: -15, dy: 70 },
+//                     { id: "TDY", dx: 15, dy: 70 },
+//                     { id: "TDB", dx: 45, dy: 70 },
+//                   ].map((dot) => {
+//                     const dotThermalValue =
+//                       thermalInspection[dot.id + "266102"];
+//                     const dotThermalColor = getThermalColor(dotThermalValue);
+//                     return (
+//                       <g key={dot.id}>
+//                         <circle
+//                           cx={x + dot.dx}
+//                           cy={-y + dot.dy}
+//                           r={5}
+//                           fill={dotThermalColor || "#6cae4a"}
+//                           stroke="#4f6b3d"
+//                           strokeWidth={1}
+//                         />
+//                         <text
+//                           x={x + dot.dx + 6}
+//                           y={-y + dot.dy - 5}
+//                           fontSize="12"
+//                           fill={thermalColor}
+//                         >
+//                           {dotThermalValue}
+//                         </text>
+//                       </g>
+//                     );
+//                   })}
+//                 </g>
+//               )}
+//             </g>
+//           );
+//         })}
+//       </g>
+//     </svg>
+//   );
+// };
+// export default TcSldPrint;
+
+
+import React, {
+  useRef,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
+import {
+  Transformerwaypoints,
+  Transformerlines,
+  Transformerscale,
+  TransformercustomIcons,
+  TransformervisiblePointIds,
+} from "../Components/SLD/DataFileForSLD";
+
+const markedPoints = [
+  "S1A",
+  "S1B",
+  "S1C",
+  "L1A",
+  "L1B",
+  "L1C",
+  "F1A",
+  "F1B",
+  "F1C",
+  "DB",
+  "TR",
+  "TL",
+];
+
+const thermalInspection = {
+  F1B266102: "M",
+  S1B266102: "M",
+  TDU1266102: "H",
+  TDU2266102: "M",
+  TDU32266102: "H",
+  TDN266102: "H",
+  TDY266102: "H",
+  TDB266102: "H",
+};
+
+const getThermalColor = (value) => {
+  if (value === "H") return "red";
+  if (value === "M") return "green";
+  return null;
+};
+
+const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
+  const scale = Transformerscale;
+  const svgRef = useRef(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+
+  const getScaled = ([x, y]) => [x * scale, y * scale];
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartPos({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - startPos.x;
+    const dy = e.clientY - startPos.y;
+    setDragOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+    setStartPos({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseUp = () => setIsDragging(false);
+
+  const thermalPointData = Object.entries(thermalInspection).reduce(
+    (acc, [fullId, value]) => {
+      const prefix = fullId.slice(0, 3);
+      if (markedPoints.includes(prefix)) {
+        acc[prefix] = value;
+      }
+      return acc;
+    },
+    {}
+  );
+
+  // 👇 Expose this to parent
+  useImperativeHandle(ref, () => ({
+    exportAsImage: () => {
+      const svgElement = svgRef.current;
+      if (!svgElement) return null;
+
+      const svgString = new XMLSerializer().serializeToString(svgElement);
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+
+      return new Promise((resolve, reject) => {
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          const png = canvas.toDataURL("image/png");
+          resolve(png);
+        };
+        img.onerror = reject;
+        img.src = `data:image/svg+xml;base64,${btoa(
+          unescape(encodeURIComponent(svgString))
+        )}`;
+      });
+    },
+  }));
+
+  return (
+    <svg
+      ref={svgRef}
+      width="1000"
+      height="1000"
+      viewBox="-100 -100 1200 1200"
+      style={{
+        border: "1px solid #ccc",
+        background: "#fff",
+        cursor: isDragging ? "grabbing" : "grab",
+      }}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+    >
+      <g transform="translate(0, 50)">
+        <text x={10} y={0} fontSize="16" fontWeight="bold">
+          Thermal Inspection Status:
+        </text>
+        {Object.entries(thermalInspection).map(([id, status], index) => (
+          <text
+            key={index}
+            x={10}
+            y={30 + index * 20}
+            fontSize="14"
+            fill={status === "H" ? "red" : status === "M" ? "green" : "black"}
+          >
+            {id}:{" "}
+            {status === "H" ? "High" : status === "M" ? "Medium" : "No Data"}
+          </text>
+        ))}
+      </g>
+
+      <g transform={`translate(${dragOffset.x}, ${dragOffset.y})`}>
+        {Transformerlines.map((line) => {
+          const [x1, y1] = getScaled(line.from);
+          const [x2, y2] = getScaled(line.to);
+          return (
+            <line
+              key={line.id}
+              x1={x1}
+              y1={-y1}
+              x2={x2}
+              y2={-y2}
+              stroke="black"
+              strokeWidth={2}
+            />
+          );
+        })}
+
+        {Transformerwaypoints.map((point) => {
+          if (!TransformervisiblePointIds.includes(point.id)) return null;
+
+          const [x, y] = getScaled(point.coordinates);
+          const Icon = TransformercustomIcons[point.id];
+          const thermalValue = thermalPointData[point.id];
+          const thermalColor = getThermalColor(thermalValue);
+
+          return (
+            <g key={point.id}>
+              {Icon ? (
+                Icon(x, -y, () => console.log("Clicked", point.id))
+              ) : (
+                <circle
+                  cx={x}
+                  cy={-y}
+                  r={6}
+                  fill="#aaa"
+                  stroke="#333"
+                  strokeWidth={1.5}
+                />
+              )}
+
+              {thermalColor && (
+                <text
+                  x={x + 10}
+                  y={-y - 4}
+                  fontSize={18}
+                  fill={thermalColor}
+                  fontWeight="bold"
+                >
+                  {thermalValue}
+                </text>
+              )}
+
+              {point.id === "TD" && (
+                <g>
+                  {[...Array(7)].map((_, i) => {
+                    const dotMeta = [
+                      { id: "TDU1", dx: -30, dy: 40 },
+                      { id: "TDU2", dx: 0, dy: 40 },
+                      { id: "TDU3", dx: 30, dy: 40 },
+                      { id: "TDN", dx: -45, dy: 70 },
+                      { id: "TDR", dx: -15, dy: 70 },
+                      { id: "TDY", dx: 15, dy: 70 },
+                      { id: "TDB", dx: 45, dy: 70 },
+                    ][i];
+
+                    const fullId = dotMeta.id + "266102";
+                    const dotThermalValue = thermalInspection[fullId];
+                    const dotThermalColor = getThermalColor(dotThermalValue);
+
+                    return (
+                      <g key={dotMeta.id}>
+                        <circle
+                          cx={x + dotMeta.dx}
+                          cy={-y + dotMeta.dy}
+                          r={5}
+                          fill={dotThermalColor || "#6cae4a"}
+                          stroke="#4f6b3d"
+                          strokeWidth={1}
+                        />
+                        <text
+                          x={x + dotMeta.dx + 6}
+                          y={-y + dotMeta.dy - 5}
+                          fontSize="12"
+                          fill={thermalColor}
+                        >
+                          {dotThermalValue}
+                        </text>
+                      </g>
+                    );
+                  })}
+                </g>
+              )}
+            </g>
+          );
+        })}
+      </g>
+    </svg>
+  );
+});
+
+export default TcSldPrint;
