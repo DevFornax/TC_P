@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { InfoItem } from "../UI/InfoItem";
 import { InspectionFields } from "../utils/InspectionFields";
-import { compressVisualData } from "../utils/VisualTemplateForVisualInspection";
+import { compressVisualData } from "../../Components/utils/VisualTemplateforVisualFields";
 const initialFormData = {};
 InspectionFields.forEach((field) => {
   if (field.selectedOption) {
