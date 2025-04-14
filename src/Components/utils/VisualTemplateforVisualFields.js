@@ -1,11 +1,11 @@
 export const visualTemplate = {
   1: {
     name: "bus_bar",
-    options: { 1: "Coated", 2: "Barred Conductor/sleeve" },
+    options: { 1: "Coated", 2: "Barred Conductor", 3: "sleeve" },
   },
   2: {
     name: "busbar_do_jumper",
-    options: { 1: "Coated", 2: "Barred Conductor/sleeve" },
+    options: { 1: "Coated", 2: "Barred Conductor", 3: "sleeve" },
   },
   3: {
     name: "ug_cable_jumper",

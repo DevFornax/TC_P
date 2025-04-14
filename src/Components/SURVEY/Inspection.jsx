@@ -16,6 +16,7 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
   const [thermalRecords, setThermalRecords] = useState([]);
   const [showCardOfInspection, setshowCardOfInspection] = useState(true);
 
+  console.log(selection, "inside the inspection")
   useEffect(() => {
     if (!thermalEnabled) return;
     if (deviceId?.id && deviceId?.condition) {
@@ -259,13 +260,11 @@ const handleSubmit = async (e) => {
       (field) => field.device.includes(selectedDevice)
     );
 
-    const filteredFormData = {};
-    filteredInspectionFields.forEach((field) => {
-    
-      if (formData[field.name] !== undefined) {
-        filteredFormData[field.name] = formData[field.name];
-      }
-    });
+   const filteredFormData = {};
+   filteredInspectionFields.forEach((field) => {
+     filteredFormData[field.name] = formData[field.name] || ""; // ensure it's included even if empty
+   });
+
 
     
     const compressedVisual = compressVisualData(filteredFormData);
@@ -341,7 +340,7 @@ const handleSubmit = async (e) => {
     const API_URL = import.meta.env.VITE_API_BASE_URL;
 
     try {
-      // Submit the inspection data to the backend
+      
       const response = await fetch(`${API_URL}/submit-inspection`, {
         method: "POST",
         headers: {

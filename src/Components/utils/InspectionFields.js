@@ -21,7 +21,7 @@ export const InspectionFields = [
     label: "UG Cable Jumper",
     name: "ug_cable_jumper",
     options: ["Lug", "Binding", "N/A"],
-    type: "Switch",
+    type: "select",
     device: ["Transformer"],
     selectedOption: "Lug",
   },
