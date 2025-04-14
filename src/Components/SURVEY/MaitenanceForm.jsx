@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-function MaitenanceForm({ locationId, deviceId, projectId }) {
+function MaitenanceForm({ locationId, deviceId, projectId , locationData }) {
   const [date, setDate] = useState("");
   const [maintenanceType, setMaintenanceType] = useState("");
   const [filteredTasks, setFilteredTasks] = useState([]);
@@ -111,7 +111,7 @@ useEffect(() => {
   };
 
 
-  if (!locationId)
+  if (!locationData)
     return (
       <div>
         <div className="p-6 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">

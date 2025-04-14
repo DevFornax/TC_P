@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import LocationSearchFormCard from "./LocationSearchFormCard";
-import DynamicSld from "./sld-survey/DynamicSLD"
+import DynamicSld from "./sld-survey/DynamicSLD";
 
 import LocationInfoCard from "./LocationInfoCard";
 import MaitenanceForm from "./MaitenanceForm";
@@ -16,7 +16,7 @@ function SurveyDashboard() {
   const location = useLocation();
   const [newLocationID, setNewLocationID] = useState("");
   const [error, setError] = useState("");
- 
+
   const [loading, setLoading] = useState(false);
   const [locationData, setLocationData] = useState(null);
   const [selectedPoint, setselectedPoint] = useState(null);
@@ -140,7 +140,6 @@ function SurveyDashboard() {
               loading={loading}
               error={error}
             />
-           
 
             <LocationInfoCard locationdata={locationData} />
 
@@ -150,16 +149,13 @@ function SurveyDashboard() {
               deviceId={inspectionSubmitted ? null : selectedPoint}
               onSubmit={handleInspectionSubmit}
             />
-           
-                     
-                        <MaitenanceForm
-                          locationId={locationIDforchild}
-                          deviceId={selectedPoint}
-                          projectId={projectId}
-                        />
-                     
 
-    
+            <MaitenanceForm
+              locationId={locationIDforchild}
+              deviceId={selectedPoint}
+              projectId={projectId}
+              locationdata={inspectionSubmitted ? null : locationData}
+            />
           </div>
         </div>
       </div>
