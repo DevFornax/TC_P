@@ -9,6 +9,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import html2canvas from "html2canvas";
 import TcSldPrint from "./TcSldPrint";
+import FuseSldPrint from "./FuseSldPrint";
 
 pdfMake.vfs = pdfFonts.vfs;
 

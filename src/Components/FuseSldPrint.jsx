@@ -10,9 +10,8 @@ import {
   FuseWaypoints,
   FuseLines,
   FuseScale,
-  
   FuseCustomIcons,
-  
+
   FuseVisiblePointIds,
   
 } from "../Components/SLD/DataFileForSLD";
@@ -74,19 +73,18 @@ const FuseSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
 //   );
 
 
-const thermalPointData = Object.entries(thermalInspection).reduce(
-  (acc, [fullId, value]) => {
-    const prefix = fullId.slice(0, 3);
-
-    // Check if prefix matches any of the marked points or starts with "TR" or "TL"
-    if (markedPoints.includes(prefix) || prefix === "TR" || prefix === "TL") {
-      acc[prefix] = value;
-    }
-
-    return acc;
-  },
-  {}
-);
+ const thermalPointData = Object.entries(thermalInspection).reduce(
+   (acc, [fullId, value]) => {
+     const matchedPrefix = markedPoints.find((prefix) =>
+       fullId.startsWith(prefix)
+     );
+     if (matchedPrefix) {
+       acc[matchedPrefix] = value;
+     }
+     return acc;
+   },
+   {}
+ );
 
   useImperativeHandle(ref, () => ({
     exportAsImage: () => {

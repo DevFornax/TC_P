@@ -87,6 +87,7 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
     }));
   };
 
+
   const validate = () => {
     const newErrors = {};
 
@@ -138,111 +139,241 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
     setThermalEnabled(false);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    if (validate()) {
-      const compressedVisual = compressVisualData(formData);
+  // console.log(selection);
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-      const LocationID = locationdata?.id;
-      const keysToAppendLocation = [
-        "TDB",
-        "TDU1",
-        "TDR",
-        "TDU3",
-        "TDY",
-        "TDN",
-        "TDU2",
-        ""
-      ];
-      let thermalInspection;
+  //   if (validate()) {
+  //     const compressedVisual = compressVisualData(formData);
 
-      const conditionMap = {
-        Medium: "M",
-        High: "H",
-        Normal: "N",
-      };
+  //     const LocationID = locationdata?.id;
+  //     const keysToAppendLocation = [
+  //       "TDB",
+  //       "TDU1",
+  //       "TDR",
+  //       "TDU3",
+  //       "TDY",
+  //       "TDN",
+  //       "TDU2",
+      
+  //     ];
+  //     let thermalInspection;
 
-      if (thermalEnabled) {
-        if (thermalRecords.length > 0) {
-          thermalInspection = Object.fromEntries(
-            thermalRecords.map((point) => {
-              const key = keysToAppendLocation.includes(point.id)
-                ? `${point.id}${LocationID}`
-                : point.id;
+  //     const conditionMap = {
+  //       Medium: "M",
+  //       High: "H",
+  //       Normal: "N",
+  //     };
 
-              const shortCondition =
-                conditionMap[point.condition] || point.condition;
+  //     if (thermalEnabled) {
+  //       if (thermalRecords.length > 0) {
+  //         thermalInspection = Object.fromEntries(
+  //           thermalRecords.map((point) => {
+  //             const key = keysToAppendLocation.includes(point.id)
+  //               ? `${point.id}${LocationID}`
+  //               : point.id;
 
-              return [key, shortCondition];
-            })
-          );
-        } else {
-          alert("⚠️ Thermal inspection is enabled but no data selected.");
-          return;
-        }
-      } else {
-        thermalInspection = JSON.stringify({ status: "notdone" });
+  //             const shortCondition =
+  //               conditionMap[point.condition] || point.condition;
+
+  //             return [key, shortCondition];
+  //           })
+  //         );
+  //       } else {
+  //         alert("⚠️ Thermal inspection is enabled but no data selected.");
+  //         return;
+  //       }
+  //     } else {
+  //       thermalInspection = JSON.stringify({ status: "notdone" });
+  //     }
+
+  //     const minimalLocationData = {
+  //       id: locationdata?.id,
+  //       parent_id: locationdata?.parent_id,
+  //       project_id: locationdata?.project_id,
+  //       project_name: locationdata?.project_name,
+  //       substation_id: locationdata?.substation_id,
+  //       substation_name: locationdata?.substation_name,
+  //       attributes: {
+  //         point_type: locationdata?.attributes?.point_type,
+  //         point_no: locationdata?.attributes?.point_no,
+  //         area_code: locationdata?.attributes?.area_code,
+  //         ulid: locationdata?.attributes?.ulid,
+  //       },
+  //     };
+  //     const finalData = {
+  //       username: formData.username,
+  //       inspectionDate: formData.inspectionDate,
+  //       locationdata: minimalLocationData,
+  //       visualInspection: compressedVisual,
+  //       thermalInspection,
+  //     };
+
+  //     console.log("✅ Final Submission Payload:", finalData);
+  //     const token = localStorage.getItem("token");
+  //     const API_URL = import.meta.env.VITE_API_BASE_URL;
+
+  //     try {
+  //       const response = await fetch(`${API_URL}/submit-inspection`, {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         body: JSON.stringify(finalData),
+  //       });
+
+  //       const result = await response.json();
+
+  //       if (response.ok) {
+  //         alert("Inspection submitted successfully!");
+  //         console.log("Submission Result:", result);
+  //         setThermalRecords([]);
+  //         handleReset();
+  //         onSubmit();
+  //       } else {
+  //         alert(`❌ Error: ${result.error}`);
+  //         console.log("Error submitting inspection data:", result);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error submitting inspection data:", error);
+  //       alert(
+  //         "⚠️ An error occurred while submitting the data. Please try again."
+  //       );
+  //     }
+  //   } else {
+  //     console.log("❌ Validation failed:", errors);
+  //   }
+  // };console.log(selection); // Assuming this gives you the device type like "Transformer"
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (validate()) {
+    const selectedDevice = selection; // Get the selected device type
+
+    // 🔥 Filter visible fields based on the selected device (like "Fuse", "Transformer", etc.)
+    const filteredInspectionFields = InspectionFields.filter(
+      (field) => field.device.includes(selectedDevice) // Ensure field.device includes the selected device type
+    );
+
+    const filteredFormData = {};
+    filteredInspectionFields.forEach((field) => {
+      // Include only the fields that have data in formData
+      if (formData[field.name] !== undefined) {
+        filteredFormData[field.name] = formData[field.name];
       }
+    });
 
-      const minimalLocationData = {
-        id: locationdata?.id,
-        parent_id: locationdata?.parent_id,
-        project_id: locationdata?.project_id,
-        project_name: locationdata?.project_name,
-        substation_id: locationdata?.substation_id,
-        substation_name: locationdata?.substation_name,
-        attributes: {
-          point_type: locationdata?.attributes?.point_type,
-          point_no: locationdata?.attributes?.point_no,
-          area_code: locationdata?.attributes?.area_code,
-          ulid: locationdata?.attributes?.ulid,
-        },
-      };
-      const finalData = {
-        username: formData.username,
-        inspectionDate: formData.inspectionDate,
-        locationdata: minimalLocationData,
-        visualInspection: compressedVisual,
-        thermalInspection,
-      };
+    // 👇 Compress only filtered (visible) data
+    const compressedVisual = compressVisualData(filteredFormData);
 
-      console.log("✅ Final Submission Payload:", finalData);
-      const token = localStorage.getItem("token");
-      const API_URL = import.meta.env.VITE_API_BASE_URL;
+    const LocationID = locationdata?.id;
+    const keysToAppendLocation = [
+      "TDB",
+      "TDU1",
+      "TDR",
+      "TDU3",
+      "TDY",
+      "TDN",
+      "TDU2",
+    ];
+    let thermalInspection;
 
-      try {
-        const response = await fetch(`${API_URL}/submit-inspection`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(finalData),
-        });
+    const conditionMap = {
+      Medium: "M",
+      High: "H",
+      Normal: "N",
+    };
 
-        const result = await response.json();
+    // Handle thermal inspection if it's enabled
+    if (thermalEnabled) {
+      if (thermalRecords.length > 0) {
+        thermalInspection = Object.fromEntries(
+          thermalRecords.map((point) => {
+            const key = keysToAppendLocation.includes(point.id)
+              ? `${point.id}${LocationID}`
+              : point.id;
 
-        if (response.ok) {
-          alert("Inspection submitted successfully!");
-          console.log("Submission Result:", result);
-          setThermalRecords([]);
-          handleReset();
-          onSubmit();
-        } else {
-          alert(`❌ Error: ${result.error}`);
-          console.log("Error submitting inspection data:", result);
-        }
-      } catch (error) {
-        console.error("Error submitting inspection data:", error);
-        alert(
-          "⚠️ An error occurred while submitting the data. Please try again."
+            const shortCondition =
+              conditionMap[point.condition] || point.condition;
+
+            return [key, shortCondition];
+          })
         );
+      } else {
+        alert("⚠️ Thermal inspection is enabled but no data selected.");
+        return;
       }
     } else {
-      console.log("❌ Validation failed:", errors);
+      thermalInspection = JSON.stringify({ status: "notdone" });
     }
-  };
+
+    // Minimal location data for submission
+    const minimalLocationData = {
+      id: locationdata?.id,
+      parent_id: locationdata?.parent_id,
+      project_id: locationdata?.project_id,
+      project_name: locationdata?.project_name,
+      substation_id: locationdata?.substation_id,
+      substation_name: locationdata?.substation_name,
+      attributes: {
+        point_type: locationdata?.attributes?.point_type,
+        point_no: locationdata?.attributes?.point_no,
+        area_code: locationdata?.attributes?.area_code,
+        ulid: locationdata?.attributes?.ulid,
+      },
+    };
+
+    // Final data to send to the API
+    const finalData = {
+      username: formData.username,
+      inspectionDate: formData.inspectionDate,
+      locationdata: minimalLocationData,
+      visualInspection: compressedVisual,
+      thermalInspection,
+    };
+
+    console.log("✅ Final Submission Payload:", finalData);
+
+    const token = localStorage.getItem("token");
+    const API_URL = import.meta.env.VITE_API_BASE_URL;
+
+    try {
+      // Submit the inspection data to the backend
+      const response = await fetch(`${API_URL}/submit-inspection`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(finalData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("Inspection submitted successfully!");
+        console.log("Submission Result:", result);
+        setThermalRecords([]);
+        handleReset();
+        onSubmit();
+      } else {
+        alert(`❌ Error: ${result.error}`);
+        console.log("Error submitting inspection data:", result);
+      }
+    } catch (error) {
+      console.error("Error submitting inspection data:", error);
+      alert(
+        "⚠️ An error occurred while submitting the data. Please try again."
+      );
+    }
+  } else {
+    console.log("❌ Validation failed:", errors);
+  }
+};
+
 
   if (!locationdata)
     return (
