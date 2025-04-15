@@ -151,7 +151,7 @@ const SwitchSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
         ref={svgRef}
         viewBox="0 0 1000 700"
         style={{
-          // border: "1px solid black",
+
           background: "#fff",
           cursor: isDragging ? "grabbing" : "grab",
         }}
@@ -164,29 +164,35 @@ const SwitchSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
           <text x={10} y={0} fontSize="16" fontWeight="bold">
             Thermal Inspection Status:
           </text>
+
           {Object.entries(thermalInspection).length === 0 ? (
             <text x={10} y={30} fontSize="14" fill="gray">
               Thermal Inspection: Not Done
             </text>
           ) : (
-            Object.entries(thermalInspection).map(([id, status], index) => (
-              <text
-                key={index}
-                x={10}
-                y={30 + index * 20}
-                fontSize="14"
-                fill={
-                  status === "H" ? "red" : status === "M" ? "green" : "black"
-                }
-              >
-                {id}:{" "}
-                {status === "H"
-                  ? "High"
-                  : status === "M"
-                  ? "Medium"
-                  : "No Data"}
-              </text>
-            ))
+            Object.entries(thermalInspection)
+              .sort(([, aStatus], [, bStatus]) => {
+                const priority = { H: 0, M: 1 };
+                return (priority[aStatus] ?? 2) - (priority[bStatus] ?? 2);
+              })
+              .map(([id, status], index) => (
+                <text
+                  key={index}
+                  x={10}
+                  y={30 + index * 20}
+                  fontSize="14"
+                  fill={
+                    status === "H" ? "red" : status === "M" ? "green" : "black"
+                  }
+                >
+                  {id}:{" "}
+                  {status === "H"
+                    ? "High"
+                    : status === "M"
+                    ? "Medium"
+                    : "No Data"}
+                </text>
+              ))
           )}
         </g>
 

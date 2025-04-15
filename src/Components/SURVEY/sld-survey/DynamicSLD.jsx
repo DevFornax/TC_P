@@ -235,6 +235,97 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                         strokeColor = "red";
                       }
 
+                      // const handleClick = (id) => {
+                      //   const nextClickState =
+                      //     ((pointClickStates[id] || 0) + 1) % 3;
+                      //   setPointClickStates((prev) => ({
+                      //     ...prev,
+                      //     [id]: nextClickState,
+                      //   }));
+
+                      //   if (
+                      //     [
+                      //       "TD",
+                      //       "L1A",
+                      //       "L1B",
+                      //       "L1C",
+                      //       "S1A",
+                      //       "S1B",
+                      //       "S1C",
+                      //       "SP",
+                      //       "F1A",
+                      //       "F1B",
+                      //       "F1C",
+                      //       "TL",
+                      //       "TR",
+                      //       "DB",
+                      //     ].includes(id)
+                      //   ) {
+                      //     let condition = "Normal";
+                      //     if (nextClickState === 1) condition = "Medium";
+                      //     if (nextClickState === 2) condition = "High";
+
+                      //     setSelectedPoint({
+                      //       id: `${id}${locationID}`,
+                      //       condition,
+                      //     });
+                      //   } else if (id.startsWith("TD")) {
+                      //     let condition = "Normal";
+                      //     if (nextClickState === 1) condition = "Medium";
+                      //     if (nextClickState === 2) condition = "High";
+
+                      //     setSelectedPoint({
+                      //       id,
+                      //       condition,
+                      //     });
+                      //   }
+
+                      //   if (id === "TD") {
+                      //     const baseX = wp.coordinates[0] * Transformerscale;
+                      //     const baseY = -wp.coordinates[1] * Transformerscale;
+
+                      //     if (thermalTDPoints.length > 0) {
+                      //       setThermalTDPoints([]);
+                      //     } else {
+                      //       const points = [
+                      //         {
+                      //           id: "TDU1",
+                      //           x: baseX - 30,
+                      //           y: baseY + 20,
+                      //         },
+                      //         { id: "TDU2", x: baseX, y: baseY + 20 },
+                      //         {
+                      //           id: "TDU3",
+                      //           x: baseX + 30,
+                      //           y: baseY + 20,
+                      //         },
+                      //         {
+                      //           id: "TDN",
+                      //           x: baseX - 45,
+                      //           y: baseY + 50,
+                      //         },
+                      //         {
+                      //           id: "TDR",
+                      //           x: baseX - 15,
+                      //           y: baseY + 50,
+                      //         },
+                      //         {
+                      //           id: "TDY",
+                      //           x: baseX + 15,
+                      //           y: baseY + 50,
+                      //         },
+                      //         {
+                      //           id: "TDB",
+                      //           x: baseX + 45,
+                      //           y: baseY + 50,
+                      //         },
+                      //       ];
+                      //       setThermalTDPoints(points);
+                      //     }
+                      //   }
+                      // };
+
+
                       const handleClick = (id) => {
                         const nextClickState =
                           ((pointClickStates[id] || 0) + 1) % 3;
@@ -243,9 +334,31 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                           [id]: nextClickState,
                         }));
 
+                        if (id === "TD") {
+                         
+                          const baseX = wp.coordinates[0] * Transformerscale;
+                          const baseY = -wp.coordinates[1] * Transformerscale;
+
+                          if (thermalTDPoints.length > 0) {
+                            setThermalTDPoints([]);
+                          } else {
+                            const points = [
+                              { id: "TDU1", x: baseX - 30, y: baseY + 20 },
+                              { id: "TDU2", x: baseX, y: baseY + 20 },
+                              { id: "TDU3", x: baseX + 30, y: baseY + 20 },
+                              { id: "TDN", x: baseX - 45, y: baseY + 50 },
+                              { id: "TDR", x: baseX - 15, y: baseY + 50 },
+                              { id: "TDY", x: baseX + 15, y: baseY + 50 },
+                              { id: "TDB", x: baseX + 45, y: baseY + 50 },
+                            ];
+                            setThermalTDPoints(points);
+                          }
+                          return; 
+                        }
+
+                       
                         if (
                           [
-                            "TD",
                             "L1A",
                             "L1B",
                             "L1C",
@@ -259,7 +372,8 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                             "TL",
                             "TR",
                             "DB",
-                          ].includes(id)
+                          ].includes(id) ||
+                          id.startsWith("TD")
                         ) {
                           let condition = "Normal";
                           if (nextClickState === 1) condition = "Medium";
@@ -269,59 +383,6 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                             id: `${id}${locationID}`,
                             condition,
                           });
-                        } else if (id.startsWith("TD")) {
-                          let condition = "Normal";
-                          if (nextClickState === 1) condition = "Medium";
-                          if (nextClickState === 2) condition = "High";
-
-                          setSelectedPoint({
-                            id,
-                            condition,
-                          });
-                        }
-
-                        if (id === "TD") {
-                          const baseX = wp.coordinates[0] * Transformerscale;
-                          const baseY = -wp.coordinates[1] * Transformerscale;
-
-                          if (thermalTDPoints.length > 0) {
-                            setThermalTDPoints([]);
-                          } else {
-                            const points = [
-                              {
-                                id: "TDU1",
-                                x: baseX - 30,
-                                y: baseY + 20,
-                              },
-                              { id: "TDU2", x: baseX, y: baseY + 20 },
-                              {
-                                id: "TDU3",
-                                x: baseX + 30,
-                                y: baseY + 20,
-                              },
-                              {
-                                id: "TDN",
-                                x: baseX - 45,
-                                y: baseY + 50,
-                              },
-                              {
-                                id: "TDR",
-                                x: baseX - 15,
-                                y: baseY + 50,
-                              },
-                              {
-                                id: "TDY",
-                                x: baseX + 15,
-                                y: baseY + 50,
-                              },
-                              {
-                                id: "TDB",
-                                x: baseX + 45,
-                                y: baseY + 50,
-                              },
-                            ];
-                            setThermalTDPoints(points);
-                          }
                         }
                       };
 

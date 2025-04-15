@@ -172,7 +172,10 @@ function TopBar() {
     navigate("/data-inspection");
     setShowMobileSidebar(false);
   };
-
+  const handleInspectionToolClick = () => {
+    navigate("/inspection");
+    setShowMobileSidebar(false);
+  };
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("user");
@@ -183,14 +186,11 @@ function TopBar() {
 
   return (
     <>
-
       <header className="w-full bg-[#385e72] text-white shadow-md z-50 px-6 py-3 flex justify-between items-center relative">
-
         <div className="text-2xl font-semibold tracking-wide">
           Fornax ThermoVis
         </div>
 
- 
         <div>
           <button
             onClick={() => setShowMobileSidebar(true)}
@@ -201,7 +201,6 @@ function TopBar() {
         </div>
       </header>
 
-      
       {showMobileSidebar && (
         <div className="fixed top-0 left-0 w-64 h-full bg-[#d9e4ec] shadow-md z-50 p-6 space-y-4 animate-slide-in">
           <div className="flex justify-between items-center mb-6">
@@ -216,7 +215,6 @@ function TopBar() {
             </button>
           </div>
 
-        
           <button
             onClick={handleHomeClick}
             className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
@@ -230,6 +228,12 @@ function TopBar() {
             📊 Dashboard
           </button>
           <button
+            onClick={handleInspectionToolClick}
+            className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
+          >
+            🔍 Inspection Tool
+          </button>
+          <button
             onClick={handleLogout}
             className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
           >
@@ -238,7 +242,6 @@ function TopBar() {
         </div>
       )}
 
-      
       <style>
         {`
           @keyframes slideIn {

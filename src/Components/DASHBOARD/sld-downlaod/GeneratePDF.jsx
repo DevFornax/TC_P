@@ -100,7 +100,7 @@ if (typeof thermalInspectionData === "string") {
       ]);
     }
 
-    // Prepare the SLD image
+  
     let sldImage = null;
     if (sldRef.current) {
       const canvas = await html2canvas(sldRef.current, {
@@ -117,7 +117,7 @@ if (typeof thermalInspectionData === "string") {
         minutes < 10 ? "0" + minutes : minutes
       } ${suffix}`;
 
-      // Determine part of the day (Morning, Afternoon, Evening)
+     
       let partOfDay = "";
       if (hours >= 5 && hours < 12) {
         partOfDay = "Morning";
@@ -139,38 +139,77 @@ if (typeof thermalInspectionData === "string") {
           style: "header",
         },
 
-        {
-          text: `Inspection ID: ${inspectionData.inspection_id}`,
-          margin: [0, 2, 0, 2],
-        },
-        {
-          text: `Inspection Done By: ${inspectionData.inspection_done_by}`,
-          margin: [0, 2, 0, 2],
-        },
-        {
-          text: `Date: ${new Date(
-            inspectionData.inspection_date
-          ).toLocaleDateString()}`,
-          margin: [0, 2, 0, 2],
-        },
-        {
-          // Using the formatTime function to format the time
-          text: `Time: ${formatTime(new Date(inspectionData.inspection_date))}`,
-          margin: [0, 2, 0, 2], // Reduced margin
-        },
-        {
-          text: `Location Id: ${inspectionData.location_id}`,
-          margin: [0, 2, 0, 2],
-        },
-        {
-          text: `Location Type: ${inspectionData.location_type}`,
-          margin: [0, 2, 0, 2],
-        },
-        {
-          text: `Project ID: ${inspectionData.project_id}`,
-          margin: [0, 2, 0, 10],
-        },
+        // {
+        //   text: `Inspection ID: ${inspectionData.inspection_id}`,
+        //   margin: [0, 2, 0, 2],
+        // },
+        // {
+        //   text: `Inspection Done By: ${inspectionData.inspection_done_by}`,
+        //   margin: [0, 2, 0, 2],
+        // },
+        // {
+        //   text: `Date: ${new Date(
+        //     inspectionData.inspection_date
+        //   ).toLocaleDateString()}`,
+        //   margin: [0, 2, 0, 2],
+        // },
+        // {
+        //   // Using the formatTime function to format the time
+        //   text: `Time: ${formatTime(new Date(inspectionData.inspection_date))}`,
+        //   margin: [0, 2, 0, 2], // Reduced margin
+        // },
+        // {
+        //   text: `Location Id: ${inspectionData.location_id}`,
+        //   margin: [0, 2, 0, 2],
+        // },
+        // {
+        //   text: `Location Type: ${inspectionData.location_type}`,
+        //   margin: [0, 2, 0, 2],
+        // },
+        // {
+        //   text: `Project ID: ${inspectionData.project_id}`,
+        //   margin: [0, 2, 0, 10],
+        // },
 
+        {
+          table: {
+            widths: ["25%", "25%", "25%", "25%"], // 4 columns side by side
+            body: [
+              [
+                { text: "Date", bold: true },
+                new Date(inspectionData.inspection_date).toLocaleDateString(
+                  "en-GB"
+                ),
+
+                { text: "Time", bold: true },
+                formatTime(new Date(inspectionData.inspection_date)),
+              ],
+              [
+                { text: "Inspection ID", bold: true },
+                inspectionData.inspection_id,
+                { text: "Inspection Done By", bold: true },
+                inspectionData.inspection_done_by,
+              ],
+
+              [
+                { text: "Location Id", bold: true },
+                inspectionData.location_id,
+                { text: "Project ID", bold: true },
+                inspectionData.project_id,
+              ],
+              [
+                { text: "Location Type", bold: true },
+                inspectionData.location_type,
+                "",
+                "",
+              ],
+            ],
+          },
+          layout: {
+            fillColor: (rowIndex) => (rowIndex % 2 === 0 ? "#f2f2f2" : null),
+          },
+          margin: [0, 10, 0, 10],
+        },
         {
           text: "Visual Inspection Results",
           style: "sectionHeader",
@@ -224,32 +263,31 @@ if (typeof thermalInspectionData === "string") {
       },
 
       styles: {
-        // Header style
+       
         header: {
-          fontSize: 17,
+          fontSize: 16,
           bold: true,
           alignment: "left",
           margin: [0, 0, 0, 5],
         },
-        // Subheader style
+        
         subheader: {
           fontSize: 14,
           bold: true,
-          margin: [0, 2, 0, 2], // Reduced margin for subheaders
+          margin: [0, 2, 0, 2], 
         },
-        // Section header style (for visual inspection, etc.)
         sectionHeader: {
           fontSize: 16,
           bold: true,
           decoration: "underline",
         },
-        // Table header style
+       
         tableHeader: {
           bold: true,
           fontSize: 12,
           color: "black",
         },
-        // Footer style
+       
         footer: {
           fontSize: 10,
           italics: true,
@@ -258,7 +296,6 @@ if (typeof thermalInspectionData === "string") {
       },
     };
 
-    // Generate and download the PDF
     pdfMake
       .createPdf(docDefinition)
       .download(`inspection_${inspectionData.inspection_id}.pdf`);
@@ -268,7 +305,7 @@ if (typeof thermalInspectionData === "string") {
     <>
       <Topbar />
 
-      <div className="p-4 sm:p-6 md:p-8 bg-[#d9e4ec] min-h-screen">
+      {/* <div className="p-4 sm:p-6 md:p-8 bg-[#d9e4ec] min-h-screen">
         <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-6">
           <h2 className="text-xl sm:text-3xl font-bold text-[#385e72] mb-4 sm:mb-0">
             Inspection Data Preview
@@ -305,15 +342,30 @@ if (typeof thermalInspectionData === "string") {
                 {new Date(inspectionData?.created_at).toLocaleString()}
               </p>
             </div>
-            {inspectionData && (
+          </div>
+
+          {inspectionData && (
+            <div className="flex justify-end mt-4">
               <button
                 onClick={generatePDF}
-                className="px-6 py-3 mt-4 bg-[#385e72] text-white rounded-lg hover:bg-[#6aabd2] transition duration-200 w-full sm:w-auto"
+                className="px-6 py-3 bg-[#385e72] text-white rounded-lg hover:bg-[#6aabd2] transition duration-200 flex items-center gap-2"
               >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M3 3a1 1 0 011-1h4a1 1 0 110 2H5v12h10V4h-3a1 1 0 110-2h4a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V3zm7 5a1 1 0 00-1 1v4.586L7.707 11.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 10-1.414-1.414L11 13.586V9a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
                 Download PDF Report
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -350,7 +402,7 @@ if (typeof thermalInspectionData === "string") {
               })()}
             </div>
           </div>
-          <div className="w-full overflow-auto  rounded-xl ">
+          <div className="w-full   rounded-xl ">
             {!inspectionData ? (
               <p className="text-red-600 font-medium">
                 Loading or no data found.
@@ -381,7 +433,6 @@ if (typeof thermalInspectionData === "string") {
                     </button>
                   </div>
 
-                  {/* Tab Content */}
                   {activeTab === "visual" && (
                     <div>
                       <h4 className="font-semibold text-[#385e72] text-lg">
@@ -433,6 +484,144 @@ if (typeof thermalInspectionData === "string") {
                       </div>
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div> */}
+
+      <div className="p-4 sm:p-6 md:p-8 bg-[#d9e4ec] min-h-screen">
+        <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-6">
+          <h2 className="text-xl sm:text-3xl font-bold text-[#385e72] mb-4 sm:mb-0">
+            Inspection Data Preview
+          </h2>
+        </div>
+
+        <div className="mb-6 bg-white p-5 rounded-xl shadow-md border border-[#b7cfdc]">
+          <h3 className="text-lg sm:text-xl font-semibold text-[#385e72] mb-4">
+            General Information
+          </h3>
+          <div className="space-y-3 text-sm sm:text-base text-gray-800">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <p>
+                <strong>Inspection ID:</strong> {inspectionData?.inspection_id}
+              </p>
+              <p>
+                <strong>Done By:</strong> {inspectionData?.inspection_done_by}
+              </p>
+              <p>
+                <strong>Date:</strong>{" "}
+                {new Date(inspectionData?.inspection_date).toLocaleString()}
+              </p>
+              <p>
+                <strong>Location ID:</strong> {inspectionData?.location_id}
+              </p>
+              <p>
+                <strong>Project ID:</strong> {inspectionData?.project_id}
+              </p>
+              <p>
+                <strong>Type:</strong> {inspectionData?.location_type}
+              </p>
+              <p>
+                <strong>Created At:</strong>{" "}
+                {new Date(inspectionData?.created_at).toLocaleString()}
+              </p>
+            </div>
+          </div>
+
+          {inspectionData && (
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={generatePDF}
+                className="px-6 py-3 bg-[#385e72] text-white rounded-lg hover:bg-[#6aabd2] transition duration-200 flex items-center gap-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M3 3a1 1 0 011-1h4a1 1 0 110 2H5v12h10V4h-3a1 1 0 110-2h4a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V3zm7 5a1 1 0 00-1 1v4.586L7.707 11.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 10-1.414-1.414L11 13.586V9a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Download PDF Report
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="w-full h-full overflow-hidden rounded-xl bg-white p-4  shadow-md ">
+            <button className=" bg-[#385e72] text-white px-4 py-2 rounded-md m-4 text-sm font-semibold">
+              Thermal Inspection Report
+            </button>
+            <div
+              ref={sldRef}
+              className="w-full  overflow-hidden rounded-xl shadow-md border  bg-white"
+            >
+              {(() => {
+                const parsedThermal =
+                  typeof inspectionData?.thermal_inspection === "string"
+                    ? JSON.parse(inspectionData.thermal_inspection)
+                    : inspectionData?.thermal_inspection;
+
+                const locationType = inspectionData?.location_type;
+
+                if (parsedThermal?.status === "notdone") {
+                  if (locationType === "Transformer") return <TcSldPrint />;
+                  else if (locationType === "Fuse") return <FuseSldPrint />;
+                  else if (locationType === "Switch") return <SwitchSldPrint />;
+                }
+
+                if (locationType === "Transformer")
+                  return <TcSldPrint thermalInspection={parsedThermal} />;
+                else if (locationType === "Fuse")
+                  return <FuseSldPrint thermalInspection={parsedThermal} />;
+                else if (locationType === "Switch")
+                  return <SwitchSldPrint thermalInspection={parsedThermal} />;
+
+                return null;
+              })()}
+            </div>
+          </div>
+          <div className="w-full   rounded-xl ">
+            {!inspectionData ? (
+              <p className="text-red-600 font-medium">
+                Loading or no data found.
+              </p>
+            ) : (
+              <div className=" text-sm sm:text-base text-gray-800">
+                <div className="w-full h-full overflow-hidden rounded-xl bg-white p-4  shadow-md ">
+                  <button className=" bg-[#385e72] text-white px-4 py-2 rounded-md m-4 text-sm font-semibold">
+                    Visual Inspection Report
+                  </button>
+                  <div className=" m-3 border rounded-lg sja  p-4">
+                    {activeTab === "visual" && (
+                      <div>
+                        <h4 className="font-semibold text-[#385e72] text-lg">
+                          Visual Inspection
+                        </h4>
+                        <ul className="list-disc pl-5 mt-2 space-y-1">
+                          {Object.entries(inspectionData.visual_inspection).map(
+                            ([key, value]) => (
+                              <li key={key}>
+                                <strong>
+                                  {visualTemplate[key]?.name.replace(/_/g, " ")}
+                                  :
+                                </strong>{" "}
+                                {getOptionText(key, value)}
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                  <br />
                 </div>
               </div>
             )}
