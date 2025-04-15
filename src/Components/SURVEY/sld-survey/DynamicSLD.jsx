@@ -202,7 +202,7 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                       fillColor = "#007BFF";
                       strokeColor = "#003F8A";
                     } else if (wp.id.startsWith("F1")) {
-                      fillColor = "#ff0080";
+                      fillColor = "#00ff08";
                       strokeColor = "#CC8400";
                     } else if (wp.id.startsWith("S1")) {
                       fillColor = "#800080";
@@ -220,7 +220,7 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                       fillColor = "#00CED1";
                       strokeColor = "#008B8B";
                     } else if (wp.id === "DB") {
-                      fillColor = "#ff149d";
+                      fillColor = "#d8e0e6";
                       strokeColor = "#B8860B";
                     }
 
@@ -627,8 +627,8 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                       fillColor = "#007BFF";
                       strokeColor = "#003F8A";
                     } else if (wp.id.startsWith("F1")) {
-                      fillColor = "#ff0080";
-                      strokeColor = "#CC8400";
+                     fillColor = "#00ff08";
+                     strokeColor = "#CC8400";
                     } else if (wp.id.startsWith("S1")) {
                       fillColor = "#800080";
                       strokeColor = "#4B004B";

@@ -376,18 +376,18 @@ const handleSubmit = async (e) => {
 
   if (!locationdata)
     return (
-      <div>
-        <div className="p-6 border border-gray-300 rounded-xl shadow-lg bg-white space-y-6">
+ 
+       <div>
+        <div className="p-6 border border-[#b7cfdc] rounded-xl shadow-lg bg-[#d9e4ec] space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start">
-            <h2 className="text-2xl font-bold text-[#6c63ff] mb-4 sm:mb-0">
-              Visual & Thermal Inspection
+            <h2 className="text-2xl font-bold text-[#385e72] mb-4 sm:mb-0">
+               Visual & Thermal Inspection
             </h2>
           </div>
-          <p className="text-gray-500 text-center font-semibold">
-            Please enter a valid Location ID to submit the visual and thermal
+          <p className="text-[#385e72] text-center font-semibold">
+    Please enter a valid Location ID to submit the visual and thermal
             inspection report.
           </p>
-          
         </div>
       </div>
     );
@@ -401,10 +401,261 @@ const handleSubmit = async (e) => {
   const { point_type, point_no, area_code } = attributes;
 
   return (
-    <div className="border border-gray-300 rounded-xl shadow-md overflow-hidden transition-all duration-500 ease-in-out">
+    // <div className="border border-gray-300 rounded-xl shadow-md overflow-hidden transition-all duration-500 ease-in-out">
+    //   <div
+    //     onClick={() => setshowCardOfInspection(!showCardOfInspection)}
+    //     className="cursor-pointer bg-[#6c63ff] text-white px-6 py-3 flex justify-between items-center text-lg font-semibold"
+    //   >
+    //     <span>Inspection Records</span>
+    //     <span>{showCardOfInspection ? "▲" : "▼"}</span>
+    //   </div>
+
+    //   <div
+    //     className={`transition-all duration-500 ease-in-out ${
+    //       setshowCardOfInspection
+    //         ? "opacity-100 scale-y-100"
+    //         : "opacity-0 scale-y-0 h-0"
+    //     } origin-top transform`}
+    //   >
+    //     {showCardOfInspection && (
+    //       <div className="p-6 rounded-xl shadow-lg bg-white space-y-6">
+    //         <form onSubmit={handleSubmit}>
+    //           <div className=" shadow ">
+    //             <label className="block font-bold mb-1">
+    //               Visual Inspection Records
+    //             </label>
+    //             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    //               <div className="border p-4 rounded-xl shadow bg-white">
+    //                 <label className="block text-sm font-medium text-gray-700 mb-1">
+    //                   Inspected By
+    //                 </label>
+    //                 <input
+    //                   type="text"
+    //                   name="username"
+    //                   value={formData.username || ""}
+    //                   onChange={(e) => handleChange("username", e.target.value)}
+    //                   className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+    //                     errors.username ? "border-red-500" : "border-gray-300"
+    //                   }`}
+    //                   placeholder="Enter your name"
+    //                 />
+    //                 {errors.username && (
+    //                   <p className="text-red-500 text-xs mt-1">
+    //                     {errors.username}
+    //                   </p>
+    //                 )}
+    //               </div>
+
+    //               <div className="border p-4 rounded-xl shadow bg-white">
+    //                 <label className="block text-sm font-medium text-gray-700 mb-1">
+    //                   Inspected Date
+    //                 </label>
+    //                 <input
+    //                   type="date"
+    //                   name="inspectionDateDate"
+    //                   value={formData.inspectionDateDate || ""}
+    //                   onChange={(e) =>
+    //                     handleChange("inspectionDateDate", e.target.value)
+    //                   }
+    //                   className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+    //                     errors.inspectionDateDate
+    //                       ? "border-red-500"
+    //                       : "border-gray-300"
+    //                   }`}
+    //                 />
+    //                 {errors.inspectionDateDate && (
+    //                   <p className="text-sm text-red-500 mt-1">
+    //                     {errors.inspectionDateDate}
+    //                   </p>
+    //                 )}
+    //               </div>
+
+    //               <div className="border p-4 rounded-xl shadow bg-white">
+    //                 <label className="block text-sm font-medium text-gray-700 mb-1">
+    //                   Inspected On
+    //                 </label>
+    //                 <input
+    //                   type="time"
+    //                   name="inspectionDateTime"
+    //                   value={formData.inspectionDateTime || ""}
+    //                   onChange={(e) =>
+    //                     handleChange("inspectionDateTime", e.target.value)
+    //                   }
+    //                   className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+    //                     errors.inspectionDateTime
+    //                       ? "border-red-500"
+    //                       : "border-gray-300"
+    //                   }`}
+    //                 />
+    //                 {errors.inspectionDateTime && (
+    //                   <p className="text-sm text-red-500 mt-1">
+    //                     {errors.inspectionDateTime}
+    //                   </p>
+    //                 )}
+    //               </div>
+
+    //               {InspectionFields.filter((field) =>
+    //                 field.device.includes(selection)
+    //               ).map((field) => (
+    //                 <div
+    //                   key={field.name}
+    //                   className="border p-4 rounded-xl shadow bg-white"
+    //                 >
+    //                   <InfoItem label={field.label} value={""} />
+    //                   {field.type === "radio" ? (
+    //                     <div className="flex flex-wrap gap-3 pt-2">
+    //                       {field.options.map((option) => (
+    //                         <label
+    //                           key={option}
+    //                           className="inline-flex items-center space-x-2"
+    //                         >
+    //                           <input
+    //                             type="radio"
+    //                             name={field.name}
+    //                             value={option}
+    //                             checked={formData[field.name] === option}
+    //                             onChange={() =>
+    //                               handleChange(field.name, option)
+    //                             }
+    //                             className="form-radio text-indigo-600"
+    //                           />
+    //                           <span className="text-sm">{option}</span>
+    //                         </label>
+    //                       ))}
+    //                     </div>
+    //                   ) : (
+    //                     <select
+    //                       name={field.name}
+    //                       value={formData[field.name] || ""}
+    //                       onChange={(e) =>
+    //                         handleChange(field.name, e.target.value)
+    //                       }
+    //                       className={`w-full py-2 text-sm border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+    //                         errors[field.name]
+    //                           ? "border-red-500"
+    //                           : "border-gray-300"
+    //                       }`}
+    //                     >
+    //                       <option value="">Select</option>
+    //                       {field.options.map((option) => (
+    //                         <option key={option} value={option}>
+    //                           {option}
+    //                         </option>
+    //                       ))}
+    //                     </select>
+    //                   )}
+    //                   {errors[field.name] && (
+    //                     <p className="text-red-500 text-xs mt-1">
+    //                       {errors[field.name]}
+    //                     </p>
+    //                   )}
+    //                 </div>
+    //               ))}
+    //             </div>
+    //           </div>
+
+    //           <div className=" mt-6 p-6 pl-0 rounded-xl bg-white shadow">
+    //             <h3 className="text-lg font-semibold text-gray-800 mb-4">
+    //               Thermal Inspection Records
+    //             </h3>
+
+    //             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    //               <div>
+    //                 <label className="block text-sm font-medium text-gray-700 mb-2">
+    //                   Thermal Inspection Done?
+    //                 </label>
+    //                 <select
+    //                   name="thermalInspection"
+    //                   value={thermalEnabled ? "yes" : "no"}
+    //                   onChange={(e) =>
+    //                     setThermalEnabled(e.target.value === "yes")
+    //                   }
+    //                   className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none ${
+    //                     errors.thermal ? "border-red-500" : "border-gray-300"
+    //                   }`}
+    //                 >
+    //                   <option value="no">No</option>
+    //                   <option value="yes">Yes</option>
+    //                 </select>
+    //                 {errors.thermal && (
+    //                   <p className="text-red-500 text-xs mt-2">
+    //                     {errors.thermal}
+    //                   </p>
+    //                 )}
+    //               </div>
+    //             </div>
+
+    //             {thermalEnabled && thermalRecords.length > 0 && (
+    //               <div className="mt-6 border-t pt-6">
+    //                 <h4 className="text-md font-semibold text-gray-800 mb-2">
+    //                   Recorded Points
+    //                 </h4>
+    //                 <ul className="space-y-2 text-sm text-gray-700">
+    //                   {thermalRecords.length > 0 ? (
+    //                     thermalRecords.map((record, idx) => (
+    //                       <li
+    //                         key={idx}
+    //                         className="bg-gray-100 border border-gray-300 rounded-md px-4 py-2"
+    //                       >
+    //                         <span className="font-medium">ID:</span> {record.id}{" "}
+    //                         <span className="ml-4 font-medium">Condition:</span>{" "}
+    //                         <span
+    //                           className={`inline-block px-2 py-1 rounded text-xs font-semibold ${
+    //                             record.condition === "High"
+    //                               ? "bg-red-100 text-red-600"
+    //                               : record.condition === "Medium"
+    //                               ? "bg-yellow-100 text-yellow-700"
+    //                               : "bg-gray-200 text-gray-600"
+    //                           }`}
+    //                         >
+    //                           {record.condition}
+    //                         </span>
+    //                       </li>
+    //                     ))
+    //                   ) : (
+    //                     <li className="text-gray-500 italic">
+    //                       No thermal records found.
+    //                     </li>
+    //                   )}
+    //                 </ul>
+
+    //                 <div className="mt-4 flex justify-end">
+    //                   <button
+    //                     onClick={() => setThermalRecords([])}
+    //                     className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg shadow"
+    //                   >
+    //                     🧹 Clear Thermal Records
+    //                   </button>
+    //                 </div>
+    //               </div>
+    //             )}
+    //           </div>
+
+    //           <div className="mt-6 flex flex-col sm:flex-row gap-2 sm:justify-end">
+    //             <button
+    //               type="submit"
+    //               className={`w-full sm:w-auto px-6 py-2 rounded transition-all duration-200 bg-indigo-600 hover:bg-indigo-700 text-white `}
+    //             >
+    //               Submit Inspection
+    //             </button>
+
+    //             <button
+    //               type="button"
+    //               onClick={handleReset}
+    //               className="w-full sm:w-auto px-6 py-2 bg-gray-500 text-gray-100 rounded hover:bg-gray-400"
+    //             >
+    //               Reset
+    //             </button>
+    //           </div>
+    //         </form>
+    //       </div>
+    //     )}
+    //   </div>
+    // </div>
+    <div className="border border-[#b7cfdc] rounded-xl shadow-md overflow-hidden transition-all duration-500 ease-in-out">
       <div
         onClick={() => setshowCardOfInspection(!showCardOfInspection)}
-        className="cursor-pointer bg-[#6c63ff] text-white px-6 py-3 flex justify-between items-center text-lg font-semibold"
+        className="cursor-pointer bg-[#385e72] text-white px-6 py-3 flex justify-between items-center text-lg font-semibold"
       >
         <span>Inspection Records</span>
         <span>{showCardOfInspection ? "▲" : "▼"}</span>
@@ -418,15 +669,15 @@ const handleSubmit = async (e) => {
         } origin-top transform`}
       >
         {showCardOfInspection && (
-          <div className="p-6 rounded-xl shadow-lg bg-white space-y-6">
+          <div className="p-6 shadow-lg bg-[#d9e4ec] space-y-6">
             <form onSubmit={handleSubmit}>
-              <div className=" shadow ">
-                <label className="block font-bold mb-1">
+              <div className="">
+                <label className="block font-bold mb-2 text-[#385e72]">
                   Visual Inspection Records
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   <div className="border p-4 rounded-xl shadow bg-white">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-[#385e72] mb-1">
                       Inspected By
                     </label>
                     <input
@@ -434,8 +685,8 @@ const handleSubmit = async (e) => {
                       name="username"
                       value={formData.username || ""}
                       onChange={(e) => handleChange("username", e.target.value)}
-                      className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
-                        errors.username ? "border-red-500" : "border-gray-300"
+                      className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6aabd2] ${
+                        errors.username ? "border-red-500" : "border-[#b7cfdc]"
                       }`}
                       placeholder="Enter your name"
                     />
@@ -445,9 +696,9 @@ const handleSubmit = async (e) => {
                       </p>
                     )}
                   </div>
-               
+
                   <div className="border p-4 rounded-xl shadow bg-white">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-[#385e72] mb-1">
                       Inspected Date
                     </label>
                     <input
@@ -457,10 +708,10 @@ const handleSubmit = async (e) => {
                       onChange={(e) =>
                         handleChange("inspectionDateDate", e.target.value)
                       }
-                      className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+                      className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6aabd2] ${
                         errors.inspectionDateDate
                           ? "border-red-500"
-                          : "border-gray-300"
+                          : "border-[#b7cfdc]"
                       }`}
                     />
                     {errors.inspectionDateDate && (
@@ -471,7 +722,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                   <div className="border p-4 rounded-xl shadow bg-white">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-[#385e72] mb-1">
                       Inspected On
                     </label>
                     <input
@@ -481,10 +732,10 @@ const handleSubmit = async (e) => {
                       onChange={(e) =>
                         handleChange("inspectionDateTime", e.target.value)
                       }
-                      className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+                      className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6aabd2] ${
                         errors.inspectionDateTime
                           ? "border-red-500"
-                          : "border-gray-300"
+                          : "border-[#b7cfdc]"
                       }`}
                     />
                     {errors.inspectionDateTime && (
@@ -517,7 +768,7 @@ const handleSubmit = async (e) => {
                                 onChange={() =>
                                   handleChange(field.name, option)
                                 }
-                                className="form-radio text-indigo-600"
+                                className="form-radio text-[#6aabd2]"
                               />
                               <span className="text-sm">{option}</span>
                             </label>
@@ -530,10 +781,10 @@ const handleSubmit = async (e) => {
                           onChange={(e) =>
                             handleChange(field.name, e.target.value)
                           }
-                          className={`w-full py-2 text-sm border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6c63ff] ${
+                          className={`w-full py-2 text-sm border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6aabd2] ${
                             errors[field.name]
                               ? "border-red-500"
-                              : "border-gray-300"
+                              : "border-[#b7cfdc]"
                           }`}
                         >
                           <option value="">Select</option>
@@ -553,15 +804,14 @@ const handleSubmit = async (e) => {
                   ))}
                 </div>
               </div>
-
-              <div className=" mt-6 p-6 pl-0 rounded-xl bg-white shadow">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              <div className="mt-6 p-6 pl-0 border ">
+                <label className="block font-bold mb-2 text-[#385e72]">
                   Thermal Inspection Records
-                </h3>
+                </label>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="border p-4 rounded-xl shadow bg-white">
+                    <label className="block text-sm font-medium text-[#385e72] mb-2">
                       Thermal Inspection Done?
                     </label>
                     <select
@@ -571,7 +821,7 @@ const handleSubmit = async (e) => {
                         setThermalEnabled(e.target.value === "yes")
                       }
                       className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none ${
-                        errors.thermal ? "border-red-500" : "border-gray-300"
+                        errors.thermal ? "border-red-500" : "border-[#b7cfdc]"
                       }`}
                     >
                       <option value="no">No</option>
@@ -586,19 +836,28 @@ const handleSubmit = async (e) => {
                 </div>
 
                 {thermalEnabled && thermalRecords.length > 0 && (
-                  <div className="mt-6 border-t pt-6">
-                    <h4 className="text-md font-semibold text-gray-800 mb-2">
-                      Recorded Points
-                    </h4>
-                    <ul className="space-y-2 text-sm text-gray-700">
-                      {thermalRecords.length > 0 ? (
-                        thermalRecords.map((record, idx) => (
-                          <li
-                            key={idx}
-                            className="bg-gray-100 border border-gray-300 rounded-md px-4 py-2"
-                          >
+                  <div className="mt-6 border-t pt-6  rounded-lg   max-w-3xl ">
+                    <div className="flex items-center justify-between mb-4 max-w-md">
+                      <label className="block font-bold text-[#385e72]">
+                        🔥 Recorded Thermal Points
+                      </label>
+                      <button
+                        onClick={() => setThermalRecords([])}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#385e72] hover:bg-[#6aabd2] text-white text-sm font-medium rounded-lg shadow"
+                      >
+                        🧹 Clear All
+                      </button>
+                    </div>
+
+                    <ul className="space-y-2">
+                      {thermalRecords.map((record, idx) => (
+                        <li
+                          key={idx}
+                          className="flex items-center justify-between bg-white border border-[#b7cfdc] rounded-lg px-4 py-2 shadow-sm text-sm text-[#385e72] max-w-md"
+                        >
+                          <span>
                             <span className="font-medium">ID:</span> {record.id}{" "}
-                            <span className="ml-4 font-medium">Condition:</span>{" "}
+                            — <span className="font-medium">Condition:</span>{" "}
                             <span
                               className={`inline-block px-2 py-1 rounded text-xs font-semibold ${
                                 record.condition === "High"
@@ -610,23 +869,22 @@ const handleSubmit = async (e) => {
                             >
                               {record.condition}
                             </span>
-                          </li>
-                        ))
-                      ) : (
-                        <li className="text-gray-500 italic">
-                          No thermal records found.
-                        </li>
-                      )}
-                    </ul>
+                          </span>
 
-                    <div className="mt-4 flex justify-end">
-                      <button
-                        onClick={() => setThermalRecords([])}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg shadow"
-                      >
-                        🧹 Clear Thermal Records
-                      </button>
-                    </div>
+                          <button
+                            onClick={() =>
+                              setThermalRecords((prev) =>
+                                prev.filter((_, index) => index !== idx)
+                              )
+                            }
+                            className="text-red-500 hover:text-red-700 text-sm font-bold ml-4"
+                            title="Remove"
+                          >
+                            ❌
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </div>
@@ -634,7 +892,7 @@ const handleSubmit = async (e) => {
               <div className="mt-6 flex flex-col sm:flex-row gap-2 sm:justify-end">
                 <button
                   type="submit"
-                  className={`w-full sm:w-auto px-6 py-2 rounded transition-all duration-200 bg-indigo-600 hover:bg-indigo-700 text-white `}
+                  className="px-6 py-2 bg-[#385e72] text-white font-semibold rounded-lg shadow-md hover:bg-[#6aabd2]"
                 >
                   Submit Inspection
                 </button>
@@ -642,7 +900,7 @@ const handleSubmit = async (e) => {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="w-full sm:w-auto px-6 py-2 bg-gray-500 text-gray-100 rounded hover:bg-gray-400"
+                  className="w-full sm:w-auto px-6 py-2 bg-gray-500 text-gray-100  rounded-lg shadow-md  hover:bg-gray-400"
                 >
                   Reset
                 </button>
