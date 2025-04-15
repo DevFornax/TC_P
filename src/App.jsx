@@ -1,18 +1,16 @@
+import "./App.css";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-
 import SurveyDashboard from "./Components/SURVEY/SurveyDashboard";
 import EntryPage from "./Components/EntryPage";
 import DataComponent from "./Components/DASHBOARD/DataComponent";
-import GeneratePDF from "./Components/DASHBOARD/sld-downlaod/GeneratePDF"
- import Login from "./Components/Login";
+import GeneratePDF from "./Components/DASHBOARD/sld-downlaod/GeneratePDF";
+import Login from "./Components/Login";
 import PrivateRoute from "./Components/PrivateRoute";
 
 function App() {
   return (
     <BrowserRouter>
-    
-
       <Routes>
         <Route path="/login" element={<Login />} />
 
@@ -28,7 +26,7 @@ function App() {
           path="/inspection"
           element={
             <PrivateRoute>
-              <SurveyDashboard/>
+              <SurveyDashboard />
             </PrivateRoute>
           }
         />
@@ -45,11 +43,10 @@ function App() {
           path="/generate-pdf"
           element={
             <PrivateRoute>
-<GeneratePDF />
+              <GeneratePDF />
             </PrivateRoute>
           }
         />
-
       </Routes>
     </BrowserRouter>
   );

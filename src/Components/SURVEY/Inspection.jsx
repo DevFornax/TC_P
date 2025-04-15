@@ -16,7 +16,7 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
   const [thermalRecords, setThermalRecords] = useState([]);
   const [showCardOfInspection, setshowCardOfInspection] = useState(true);
 
-  console.log(selection, "inside the inspection");
+
   useEffect(() => {
     if (!thermalEnabled) return;
     if (deviceId?.id && deviceId?.condition) {
