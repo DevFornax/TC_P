@@ -1,16 +1,19 @@
 
-
-// import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect, useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 
 // function TopBar() {
 //   const navigate = useNavigate();
 //   const user = JSON.parse(localStorage.getItem("user"));
-//   const [isSidebarOpen, setSidebarOpen] = useState(false);
+//   const [isDropdownOpen, setDropdownOpen] = useState(false);
+//   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+
+//   const dropdownRef = useRef(null);
 
 //   const handleHomeClick = () => {
 //     navigate("/");
-//     setSidebarOpen(false);
+//     setDropdownOpen(false);
+//     setShowMobileSidebar(false);
 //   };
 
 //   const handleLogout = () => {
@@ -18,89 +21,131 @@
 //     localStorage.removeItem("user");
 //     localStorage.removeItem("token");
 //     navigate("/login");
-//     setSidebarOpen(false);
+//     setDropdownOpen(false);
+//     setShowMobileSidebar(false);
 //   };
 
 //   useEffect(() => {
-//     if (isSidebarOpen) {
-//       document.body.classList.add("overflow-hidden");
-//     } else {
-//       document.body.classList.remove("overflow-hidden");
-//     }
-//     return () => document.body.classList.remove("overflow-hidden");
-//   }, [isSidebarOpen]);
+//     const handleClickOutside = (e) => {
+//       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+//         setDropdownOpen(false);
+//       }
+//     };
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () => document.removeEventListener("mousedown", handleClickOutside);
+//   }, []);
 
 //   return (
 //     <>
-//       {/* Top Navbar */}
-//       <div className="w-full bg-[#6c63ff] text-white px-5 py-4 flex items-center justify-between shadow-md z-30 relative">
-//         {/* Mobile Menu Toggle */}
-//         <button
-//           className="md:hidden text-3xl"
-//           onClick={() => setSidebarOpen(!isSidebarOpen)}
-//         >
-//           {isSidebarOpen ? "✖" : "☰"}
-//         </button>
-
-//         {/* Logo/Brand */}
-//         <p className="text-xl md:text-2xl font-bold text-center w-full md:w-auto md:text-left">
+//       {/* Top Bar */}
+//       <header className="w-full bg-[#385e72] text-white shadow-md z-50 px-6 py-3 flex justify-between items-center relative">
+//         {/* Brand */}
+//         <div className="text-2xl font-semibold tracking-wide">
 //           Fornax ThermoVis
-//         </p>
+//         </div>
 
-//         {/* Desktop Actions */}
-//         <div className="hidden md:flex items-center space-x-6">
-//           {user && <span className="text-md">👤 {user.username}</span>}
-//           <span
-//             onClick={handleHomeClick}
-//             className="cursor-pointer hover:underline"
+//         {/* Hamburger for mobile */}
+//         <div className="lg:hidden">
+//           <button
+//             onClick={() => setShowMobileSidebar(true)}
+//             className="bg-[#6aabd2] text-[#385e72] px-3 py-2 rounded-md font-medium"
 //           >
-//             Home
-//           </span>
+//             ☰
+//           </button>
+//         </div>
+
+//         {/* Profile Dropdown - only for large screens */}
+//         <div className="hidden lg:block relative" ref={dropdownRef}>
 //           {user && (
 //             <button
-//               onClick={handleLogout}
-//               className="bg-white text-[#6c63ff] px-3 py-1 rounded-md font-semibold hover:bg-opacity-90 transition"
+//               onClick={() => setDropdownOpen((prev) => !prev)}
+//               className="flex items-center space-x-2 bg-[#6aabd2] hover:bg-[#b7cfdc] text-[#385e72] px-4 py-2 rounded-full font-medium transition duration-200 shadow-sm"
 //             >
-//               Logout
+//               <span className="font-semibold">{user.username}</span>
+//               <svg
+//                 className={`w-4 h-4 transition-transform ${
+//                   isDropdownOpen ? "rotate-180" : ""
+//                 }`}
+//                 fill="none"
+//                 stroke="currentColor"
+//                 viewBox="0 0 24 24"
+//                 xmlns="http://www.w3.org/2000/svg"
+//               >
+//                 <path
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                   strokeWidth={2}
+//                   d="M19 9l-7 7-7-7"
+//                 />
+//               </svg>
 //             </button>
 //           )}
-//         </div>
-//       </div>
 
-//       {/* Sidebar (Mobile) */}
-//       <div
-//         className={`fixed top-0 left-0 h-full w-64 bg-white text-black shadow-xl z-40 transform transition-transform duration-300 ${
-//           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-//         }`}
-//       >
-//         <div className="p-6 space-y-6">
-//           <p className="text-xl font-bold border-b pb-3">Navigation</p>
-//           {user && (
-//             <div className="text-md font-medium">👤 {user.username}</div>
+//           {isDropdownOpen && (
+//             <div className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-xl z-50 overflow-hidden animate-fade-in-up">
+//               <button
+//                 onClick={handleHomeClick}
+//                 className="w-full text-left px-4 py-3 text-sm text-[#385e72] hover:bg-[#d9e4ec] transition"
+//               >
+//                 🏠 Home
+//               </button>
+//               <button
+//                 onClick={() => {
+//                   navigate("/data-inspection");
+//                   setShowMobileSidebar(false);
+//                 }}
+//                 className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
+//               >
+//                 📊 Dashboard
+//               </button>{" "}
+//               <button
+//                 onClick={handleLogout}
+//                 className="w-full text-left px-4 py-3 text-sm text-[#385e72] hover:bg-[#d9e4ec] transition"
+//               >
+//                 🔒 Logout
+//               </button>
+//             </div>
 //           )}
+//         </div>
+//       </header>
+
+//       {showMobileSidebar && (
+//         <div className="lg:hidden fixed top-0 left-0 w-64 h-full bg-[#d9e4ec] shadow-md z-50 p-6 space-y-4">
+//           <div className="flex justify-between items-center mb-6">
+//             <h2 className="text-lg font-bold text-[#385e72]">
+//               Hello, {user?.username}
+//             </h2>
+//             <button
+//               onClick={() => setShowMobileSidebar(false)}
+//               className="text-gray-600 text-xl"
+//             >
+//               ✕
+//             </button>
+//           </div>
+
 //           <button
 //             onClick={handleHomeClick}
-//             className="block w-full text-left text-gray-800 hover:text-[#6c63ff] transition"
+//             className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
 //           >
-//             Home
+//             🏠 Home
 //           </button>
-//           {user && (
-//             <button
-//               onClick={handleLogout}
-//               className="block w-full text-left text-gray-800 hover:text-[#6c63ff] transition"
-//             >
-//               Logout
-//             </button>
-//           )}
-//         </div>
-//       </div>
+//           <button
+//             onClick={() => {
+//               navigate("/data-inspection");
+//               setShowMobileSidebar(false);
+//             }}
+//             className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
+//           >
+//             📊 Dashboard
+//           </button>
 
-      
-//       {isSidebarOpen && (
-//         <div
-//           className="fixed inset-0 bg-black opacity-40 z-30"
-//           onClick={() => setSidebarOpen(false)}
-//         />
+//           <button
+//             onClick={handleLogout}
+//             className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
+//           >
+//             🔒 Logout
+//           </button>
+//         </div>
 //       )}
 //     </>
 //   );
@@ -108,110 +153,6 @@
 
 // export default TopBar;
 
-
-// import React, { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-
-// function TopBar() {
-//   const navigate = useNavigate();
-//   const user = JSON.parse(localStorage.getItem("user"));
-//   const [isSidebarOpen, setSidebarOpen] = useState(false);
-
-//   const handleHomeClick = () => {
-//     navigate("/");
-//     setSidebarOpen(false);
-//   };
-
-//   const handleLogout = () => {
-//     localStorage.removeItem("isLoggedIn");
-//     localStorage.removeItem("user");
-//     localStorage.removeItem("token");
-//     navigate("/login");
-//     setSidebarOpen(false);
-//   };
-
-//   useEffect(() => {
-//     document.body.classList.toggle("overflow-hidden", isSidebarOpen);
-//     return () => document.body.classList.remove("overflow-hidden");
-//   }, [isSidebarOpen]);
-
-//   return (
-//     <>
-      
-//       <div className="w-full bg-[#385e72] text-white px-5 py-4 flex items-center justify-between shadow-md z-30 relative">
-//         {/* Mobile Menu Toggle */}
-//         <button
-//           className="md:hidden text-3xl"
-//           onClick={() => setSidebarOpen(!isSidebarOpen)}
-//         >
-//           {isSidebarOpen ? "✖" : "☰"}
-//         </button>
-
-//         {/* Logo/Brand */}
-//         <p className="text-xl md:text-2xl font-bold text-center w-full md:w-auto md:text-left">
-//           Fornax ThermoVis
-//         </p>
-
-//         {/* Desktop Actions */}
-//         <div className="hidden md:flex items-center space-x-6">
-//           {user && <span className="text-md">👤 {user.username}</span>}
-//           <span
-//             onClick={handleHomeClick}
-//             className="cursor-pointer hover:underline"
-//           >
-//             Home
-//           </span>
-//           {user && (
-//             <button
-//               onClick={handleLogout}
-//               className="bg-[#d9e4ec] text-[#385e72] px-3 py-1 rounded-md font-semibold hover:bg-[#b7cfdc] transition"
-//             >
-//               Logout
-//             </button>
-//           )}
-//         </div>
-//       </div>
-
-//       {/* Sidebar (Mobile) */}
-//       <div
-//         className={`fixed top-0 left-0 h-full w-64 bg-[#d9e4ec] text-[#385e72] shadow-xl z-40 transform transition-transform duration-300 ${
-//           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-//         }`}
-//       >
-//         <div className="p-6 space-y-6">
-//           <p className="text-xl font-bold border-b pb-3">Navigation</p>
-//           {user && (
-//             <div className="text-md font-medium">👤 {user.username}</div>
-//           )}
-//           <button
-//             onClick={handleHomeClick}
-//             className="block w-full text-left hover:text-[#6aabd2] transition"
-//           >
-//             Home
-//           </button>
-//           {user && (
-//             <button
-//               onClick={handleLogout}
-//               className="block w-full text-left hover:text-[#6aabd2] transition"
-//             >
-//               Logout
-//             </button>
-//           )}
-//         </div>
-//       </div>
-
-//       {/* Overlay */}
-//       {isSidebarOpen && (
-//         <div
-//           className="fixed inset-0 bg-black opacity-40 z-30"
-//           onClick={() => setSidebarOpen(false)}
-//         />
-//       )}
-//     </>
-//   );
-// }
-
-// export default TopBar;
 
 
 import React, { useState, useEffect, useRef } from "react";
@@ -220,13 +161,16 @@ import { useNavigate } from "react-router-dom";
 function TopBar() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-
-  const dropdownRef = useRef(null);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
 
   const handleHomeClick = () => {
     navigate("/");
-    setDropdownOpen(false);
+    setShowMobileSidebar(false);
+  };
+
+  const handleDashboardClick = () => {
+    navigate("/data-inspection");
+    setShowMobileSidebar(false);
   };
 
   const handleLogout = () => {
@@ -234,73 +178,80 @@ function TopBar() {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     navigate("/login");
-    setDropdownOpen(false);
+    setShowMobileSidebar(false);
   };
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
-    <header className="w-full bg-[#385e72] text-white shadow-md z-50 px-6 py-3 flex justify-between items-center relative">
-      {/* Brand */}
-      <div className="text-2xl font-semibold tracking-wide">
-        Fornax ThermoVis
-      </div>
+    <>
 
-      {/* Profile Dropdown */}
-      <div className="relative" ref={dropdownRef}>
-        {user && (
+      <header className="w-full bg-[#385e72] text-white shadow-md z-50 px-6 py-3 flex justify-between items-center relative">
+
+        <div className="text-2xl font-semibold tracking-wide">
+          Fornax ThermoVis
+        </div>
+
+ 
+        <div>
           <button
-            onClick={() => setDropdownOpen((prev) => !prev)}
-            className="flex items-center space-x-2 bg-[#6aabd2] hover:bg-[#b7cfdc] text-[#385e72] px-4 py-2 rounded-full font-medium transition duration-200 shadow-sm"
+            onClick={() => setShowMobileSidebar(true)}
+            className="bg-[#6aabd2] text-[#385e72] px-3 py-2 rounded-md font-medium"
           >
-            <span className="font-semibold">{user.username}</span>
-            <svg
-              className={`w-4 h-4 transition-transform ${
-                isDropdownOpen ? "rotate-180" : ""
-              }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+            ☰
           </button>
-        )}
+        </div>
+      </header>
 
-        {/* Dropdown Menu */}
-        {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-xl z-50 overflow-hidden animate-fade-in-up">
+      
+      {showMobileSidebar && (
+        <div className="fixed top-0 left-0 w-64 h-full bg-[#d9e4ec] shadow-md z-50 p-6 space-y-4 animate-slide-in">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-lg font-bold text-[#385e72]">
+              Hello, {user?.username}
+            </h2>
             <button
-              onClick={handleHomeClick}
-              className="w-full text-left px-4 py-3 text-sm text-[#385e72] hover:bg-[#d9e4ec] transition"
+              onClick={() => setShowMobileSidebar(false)}
+              className="text-gray-600 text-xl"
             >
-              🏠 Home
-            </button>
-            <button
-              onClick={handleLogout}
-              className="w-full text-left px-4 py-3 text-sm text-[#385e72] hover:bg-[#d9e4ec] transition"
-            >
-              🔒 Logout
+              ✕
             </button>
           </div>
-        )}
-      </div>
-    </header>
+
+        
+          <button
+            onClick={handleHomeClick}
+            className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
+          >
+            🏠 Home
+          </button>
+          <button
+            onClick={handleDashboardClick}
+            className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
+          >
+            📊 Dashboard
+          </button>
+          <button
+            onClick={handleLogout}
+            className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
+          >
+            🔒 Logout
+          </button>
+        </div>
+      )}
+
+      
+      <style>
+        {`
+          @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+          }
+
+          .animate-slide-in {
+            animation: slideIn 0.3s ease-out;
+          }
+        `}
+      </style>
+    </>
   );
 }
 
