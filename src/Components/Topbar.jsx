@@ -1,4 +1,3 @@
-
 // import React, { useState, useEffect, useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 
@@ -153,36 +152,67 @@
 
 // export default TopBar;
 
-
-
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 function TopBar() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
+
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+  const [closingSidebar, setClosingSidebar] = useState(false);
+  const sidebarRef = useRef(null);
+
+  const openSidebar = () => {
+    setClosingSidebar(false);
+    setShowMobileSidebar(true);
+  };
+
+  const closeSidebar = () => {
+    setClosingSidebar(true);
+    setTimeout(() => {
+      setShowMobileSidebar(false);
+    }, 300);
+  };
 
   const handleHomeClick = () => {
     navigate("/");
-    setShowMobileSidebar(false);
+    closeSidebar();
   };
 
   const handleDashboardClick = () => {
     navigate("/data-inspection");
-    setShowMobileSidebar(false);
+    closeSidebar();
   };
+
   const handleInspectionToolClick = () => {
     navigate("/inspection");
-    setShowMobileSidebar(false);
+    closeSidebar();
   };
+
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     navigate("/login");
-    setShowMobileSidebar(false);
+    closeSidebar();
   };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        closeSidebar();
+      }
+    }
+
+    if (showMobileSidebar && !closingSidebar) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showMobileSidebar, closingSidebar]);
 
   return (
     <>
@@ -193,7 +223,7 @@ function TopBar() {
 
         <div>
           <button
-            onClick={() => setShowMobileSidebar(true)}
+            onClick={openSidebar}
             className="bg-[#6aabd2] text-[#385e72] px-3 py-2 rounded-md font-medium"
           >
             ☰
@@ -202,15 +232,17 @@ function TopBar() {
       </header>
 
       {showMobileSidebar && (
-        <div className="fixed top-0 left-0 w-64 h-full bg-[#d9e4ec] shadow-md z-50 p-6 space-y-4 animate-slide-in">
+        <div
+          ref={sidebarRef}
+          className={`fixed top-0 left-0 sm:w-64 w-72 h-full bg-[#d9e4ec] shadow-md z-50 p-6 space-y-4 ${
+            closingSidebar ? "animate-slide-out" : "animate-slide-in"
+          }`}
+        >
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-bold text-[#385e72]">
               Hello, {user?.username}
             </h2>
-            <button
-              onClick={() => setShowMobileSidebar(false)}
-              className="text-gray-600 text-xl"
-            >
+            <button onClick={closeSidebar} className="text-gray-600 text-xl">
               ✕
             </button>
           </div>
@@ -249,8 +281,17 @@ function TopBar() {
             to { transform: translateX(0); }
           }
 
+          @keyframes slideOut {
+            from { transform: translateX(0); }
+            to { transform: translateX(-100%); }
+          }
+
           .animate-slide-in {
-            animation: slideIn 0.3s ease-out;
+            animation: slideIn 0.3s ease-out forwards;
+          }
+
+          .animate-slide-out {
+            animation: slideOut 0.3s ease-in forwards;
           }
         `}
       </style>

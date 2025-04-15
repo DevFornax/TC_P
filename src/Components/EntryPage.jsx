@@ -89,12 +89,11 @@ export default function EntryPage() {
 
   return (
     <div className="min-h-screen bg-[#d9e4ec] flex flex-col items-center justify-center px-6 py-10">
-      {/* Heading */}
+    
       <h1 className="text-3xl md:text-4xl font-bold text-[#385e72] text-center mb-10">
         Welcome to <span className="text-[#6aabd2]">Fornax ThermoVis</span>
       </h1>
 
-      {/* Card Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full max-w-4xl">
         {cards.map((card, index) => (
           <div

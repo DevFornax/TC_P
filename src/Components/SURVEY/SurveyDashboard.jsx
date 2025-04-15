@@ -106,7 +106,7 @@ function SurveyDashboard() {
                 block: "start",
               });
             }}
-            className="w-12 h-12 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg flex items-center justify-center transition duration-300 ease-in-out"
+            className="w-12 h-12 bg-[#385e72] hover:bg-[#385e72] text-white rounded-full shadow-lg flex items-center justify-center transition duration-300 ease-in-out"
             aria-label="Scroll to SLD"
           >
             ↑
@@ -118,7 +118,7 @@ function SurveyDashboard() {
         <div className="flex flex-col md:flex-row gap-4 mt-4">
           <div
             ref={sldRef}
-            className="w-full bg-[#d9e4ec] md:w-1/3 flex flex-col md:max-h-[calc(100vh-100px)] md:sticky md:top-4 overflow-auto border border-gray-300 rounded-xl shadow-lg"
+            className="w-full bg-white md:w-1/3 flex flex-col md:max-h-[calc(100vh-100px)] md:sticky md:top-4 overflow-auto border border-gray-300 rounded-xl shadow-lg"
           >
             <DynamicSld
               locationData={locationData}

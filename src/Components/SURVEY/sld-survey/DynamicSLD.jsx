@@ -115,7 +115,7 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
         </>
       ) : (
         <>
-          <div className="bg-[#d9e4ec]">
+          <div className="bg-white">
             <h2 className="text-2xl font-bold  text-[#385e72] mt-2 ml-4">
               {selection}
             </h2>
@@ -141,7 +141,7 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                   width="100%"
                   height="100%"
                   viewBox="0 0 700 700"
-                  className="bg-[#d9e4ec] rounded shadow"
+                  className="bg-white rounded shadow"
                 >
                   <g
                     transform={`translate(${offset.x}, ${offset.y}) scale(${zoom})`}
@@ -472,7 +472,7 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                   width="100%"
                   height="100%"
                   viewBox="0 0 700 700"
-                  className="bg-[#d9e4ec] rounded shadow"
+                  className="bg-white rounded shadow"
                 >
                   <g
                     transform={`translate(${offset.x}, ${offset.y}) scale(${zoom})`}
@@ -641,7 +641,7 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                   width="100%"
                   height="100%"
                   viewBox="0 0 700 700"
-                  className="bg-[#d9e4ec] rounded shadow"
+                  className="bg-white rounded shadow"
                 >
                   <g
                     transform={`translate(${offset.x}, ${offset.y}) scale(${zoom})`}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import html2canvas from "html2canvas";
@@ -7,7 +7,7 @@ import TcSldPrint from "./TcSldPrint";
 import FuseSldPrint from "./FuseSldPrint";
 import SwitchSldPrint from "./SwitchSldPrint";
 import { visualTemplate } from "../../utils/VisualTemplateforVisualFields";
-import Topbar from "../../Topbar"
+import Topbar from "../../Topbar";
 
 pdfMake.vfs = pdfFonts.vfs;
 
@@ -33,10 +33,11 @@ pdfMake.fonts = {
 };
 
 const GeneratePDF = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const [inspectionData, setInspectionData] = useState(null);
   const sldRef = useRef(null);
-const [activeTab, setActiveTab] = useState("visual");
+  const [activeTab, setActiveTab] = useState("visual");
   useEffect(() => {
     if (location.state) {
       setInspectionData(location.state.inspectionData);
@@ -50,27 +51,25 @@ const [activeTab, setActiveTab] = useState("visual");
     return status;
   };
 
-  if (!inspectionData) return
-let thermalInspectionData = inspectionData.thermal_inspection;
+  if (!inspectionData) return;
+  let thermalInspectionData = inspectionData.thermal_inspection;
 
-if (typeof thermalInspectionData === "string") {
-  try {
-    thermalInspectionData = JSON.parse(thermalInspectionData);
-  } catch (error) {
-    thermalInspectionData = { status: "notdone" };
+  if (typeof thermalInspectionData === "string") {
+    try {
+      thermalInspectionData = JSON.parse(thermalInspectionData);
+    } catch (error) {
+      thermalInspectionData = { status: "notdone" };
+    }
   }
-}
 
   const getOptionText = (point, value) => {
     const option = visualTemplate[point]?.options[value];
     return option ? option : "N/A";
   };
 
-
   const generatePDF = async () => {
     if (!inspectionData) return;
 
-  
     const visualInspectionData = Object.entries(
       inspectionData.visual_inspection || {}
     ).map(([templateId, selectedValue]) => {
@@ -86,7 +85,6 @@ if (typeof thermalInspectionData === "string") {
       };
     });
 
-  
     const chunkedVisualRows = [];
     for (let i = 0; i < visualInspectionData.length; i += 2) {
       const left = visualInspectionData[i];
@@ -100,7 +98,6 @@ if (typeof thermalInspectionData === "string") {
       ]);
     }
 
-  
     let sldImage = null;
     if (sldRef.current) {
       const canvas = await html2canvas(sldRef.current, {
@@ -117,7 +114,6 @@ if (typeof thermalInspectionData === "string") {
         minutes < 10 ? "0" + minutes : minutes
       } ${suffix}`;
 
-     
       let partOfDay = "";
       if (hours >= 5 && hours < 12) {
         partOfDay = "Morning";
@@ -138,38 +134,6 @@ if (typeof thermalInspectionData === "string") {
           text: "Inspection Report",
           style: "header",
         },
-
-        // {
-        //   text: `Inspection ID: ${inspectionData.inspection_id}`,
-        //   margin: [0, 2, 0, 2],
-        // },
-        // {
-        //   text: `Inspection Done By: ${inspectionData.inspection_done_by}`,
-        //   margin: [0, 2, 0, 2],
-        // },
-        // {
-        //   text: `Date: ${new Date(
-        //     inspectionData.inspection_date
-        //   ).toLocaleDateString()}`,
-        //   margin: [0, 2, 0, 2],
-        // },
-        // {
-        //   // Using the formatTime function to format the time
-        //   text: `Time: ${formatTime(new Date(inspectionData.inspection_date))}`,
-        //   margin: [0, 2, 0, 2], // Reduced margin
-        // },
-        // {
-        //   text: `Location Id: ${inspectionData.location_id}`,
-        //   margin: [0, 2, 0, 2],
-        // },
-        // {
-        //   text: `Location Type: ${inspectionData.location_type}`,
-        //   margin: [0, 2, 0, 2],
-        // },
-        // {
-        //   text: `Project ID: ${inspectionData.project_id}`,
-        //   margin: [0, 2, 0, 10],
-        // },
 
         {
           table: {
@@ -236,7 +200,6 @@ if (typeof thermalInspectionData === "string") {
           },
         },
 
-        // SLD Image Section
         sldImage
           ? {
               text: "Thermal Inspection Results",
@@ -263,31 +226,30 @@ if (typeof thermalInspectionData === "string") {
       },
 
       styles: {
-       
         header: {
           fontSize: 16,
           bold: true,
           alignment: "left",
           margin: [0, 0, 0, 5],
         },
-        
+
         subheader: {
           fontSize: 14,
           bold: true,
-          margin: [0, 2, 0, 2], 
+          margin: [0, 2, 0, 2],
         },
         sectionHeader: {
           fontSize: 16,
           bold: true,
           decoration: "underline",
         },
-       
+
         tableHeader: {
           bold: true,
           fontSize: 12,
           color: "black",
         },
-       
+
         footer: {
           fontSize: 10,
           italics: true,
@@ -496,6 +458,12 @@ if (typeof thermalInspectionData === "string") {
           <h2 className="text-xl sm:text-3xl font-bold text-[#385e72] mb-4 sm:mb-0">
             Inspection Data Preview
           </h2>
+          <button
+            onClick={() => navigate("/data-inspection")}
+            className="bg-[#6aabd2] text-[#385e72] px-4 py-2 rounded-md font-medium hover:bg-[#4c94c2] transition-all"
+          >
+            🔙 Go Back
+          </button>
         </div>
 
         <div className="mb-6 bg-white p-5 rounded-xl shadow-md border border-[#b7cfdc]">

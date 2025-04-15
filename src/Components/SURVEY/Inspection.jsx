@@ -16,7 +16,7 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
   const [thermalRecords, setThermalRecords] = useState([]);
   const [showCardOfInspection, setshowCardOfInspection] = useState(true);
 
-  console.log(selection, "inside the inspection")
+  console.log(selection, "inside the inspection");
   useEffect(() => {
     if (!thermalEnabled) return;
     if (deviceId?.id && deviceId?.condition) {
@@ -88,7 +88,6 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
     }));
   };
 
-
   const validate = () => {
     const newErrors = {};
 
@@ -114,7 +113,6 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
       newErrors.inspectionDateTime = "Inspection time is required.";
     }
 
-   
     if (formData.inspectionDateDate && formData.inspectionDateTime) {
       const inspectionDateTime = `${formData.inspectionDateDate}T${formData.inspectionDateTime}`;
       if (!inspectionDateTime.includes("T")) {
@@ -122,7 +120,6 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
           "Inspection date & time are required in valid format.";
       }
     }
-    
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -140,252 +137,133 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
     setThermalEnabled(false);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // console.log(selection);
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
+    if (validate()) {
+      const selectedDevice = selection;
 
-  //   if (validate()) {
-  //     const compressedVisual = compressVisualData(formData);
+      const filteredInspectionFields = InspectionFields.filter((field) =>
+        field.device.includes(selectedDevice)
+      );
 
-  //     const LocationID = locationdata?.id;
-  //     const keysToAppendLocation = [
-  //       "TDB",
-  //       "TDU1",
-  //       "TDR",
-  //       "TDU3",
-  //       "TDY",
-  //       "TDN",
-  //       "TDU2",
-      
-  //     ];
-  //     let thermalInspection;
-
-  //     const conditionMap = {
-  //       Medium: "M",
-  //       High: "H",
-  //       Normal: "N",
-  //     };
-
-  //     if (thermalEnabled) {
-  //       if (thermalRecords.length > 0) {
-  //         thermalInspection = Object.fromEntries(
-  //           thermalRecords.map((point) => {
-  //             const key = keysToAppendLocation.includes(point.id)
-  //               ? `${point.id}${LocationID}`
-  //               : point.id;
-
-  //             const shortCondition =
-  //               conditionMap[point.condition] || point.condition;
-
-  //             return [key, shortCondition];
-  //           })
-  //         );
-  //       } else {
-  //         alert("⚠️ Thermal inspection is enabled but no data selected.");
-  //         return;
-  //       }
-  //     } else {
-  //       thermalInspection = JSON.stringify({ status: "notdone" });
-  //     }
-
-  //     const minimalLocationData = {
-  //       id: locationdata?.id,
-  //       parent_id: locationdata?.parent_id,
-  //       project_id: locationdata?.project_id,
-  //       project_name: locationdata?.project_name,
-  //       substation_id: locationdata?.substation_id,
-  //       substation_name: locationdata?.substation_name,
-  //       attributes: {
-  //         point_type: locationdata?.attributes?.point_type,
-  //         point_no: locationdata?.attributes?.point_no,
-  //         area_code: locationdata?.attributes?.area_code,
-  //         ulid: locationdata?.attributes?.ulid,
-  //       },
-  //     };
-  //     const finalData = {
-  //       username: formData.username,
-  //       inspectionDate: formData.inspectionDate,
-  //       locationdata: minimalLocationData,
-  //       visualInspection: compressedVisual,
-  //       thermalInspection,
-  //     };
-
-  //     console.log("✅ Final Submission Payload:", finalData);
-  //     const token = localStorage.getItem("token");
-  //     const API_URL = import.meta.env.VITE_API_BASE_URL;
-
-  //     try {
-  //       const response = await fetch(`${API_URL}/submit-inspection`, {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         body: JSON.stringify(finalData),
-  //       });
-
-  //       const result = await response.json();
-
-  //       if (response.ok) {
-  //         alert("Inspection submitted successfully!");
-  //         console.log("Submission Result:", result);
-  //         setThermalRecords([]);
-  //         handleReset();
-  //         onSubmit();
-  //       } else {
-  //         alert(`❌ Error: ${result.error}`);
-  //         console.log("Error submitting inspection data:", result);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error submitting inspection data:", error);
-  //       alert(
-  //         "⚠️ An error occurred while submitting the data. Please try again."
-  //       );
-  //     }
-  //   } else {
-  //     console.log("❌ Validation failed:", errors);
-  //   }
-  // };
-
- 
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  if (validate()) {
-    const selectedDevice = selection;
-
-    const filteredInspectionFields = InspectionFields.filter(
-      (field) => field.device.includes(selectedDevice)
-    );
-
-   const filteredFormData = {};
-   filteredInspectionFields.forEach((field) => {
-     filteredFormData[field.name] = formData[field.name] || ""; // ensure it's included even if empty
-   });
-
-
-    
-    const compressedVisual = compressVisualData(filteredFormData);
-
-    const LocationID = locationdata?.id;
-    const keysToAppendLocation = [
-      "TDB",
-      "TDU1",
-      "TDR",
-      "TDU3",
-      "TDY",
-      "TDN",
-      "TDU2",
-    ];
-    let thermalInspection;
-
-    const conditionMap = {
-      Medium: "M",
-      High: "H",
-      Normal: "N",
-    };
-
-    if (thermalEnabled) {
-      if (thermalRecords.length > 0) {
-        thermalInspection = Object.fromEntries(
-          thermalRecords.map((point) => {
-            const key = keysToAppendLocation.includes(point.id)
-              ? `${point.id}${LocationID}`
-              : point.id;
-
-            const shortCondition =
-              conditionMap[point.condition] || point.condition;
-
-            return [key, shortCondition];
-          })
-        );
-      } else {
-        alert("⚠️ Thermal inspection is enabled but no data selected.");
-        return;
-      }
-    } else {
-      thermalInspection = JSON.stringify({ status: "notdone" });
-    }
-
-    
-    const minimalLocationData = {
-      id: locationdata?.id,
-      parent_id: locationdata?.parent_id,
-      project_id: locationdata?.project_id,
-      project_name: locationdata?.project_name,
-      substation_id: locationdata?.substation_id,
-      substation_name: locationdata?.substation_name,
-      attributes: {
-        point_type: locationdata?.attributes?.point_type,
-        point_no: locationdata?.attributes?.point_no,
-        area_code: locationdata?.attributes?.area_code,
-        ulid: locationdata?.attributes?.ulid,
-      },
-    };
-
-  
-    const finalData = {
-      username: formData.username,
-      inspectionDate: formData.inspectionDate,
-      locationdata: minimalLocationData,
-      visualInspection: compressedVisual,
-      thermalInspection,
-    };
-
-    console.log("✅ Final Submission Payload:", finalData);
-
-    const token = localStorage.getItem("token");
-    const API_URL = import.meta.env.VITE_API_BASE_URL;
-
-    try {
-      
-      const response = await fetch(`${API_URL}/submit-inspection`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(finalData),
+      const filteredFormData = {};
+      filteredInspectionFields.forEach((field) => {
+        filteredFormData[field.name] = formData[field.name] || "";
       });
 
-      const result = await response.json();
+      const compressedVisual = compressVisualData(filteredFormData);
 
-      if (response.ok) {
-        alert("Inspection submitted successfully!");
-        console.log("Submission Result:", result);
-        setThermalRecords([]);
-        handleReset();
-        onSubmit();
+      const LocationID = locationdata?.id;
+      const keysToAppendLocation = [
+        "TDB",
+        "TDU1",
+        "TDR",
+        "TDU3",
+        "TDY",
+        "TDN",
+        "TDU2",
+      ];
+      let thermalInspection;
+
+      const conditionMap = {
+        Medium: "M",
+        High: "H",
+        Normal: "N",
+      };
+
+      if (thermalEnabled) {
+        if (thermalRecords.length > 0) {
+          thermalInspection = Object.fromEntries(
+            thermalRecords.map((point) => {
+              const key = keysToAppendLocation.includes(point.id)
+                ? `${point.id}${LocationID}`
+                : point.id;
+
+              const shortCondition =
+                conditionMap[point.condition] || point.condition;
+
+              return [key, shortCondition];
+            })
+          );
+        } else {
+          alert("⚠️ Thermal inspection is enabled but no data selected.");
+          return;
+        }
       } else {
-        alert(`❌ Error: ${result.error}`);
-        console.log("Error submitting inspection data:", result);
+        thermalInspection = JSON.stringify({ status: "notdone" });
       }
-    } catch (error) {
-      console.error("Error submitting inspection data:", error);
-      alert(
-        "⚠️ An error occurred while submitting the data. Please try again."
-      );
-    }
-  } else {
-    console.log("❌ Validation failed:", errors);
-  }
-};
 
+      const minimalLocationData = {
+        id: locationdata?.id,
+        parent_id: locationdata?.parent_id,
+        project_id: locationdata?.project_id,
+        project_name: locationdata?.project_name,
+        substation_id: locationdata?.substation_id,
+        substation_name: locationdata?.substation_name,
+        attributes: {
+          point_type: locationdata?.attributes?.point_type,
+          point_no: locationdata?.attributes?.point_no,
+          area_code: locationdata?.attributes?.area_code,
+          ulid: locationdata?.attributes?.ulid,
+        },
+      };
+
+      const finalData = {
+        username: formData.username,
+        inspectionDate: formData.inspectionDate,
+        locationdata: minimalLocationData,
+        visualInspection: compressedVisual,
+        thermalInspection,
+      };
+
+      const token = localStorage.getItem("token");
+      const API_URL = import.meta.env.VITE_API_BASE_URL;
+
+      try {
+        const response = await fetch(`${API_URL}/submit-inspection`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(finalData),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert("Inspection submitted successfully!");
+          console.log("Submission Result:", result);
+          setThermalRecords([]);
+          handleReset();
+          onSubmit();
+        } else {
+          alert(`❌ Error: ${result.error}`);
+          console.log("Error submitting inspection data:", result);
+        }
+      } catch (error) {
+        console.error("Error submitting inspection data:", error);
+        alert(
+          "⚠️ An error occurred while submitting the data. Please try again."
+        );
+      }
+    } else {
+      console.log("❌ Validation failed:", errors);
+    }
+  };
 
   if (!locationdata)
     return (
- 
-       <div>
+      <div>
         <div className="p-6 border border-[#b7cfdc] rounded-xl shadow-lg bg-[#d9e4ec] space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start">
             <h2 className="text-2xl font-bold text-[#385e72] mb-4 sm:mb-0">
-               Visual & Thermal Inspection
+              Visual & Thermal Inspection
             </h2>
           </div>
           <p className="text-[#385e72] text-center font-semibold">
-    Please enter a valid Location ID to submit the visual and thermal
+            Please enter a valid Location ID to submit the visual and thermal
             inspection report.
           </p>
         </div>
