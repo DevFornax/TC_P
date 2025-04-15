@@ -118,7 +118,7 @@ function SurveyDashboard() {
         <div className="flex flex-col md:flex-row gap-4 mt-4">
           <div
             ref={sldRef}
-            className="w-full md:w-1/3 flex flex-col md:max-h-[calc(100vh-100px)] md:sticky md:top-4 overflow-auto border border-gray-300 rounded-xl shadow-lg bg-white"
+            className="w-full bg-[#d9e4ec] md:w-1/3 flex flex-col md:max-h-[calc(100vh-100px)] md:sticky md:top-4 overflow-auto border border-gray-300 rounded-xl shadow-lg"
           >
             <DynamicSld
               locationData={locationData}

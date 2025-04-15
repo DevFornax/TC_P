@@ -1,8 +1,3 @@
-
-
-
-
-
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import pdfMake from "pdfmake/build/pdfmake";
@@ -11,7 +6,8 @@ import html2canvas from "html2canvas";
 import TcSldPrint from "./TcSldPrint";
 import FuseSldPrint from "./FuseSldPrint";
 import SwitchSldPrint from "./SwitchSldPrint";
-import {visualTemplate} from "../../utils/VisualTemplateforVisualFields"
+import { visualTemplate } from "../../utils/VisualTemplateforVisualFields";
+import Topbar from "../../Topbar"
 
 pdfMake.vfs = pdfFonts.vfs;
 
@@ -40,7 +36,7 @@ const GeneratePDF = () => {
   const location = useLocation();
   const [inspectionData, setInspectionData] = useState(null);
   const sldRef = useRef(null);
-
+const [activeTab, setActiveTab] = useState("visual");
   useEffect(() => {
     if (location.state) {
       setInspectionData(location.state.inspectionData);
@@ -54,599 +50,396 @@ const GeneratePDF = () => {
     return status;
   };
 
-  // const visualTemplate = {
-  //   1: {
-  //     name: "bus_bar",
-  //     options: { 1: "Coated", 2: "Barred Conductor/sleeve" },
-  //   },
-  //   2: {
-  //     name: "busbar_do_jumper",
-  //     options: { 1: "Coated", 2: "Barred Conductor/sleeve" },
-  //   },
-  //   3: {
-  //     name: "ug_cable_jumper",
-  //     options: { 1: "Lug", 2: "Binding", 0: "na" },
-  //   },
-  //   4: {
-  //     name: "tc_condition",
-  //     options: { 1: "Straight", 2: "Tilted", 3: "Plinth", 4: "Pole structure" },
-  //   },
-  //   5: { name: "bird_guard", options: { 1: "Yes", 0: "No" } },
-  //   6: {
-  //     name: "do_tc_jumper",
-  //     options: { 1: "Coated", 2: "Barred Conductor/sleeve" },
-  //   },
-  //   7: { name: "ht_booting", options: { 1: "Yes", 0: "No" } },
-  //   8: { name: "lt_booting", options: { 1: "Yes", 0: "No" } },
-  //   9: { name: "breather_installed", options: { 1: "Yes", 0: "No" } },
-  //   10: { name: "silica_gel_color", options: { 1: "Blue", 2: "Orange" } },
-  //   11: { name: "oil_leakage", options: { 1: "Yes", 0: "No" } },
-  //   12: { name: "oil_level", options: { 1: "Normal", 2: "Low" } },
-  //   13: { name: "tc_fencing", options: { 1: "Yes", 0: "No" } },
-  //   14: { name: "fuse_box_external", options: { 1: "Closed", 2: "Open" } },
-  //   15: { name: "fuse_box_internal_burn", options: { 1: "Yes", 0: "No" } },
-  //   16: {
-  //     name: "lt_cable_connection",
-  //     options: { 1: "Lug", 2: "Patta", 3: "Binding" },
-  //   },
-  // };
+  if (!inspectionData) return
+let thermalInspectionData = inspectionData.thermal_inspection;
+
+if (typeof thermalInspectionData === "string") {
+  try {
+    thermalInspectionData = JSON.parse(thermalInspectionData);
+  } catch (error) {
+    thermalInspectionData = { status: "notdone" };
+  }
+}
 
   const getOptionText = (point, value) => {
     const option = visualTemplate[point]?.options[value];
     return option ? option : "N/A";
   };
 
-  // const generatePDF = async () => {
-  //   if (!inspectionData) return;
 
-  //   const visualInspectionData = Object.entries(
-  //     inspectionData.visual_inspection || {}
-  //   ).map(([templateId, selectedValue]) => {
-  //     const template = visualTemplate[templateId];
-  //     if (!template)
-  //       return { text: `Unknown Item (${templateId})`, margin: [0, 2] };
+  const generatePDF = async () => {
+    if (!inspectionData) return;
 
-  //     const label = template.name.replace(/_/g, " ");
-  //     const humanReadable = template.options[selectedValue] || "Not Available";
+  
+    const visualInspectionData = Object.entries(
+      inspectionData.visual_inspection || {}
+    ).map(([templateId, selectedValue]) => {
+      const template = visualTemplate[templateId];
+      if (!template) return { label: `Unknown (${templateId})`, value: "N/A" };
 
-  //     return {
-  //       text: `${
-  //         label.charAt(0).toUpperCase() + label.slice(1)
-  //       }: ${humanReadable}`,
-  //       margin: [0, 2],
-  //     };
-  //   });
+      const label = template.name.replace(/_/g, " ");
+      const humanReadable = template.options[selectedValue] || "Not Available";
 
-  //   let thermalInspection = [];
-
-  //   if (typeof inspectionData.thermal_inspection === "string") {
-  //     try {
-  //       const thermalStatus = JSON.parse(inspectionData.thermal_inspection);
-  //       thermalInspection.push({
-  //         text: `Status: ${
-  //           formatThermalStatus(thermalStatus.status) || "Unknown"
-  //         }`,
-  //       });
-  //     } catch (e) {
-  //       thermalInspection.push({ text: "Invalid thermal inspection data" });
-  //     }
-  //   } else if (typeof inspectionData.thermal_inspection === "object") {
-  //     thermalInspection = Object.entries(inspectionData.thermal_inspection).map(
-  //       ([deviceId, status]) => ({
-  //         text: `${deviceId}: ${formatThermalStatus(status)}`,
-  //         margin: [0, 2],
-  //       })
-  //     );
-  //   } else {
-  //     thermalInspection.push({ text: "Unknown thermal data format" });
-  //   }
-
-  //   let sldImage = null;
-  //   if (sldRef.current) {
-  //     const canvas = await html2canvas(sldRef.current, { useCORS: true , scale: 2,});
-  //     sldImage = canvas.toDataURL("image/png");
-  //   }
-
-  //   const docDefinition = {
-  //     content: [
-  //       { text: "Inspection Report", style: "header" },
-  //       {
-  //         text: `Inspection ID: ${inspectionData.inspection_id}`,
-  //         style: "subheader",
-  //       },
-  //       { text: `Date: ${inspectionData.inspection_date}` },
-  //       { text: `Location: ${inspectionData.location_id}` },
-
-  //       {
-  //         text: "Visual Inspection",
-  //         style: "sectionHeader",
-  //         margin: [0, 15, 0, 5],
-  //       },
-  //       ...visualInspectionData,
-
-  //       {
-  //         text: "Thermal Inspection",
-  //         style: "sectionHeader",
-  //         margin: [0, 15, 0, 5],
-  //       },
-  //       ...thermalInspection,
-
-  //       sldImage
-  //         ? {
-  //             text: "Thermal View (SLD)",
-  //             style: "sectionHeader",
-  //             margin: [0, 20, 0, 5],
-  //           }
-  //         : null,
-  //       sldImage
-  //         ? {
-  //             image: sldImage,
-  //             width: 500,
-  //             margin: [0, 5, 0, 0],
-  //           }
-  //         : null,
-  //     ].filter(Boolean),
-  //     styles: {
-  //       header: {
-  //         fontSize: 22,
-  //         bold: true,
-  //         alignment: "center",
-  //         margin: [0, 0, 0, 20],
-  //       },
-  //       subheader: {
-  //         fontSize: 14,
-  //         bold: true,
-  //         margin: [0, 10, 0, 5],
-  //       },
-  //       sectionHeader: {
-  //         fontSize: 16,
-  //         bold: true,
-  //         decoration: "underline",
-  //       },
-  //     },
-  //   };
-
-  //   pdfMake
-  //     .createPdf(docDefinition)
-  //     .download(`inspection_${inspectionData.inspection_id}.pdf`);
-  // };
-
-
-
-const generatePDF = async () => {
-  if (!inspectionData) return;
-
-  // Prepare visual inspection data
-  const visualInspectionData = Object.entries(
-    inspectionData.visual_inspection || {}
-  ).map(([templateId, selectedValue]) => {
-    const template = visualTemplate[templateId];
-    if (!template) return { label: `Unknown (${templateId})`, value: "N/A" };
-
-    const label = template.name.replace(/_/g, " ");
-    const humanReadable = template.options[selectedValue] || "Not Available";
-
-    return {
-      label: label.charAt(0).toUpperCase() + label.slice(1),
-      value: humanReadable,
-    };
-  });
-
-  // Chunk visual inspection data into rows of 2 items (for 4 columns)
-  const chunkedVisualRows = [];
-  for (let i = 0; i < visualInspectionData.length; i += 2) {
-    const left = visualInspectionData[i];
-    const right = visualInspectionData[i + 1];
-
-    chunkedVisualRows.push([
-      { text: left?.label || "", bold: true },
-      { text: left?.value || "" },
-      { text: right?.label || "", bold: true },
-      { text: right?.value || "" },
-    ]);
-  }
-
-  // Prepare the SLD image
-  let sldImage = null;
-  if (sldRef.current) {
-    const canvas = await html2canvas(sldRef.current, {
-      useCORS: true,
-      scale: 2,
+      return {
+        label: label.charAt(0).toUpperCase() + label.slice(1),
+        value: humanReadable,
+      };
     });
-    sldImage = canvas.toDataURL("image/png");
-  }
-function formatTime(time) {
-  const hours = time.getHours();
-  const minutes = time.getMinutes();
-  const suffix = hours < 12 ? "AM" : "PM";
-  const formattedTime = `${hours % 12 || 12}:${
-    minutes < 10 ? "0" + minutes : minutes
-  } ${suffix}`;
 
-  // Determine part of the day (Morning, Afternoon, Evening)
-  let partOfDay = "";
-  if (hours >= 5 && hours < 12) {
-    partOfDay = "Morning";
-  } else if (hours >= 12 && hours < 17) {
-    partOfDay = "Afternoon";
-  } else if (hours >= 17 && hours < 21) {
-    partOfDay = "Evening";
-  } else {
-    partOfDay = "Night";
-  }
+  
+    const chunkedVisualRows = [];
+    for (let i = 0; i < visualInspectionData.length; i += 2) {
+      const left = visualInspectionData[i];
+      const right = visualInspectionData[i + 1];
 
-  return `${formattedTime} (${partOfDay})`;
-}
+      chunkedVisualRows.push([
+        { text: left?.label || "", bold: true },
+        { text: left?.value || "" },
+        { text: right?.label || "", bold: true },
+        { text: right?.value || "" },
+      ]);
+    }
 
-const docDefinition = {
-  content: [
-    {
-      text: "Inspection Report",
-      style: "header",
-    },
+    // Prepare the SLD image
+    let sldImage = null;
+    if (sldRef.current) {
+      const canvas = await html2canvas(sldRef.current, {
+        useCORS: true,
+        scale: 2,
+      });
+      sldImage = canvas.toDataURL("image/png");
+    }
+    function formatTime(time) {
+      const hours = time.getHours();
+      const minutes = time.getMinutes();
+      const suffix = hours < 12 ? "AM" : "PM";
+      const formattedTime = `${hours % 12 || 12}:${
+        minutes < 10 ? "0" + minutes : minutes
+      } ${suffix}`;
 
-    {
-      text: `Inspection ID: ${inspectionData.inspection_id}`,
-      margin: [0, 2, 0, 2],
-    },
-    {
-      text: `Inspection Done By: ${inspectionData.inspection_done_by}`,
-      margin: [0, 2, 0, 2],
-    },
-    {
-      text: `Date: ${new Date(
-        inspectionData.inspection_date
-      ).toLocaleDateString()}`,
-      margin: [0, 2, 0, 2],
-    },
-    {
-      // Using the formatTime function to format the time
-      text: `Time: ${formatTime(new Date(inspectionData.inspection_date))}`,
-      margin: [0, 2, 0, 2], // Reduced margin
-    },
-    {
-      text: `Location Id: ${inspectionData.location_id}`,
-      margin: [0, 2, 0, 2],
-    },
-    {
-      text: `Location Type: ${inspectionData.location_type}`,
-      margin: [0, 2, 0, 2],
-    },
-    {
-      text: `Project ID: ${inspectionData.project_id}`,
-      margin: [0, 2, 0, 10],
-    },
+      // Determine part of the day (Morning, Afternoon, Evening)
+      let partOfDay = "";
+      if (hours >= 5 && hours < 12) {
+        partOfDay = "Morning";
+      } else if (hours >= 12 && hours < 17) {
+        partOfDay = "Afternoon";
+      } else if (hours >= 17 && hours < 21) {
+        partOfDay = "Evening";
+      } else {
+        partOfDay = "Night";
+      }
 
-    {
-      text: "Visual Inspection Results",
-      style: "sectionHeader",
-      margin: [0, 10, 0, 5],
-    },
+      return `${formattedTime} (${partOfDay})`;
+    }
 
-    {
-      table: {
-        widths: ["25%", "25%", "25%", "25%"],
-        body: [
-          [
-            { text: "Item Type", style: "tableHeader" },
-            { text: "Data", style: "tableHeader" },
-            { text: "Item Type", style: "tableHeader" },
-            { text: "Data", style: "tableHeader" },
-          ],
-          ...chunkedVisualRows,
-        ],
+    const docDefinition = {
+      content: [
+        {
+          text: "Inspection Report",
+          style: "header",
+        },
+
+        {
+          text: `Inspection ID: ${inspectionData.inspection_id}`,
+          margin: [0, 2, 0, 2],
+        },
+        {
+          text: `Inspection Done By: ${inspectionData.inspection_done_by}`,
+          margin: [0, 2, 0, 2],
+        },
+        {
+          text: `Date: ${new Date(
+            inspectionData.inspection_date
+          ).toLocaleDateString()}`,
+          margin: [0, 2, 0, 2],
+        },
+        {
+          // Using the formatTime function to format the time
+          text: `Time: ${formatTime(new Date(inspectionData.inspection_date))}`,
+          margin: [0, 2, 0, 2], // Reduced margin
+        },
+        {
+          text: `Location Id: ${inspectionData.location_id}`,
+          margin: [0, 2, 0, 2],
+        },
+        {
+          text: `Location Type: ${inspectionData.location_type}`,
+          margin: [0, 2, 0, 2],
+        },
+        {
+          text: `Project ID: ${inspectionData.project_id}`,
+          margin: [0, 2, 0, 10],
+        },
+
+        {
+          text: "Visual Inspection Results",
+          style: "sectionHeader",
+          margin: [0, 10, 0, 5],
+        },
+
+        {
+          table: {
+            widths: ["25%", "25%", "25%", "25%"],
+            body: [
+              [
+                { text: "Item Type", style: "tableHeader" },
+                { text: "Data", style: "tableHeader" },
+                { text: "Item Type", style: "tableHeader" },
+                { text: "Data", style: "tableHeader" },
+              ],
+              ...chunkedVisualRows,
+            ],
+          },
+          layout: {
+            fillColor: function (rowIndex) {
+              return rowIndex === 0 ? "#eee" : null;
+            },
+          },
+        },
+
+        // SLD Image Section
+        sldImage
+          ? {
+              text: "Thermal Inspection Results",
+              style: "sectionHeader",
+              margin: [0, 15, 0, 5],
+            }
+          : null,
+        sldImage
+          ? {
+              image: sldImage,
+              width: 500,
+              margin: [0, 5, 0, 10],
+            }
+          : null,
+      ].filter(Boolean),
+
+      footer: function (currentPage, pageCount) {
+        return {
+          text: `ThermoVis - Powered by Fornax `,
+          alignment: "right",
+          style: "footer",
+          margin: [0, 10, 20, 10],
+        };
       },
-      layout: {
-        fillColor: function (rowIndex) {
-          return rowIndex === 0 ? "#eee" : null;
+
+      styles: {
+        // Header style
+        header: {
+          fontSize: 17,
+          bold: true,
+          alignment: "left",
+          margin: [0, 0, 0, 5],
+        },
+        // Subheader style
+        subheader: {
+          fontSize: 14,
+          bold: true,
+          margin: [0, 2, 0, 2], // Reduced margin for subheaders
+        },
+        // Section header style (for visual inspection, etc.)
+        sectionHeader: {
+          fontSize: 16,
+          bold: true,
+          decoration: "underline",
+        },
+        // Table header style
+        tableHeader: {
+          bold: true,
+          fontSize: 12,
+          color: "black",
+        },
+        // Footer style
+        footer: {
+          fontSize: 10,
+          italics: true,
+          alignment: "right",
         },
       },
-    },
-
-    // SLD Image Section
-    sldImage
-      ? {
-          text: "Thermal Inspection Results",
-          style: "sectionHeader",
-          margin: [0, 15, 0, 5],
-        }
-      : null,
-    sldImage
-      ? {
-          image: sldImage,
-          width: 500,
-          margin: [0, 5, 0, 10],
-        }
-      : null,
-  ].filter(Boolean),
-
-  footer: function (currentPage, pageCount) {
-    return {
-      text: `ThermoVis - Powered by Fornax `,
-      alignment: "right",
-      style: "footer",
-      margin: [0, 10, 20, 10],
     };
-  },
 
-  styles: {
-    // Header style
-    header: {
-      fontSize: 17,
-      bold: true,
-      alignment: "left",
-      margin: [0, 0, 0, 5],
-    },
-    // Subheader style
-    subheader: {
-      fontSize: 14,
-      bold: true,
-      margin: [0, 2, 0, 2], // Reduced margin for subheaders
-    },
-    // Section header style (for visual inspection, etc.)
-    sectionHeader: {
-      fontSize: 16,
-      bold: true,
-      decoration: "underline",
-    },
-    // Table header style
-    tableHeader: {
-      bold: true,
-      fontSize: 12,
-      color: "black",
-    },
-    // Footer style
-    footer: {
-      fontSize: 10,
-      italics: true,
-      alignment: "right",
-    },
-  },
-};
-
-  // Generate and download the PDF
-  pdfMake
-    .createPdf(docDefinition)
-    .download(`inspection_${inspectionData.inspection_id}.pdf`);
-};
-
-
-
-
+    // Generate and download the PDF
+    pdfMake
+      .createPdf(docDefinition)
+      .download(`inspection_${inspectionData.inspection_id}.pdf`);
+  };
 
   return (
-    // <div className="p-6">
-    //   <h2 className="text-2xl font-bold mb-4 text-gray-800">
-    //     Inspection Data Preview
-    //   </h2>
+    <>
+      <Topbar />
 
-    //   <div className="flex space-x-8">
-    //     <div
-    //       ref={sldRef}
-
-    //     >
-    //       {(() => {
-    //         const parsedThermal =
-    //           typeof inspectionData?.thermal_inspection === "string"
-    //             ? JSON.parse(inspectionData.thermal_inspection)
-    //             : inspectionData?.thermal_inspection;
-
-    //         const locationType = inspectionData?.location_type;
-
-    //         if (parsedThermal?.status === "notdone") {
-    //           if (locationType === "Transformer") {
-    //             return <TcSldPrint />;
-    //           } else if (locationType === "Fuse") {
-    //             return <FuseSldPrint />;
-    //           }
-    //           else if (locationType === "Switch"){
-    //             return <SwitchSldPrint/>
-    //           }
-    //         }
-
-    //         if (locationType === "Transformer") {
-    //           return <TcSldPrint thermalInspection={parsedThermal} />;
-    //         } else if (locationType === "Fuse") {
-    //           return <FuseSldPrint thermalInspection={parsedThermal} />;
-    //         }
-
-    //        else if(locationType === "Switch"){
-    //           return <SwitchSldPrint thermalInspection={parsedThermal} />;
-
-    //         }
-    //         return null;
-    //       })()}
-    //     </div>
-
-    //     <div className="flex-1 space-y-4 bg-gray-100 p-4 rounded shadow overflow-auto">
-    //       {!inspectionData ? (
-    //         <p className="text-red-600">Loading or no data found.</p>
-    //       ) : (
-    //         <>
-    //           <h3 className="text-lg font-semibold text-gray-700">
-    //             Raw Inspection Data
-    //           </h3>
-
-    //           <div className="space-y-2">
-    //             <p>
-    //               <strong>Inspection ID:</strong> {inspectionData.inspection_id}
-    //             </p>
-    //             <p>
-    //               <strong>Inspection Done By:</strong>{" "}
-    //               {inspectionData.inspection_done_by}
-    //             </p>
-    //             <p>
-    //               <strong>Inspection Date:</strong>{" "}
-    //               {new Date(inspectionData.inspection_date).toLocaleString()}
-    //             </p>
-    //             <p>
-    //               <strong>Location ID:</strong> {inspectionData.location_id}
-    //             </p>
-    //             <p>
-    //               <strong>Project ID:</strong> {inspectionData.project_id}
-    //             </p>
-    //             <p>
-    //               <strong>Location Type:</strong> {inspectionData.location_type}
-    //             </p>
-
-    //             <h4 className="font-semibold text-gray-600">
-    //               Visual Inspection:
-    //             </h4>
-    //             <ul className="list-disc pl-6">
-    //               {Object.entries(inspectionData.visual_inspection).map(
-    //                 ([key, value]) => (
-    //                   <li key={key}>
-    //                     <strong>
-    //                       {visualTemplate[key]?.name.replace(/_/g, " ")}
-    //                     </strong>
-    //                     : {getOptionText(key, value)}
-    //                   </li>
-    //                 )
-    //               )}
-    //             </ul>
-
-    //             <h4 className="font-semibold text-gray-600">
-    //               Thermal Inspection:
-    //             </h4>
-    //             <pre className="bg-gray-200 p-2 rounded text-sm text-gray-800">
-    //               {inspectionData.thermal_inspection === '{"status":"notdone"}'
-    //                 ? "Thermal Inspection: Not Done"
-    //                 : `Status: ${inspectionData.thermal_inspection.status}`}
-    //             </pre>
-
-    //             <p>
-    //               <strong>Created At:</strong>{" "}
-    //               {new Date(inspectionData.created_at).toLocaleString()}
-    //             </p>
-    //           </div>
-    //         </>
-    //       )}
-    //     </div>
-    //   </div>
-
-    //   {inspectionData && (
-    //     <div className="mt-6">
-    //       <button
-    //         onClick={generatePDF}
-    //         className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-    //       >
-    //         Download PDF Report
-    //       </button>
-    //     </div>
-    //   )}
-    // </div>
-
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">
-        Inspection Data Preview
-      </h2>
-
-      <div className="flex flex-col lg:flex-row lg:space-x-8 space-y-6 lg:space-y-0">
-        <div
-          ref={sldRef}
-          className="w-full h-full lg:w-1/2  overflow-hidden  rounded shadow"
-        >
-          {(() => {
-            const parsedThermal =
-              typeof inspectionData?.thermal_inspection === "string"
-                ? JSON.parse(inspectionData.thermal_inspection)
-                : inspectionData?.thermal_inspection;
-
-            const locationType = inspectionData?.location_type;
-
-            if (parsedThermal?.status === "notdone") {
-              if (locationType === "Transformer") return <TcSldPrint />;
-              else if (locationType === "Fuse") return <FuseSldPrint />;
-              else if (locationType === "Switch") return <SwitchSldPrint />;
-            }
-
-            if (locationType === "Transformer")
-              return <TcSldPrint thermalInspection={parsedThermal} />;
-            else if (locationType === "Fuse")
-              return <FuseSldPrint thermalInspection={parsedThermal} />;
-            else if (locationType === "Switch")
-              return <SwitchSldPrint thermalInspection={parsedThermal} />;
-
-            return null;
-          })()}
+      <div className="p-4 sm:p-6 md:p-8 bg-[#d9e4ec] min-h-screen">
+        <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-6">
+          <h2 className="text-xl sm:text-3xl font-bold text-[#385e72] mb-4 sm:mb-0">
+            Inspection Data Preview
+          </h2>
         </div>
 
-        <div className="w-full lg:w-1/2 h-[500px] overflow-auto bg-gray-100 p-4 rounded shadow">
-          {!inspectionData ? (
-            <p className="text-red-600">Loading or no data found.</p>
-          ) : (
-            <div className="border border-pink-300 p-4 space-y-4">
-              <h3 className="text-lg font-semibold text-gray-700">
-                Raw Inspection Data
-              </h3>
-
+        <div className="mb-6 bg-white p-5 rounded-xl shadow-md border border-[#b7cfdc]">
+          <h3 className="text-lg sm:text-xl font-semibold text-[#385e72] mb-4">
+            General Information
+          </h3>
+          <div className="space-y-3 text-sm sm:text-base text-gray-800">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <p>
-                <strong>Inspection ID:</strong> {inspectionData.inspection_id}
+                <strong>Inspection ID:</strong> {inspectionData?.inspection_id}
               </p>
               <p>
-                <strong>Inspection Done By:</strong>{" "}
-                {inspectionData.inspection_done_by}
+                <strong>Done By:</strong> {inspectionData?.inspection_done_by}
               </p>
               <p>
-                <strong>Inspection Date:</strong>{" "}
-                {new Date(inspectionData.inspection_date).toLocaleString()}
+                <strong>Date:</strong>{" "}
+                {new Date(inspectionData?.inspection_date).toLocaleString()}
               </p>
               <p>
-                <strong>Location ID:</strong> {inspectionData.location_id}
+                <strong>Location ID:</strong> {inspectionData?.location_id}
               </p>
               <p>
-                <strong>Project ID:</strong> {inspectionData.project_id}
+                <strong>Project ID:</strong> {inspectionData?.project_id}
               </p>
               <p>
-                <strong>Location Type:</strong> {inspectionData.location_type}
+                <strong>Type:</strong> {inspectionData?.location_type}
               </p>
-
-              <h4 className="font-semibold text-gray-600">
-                Visual Inspection:
-              </h4>
-              <ul className="list-disc pl-6">
-                {Object.entries(inspectionData.visual_inspection).map(
-                  ([key, value]) => (
-                    <li key={key}>
-                      <strong>
-                        {visualTemplate[key]?.name.replace(/_/g, " ")}
-                      </strong>
-                      : {getOptionText(key, value)}
-                    </li>
-                  )
-                )}
-              </ul>
-
-              <h4 className="font-semibold text-gray-600">
-                Thermal Inspection:
-              </h4>
-              <pre className="bg-gray-200 p-2 rounded text-sm text-gray-800">
-                {inspectionData.thermal_inspection === '{"status":"notdone"}'
-                  ? "Thermal Inspection: Not Done"
-                  : `Status: ${inspectionData.thermal_inspection.status}`}
-              </pre>
-
               <p>
                 <strong>Created At:</strong>{" "}
-                {new Date(inspectionData.created_at).toLocaleString()}
+                {new Date(inspectionData?.created_at).toLocaleString()}
               </p>
             </div>
-          )}
+            {inspectionData && (
+              <button
+                onClick={generatePDF}
+                className="px-6 py-3 mt-4 bg-[#385e72] text-white rounded-lg hover:bg-[#6aabd2] transition duration-200 w-full sm:w-auto"
+              >
+                Download PDF Report
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="w-full h-full overflow-hidden rounded-xl bg-white p-4  shadow-md ">
+            <button className=" bg-[#385e72] text-white px-4 py-2 rounded-md m-4 text-sm font-semibold">
+              Thermal Inspection Report
+            </button>
+            <div
+              ref={sldRef}
+              className="w-full  overflow-hidden rounded-xl shadow-md border  bg-white"
+            >
+              {(() => {
+                const parsedThermal =
+                  typeof inspectionData?.thermal_inspection === "string"
+                    ? JSON.parse(inspectionData.thermal_inspection)
+                    : inspectionData?.thermal_inspection;
+
+                const locationType = inspectionData?.location_type;
+
+                if (parsedThermal?.status === "notdone") {
+                  if (locationType === "Transformer") return <TcSldPrint />;
+                  else if (locationType === "Fuse") return <FuseSldPrint />;
+                  else if (locationType === "Switch") return <SwitchSldPrint />;
+                }
+
+                if (locationType === "Transformer")
+                  return <TcSldPrint thermalInspection={parsedThermal} />;
+                else if (locationType === "Fuse")
+                  return <FuseSldPrint thermalInspection={parsedThermal} />;
+                else if (locationType === "Switch")
+                  return <SwitchSldPrint thermalInspection={parsedThermal} />;
+
+                return null;
+              })()}
+            </div>
+          </div>
+          <div className="w-full overflow-auto  rounded-xl ">
+            {!inspectionData ? (
+              <p className="text-red-600 font-medium">
+                Loading or no data found.
+              </p>
+            ) : (
+              <div className=" text-sm sm:text-base text-gray-800">
+                <div className="p-4 space-y-4 bg-white rounded-lg border  shadow-md">
+                  <div className="flex gap-4 mb-4">
+                    <button
+                      className={`px-4 py-2 rounded-md text-sm font-semibold ${
+                        activeTab === "visual"
+                          ? "bg-[#385e72] text-white"
+                          : "bg-gray-200 text-[#385e72] hover:bg-gray-300"
+                      }`}
+                      onClick={() => setActiveTab("visual")}
+                    >
+                      Visual Inspection
+                    </button>
+                    <button
+                      className={`px-4 py-2 rounded-md text-sm font-semibold ${
+                        activeTab === "thermal"
+                          ? "bg-[#385e72] text-white"
+                          : "bg-gray-200 text-[#385e72] hover:bg-gray-300"
+                      }`}
+                      onClick={() => setActiveTab("thermal")}
+                    >
+                      Thermal Inspection
+                    </button>
+                  </div>
+
+                  {/* Tab Content */}
+                  {activeTab === "visual" && (
+                    <div>
+                      <h4 className="font-semibold text-[#385e72] text-lg">
+                        Visual Inspection
+                      </h4>
+                      <ul className="list-disc pl-5 mt-2 space-y-1">
+                        {Object.entries(inspectionData.visual_inspection).map(
+                          ([key, value]) => (
+                            <li key={key}>
+                              <strong>
+                                {visualTemplate[key]?.name.replace(/_/g, " ")}:
+                              </strong>{" "}
+                              {getOptionText(key, value)}
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  )}
+
+                  {activeTab === "thermal" && (
+                    <div>
+                      <h4 className="font-semibold text-[#385e72] text-lg">
+                        Thermal Inspection
+                      </h4>
+                      <div className="bg-[#d9e4ec] p-4 rounded-lg border border-[#b7cfdc] space-y-2">
+                        {thermalInspectionData.status === "notdone" ? (
+                          <p className="text-sm text-red-600 font-semibold">
+                            Thermal Inspection: Not Done
+                          </p>
+                        ) : (
+                          <ul className="list-disc pl-5 space-y-1 text-sm">
+                            {Object.entries(thermalInspectionData).map(
+                              ([pointId, condition]) => (
+                                <li key={pointId}>
+                                  <strong>{pointId}:</strong>{" "}
+                                  {condition === "H"
+                                    ? "High"
+                                    : condition === "M"
+                                    ? "Medium"
+                                    : condition === "L"
+                                    ? "Low"
+                                    : condition}
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
-      {/* PDF BUTTON */}
-      {inspectionData && (
-        <div className="mt-6">
-          <button
-            onClick={generatePDF}
-            className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Download PDF Report
-          </button>
-        </div>
-      )}
-    </div>
+    </>
   );
 };
 

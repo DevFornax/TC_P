@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { visualTemplate } from "../utils/VisualTemplateforVisualFields";
 import { useNavigate } from "react-router-dom";
@@ -14,16 +13,11 @@ export default function DataComponent() {
   const token = localStorage.getItem("token");
   const API_URL = import.meta.env.VITE_API_BASE_URL;
 
+  const navigate = useNavigate();
 
-
-const navigate = useNavigate(); 
-
-const handleDownloadPDF = (item) => {
-  navigate("/generate-pdf", { state: { inspectionData: item } });
-};
-  
-
-
+  const handleDownloadPDF = (item) => {
+    navigate("/generate-pdf", { state: { inspectionData: item } });
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -87,14 +81,11 @@ const handleDownloadPDF = (item) => {
     });
   };
 
-  // Handle the Thermal Inspection Status
   const getThermalInspectionStatus = (thermalData) => {
     if (typeof thermalData === "string") {
-      // If the thermalData is a string, it could be a simple status like `{"status": "notdone"}`
       const parsedData = JSON.parse(thermalData);
       return <p>Status: {parsedData.status || "Unknown"}</p>;
     } else if (typeof thermalData === "object") {
-      // If it's an object, we expect it to be device-specific with their statuses
       return Object.entries(thermalData).map(([deviceId, status]) => (
         <p key={deviceId}>
           {deviceId}: {status}
@@ -129,7 +120,6 @@ const handleDownloadPDF = (item) => {
         <p>{`Showing ${data.length} of ${total} records`}</p>
       </div>
 
-  
       <div className="overflow-x-auto bg-white shadow-md rounded-lg">
         <table className="min-w-full table-auto">
           <thead className="bg-gray-200">
@@ -175,7 +165,7 @@ const handleDownloadPDF = (item) => {
                     <button className="text-red-500 ml-2">Delete</button>
                     <button
                       className="text-green-500 ml-2"
-                      onClick={() => handleDownloadPDF(item)} 
+                      onClick={() => handleDownloadPDF(item)}
                     >
                       Download PDF
                     </button>
@@ -187,7 +177,6 @@ const handleDownloadPDF = (item) => {
         </table>
       </div>
 
-      {/* Pagination */}
       <div className="flex justify-between items-center mt-4">
         <button
           className="px-4 py-2 bg-gray-500 text-white rounded"

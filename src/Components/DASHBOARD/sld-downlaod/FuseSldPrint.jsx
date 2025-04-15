@@ -143,7 +143,7 @@ const FuseSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
         ref={svgRef}
         viewBox="0 0 1000 700"
         style={{
-          border: "1px solid black",
+          // border: "1px solid black",
           background: "#fff",
           cursor: isDragging ? "grabbing" : "grab",
         }}
