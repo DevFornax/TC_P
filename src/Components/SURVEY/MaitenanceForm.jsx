@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { getAuthToken, API_URL } from "../utils/apiConfig";
+
 
 function MaitenanceForm({ locationId, deviceId, projectId , locationData }) {
   const [date, setDate] = useState("");
@@ -19,9 +21,10 @@ const [showCardOfMaintenanceData, setshowCardOfMaintenanceData
   }, []);
 
  useEffect(() => {
-   const token = localStorage.getItem("token");
 
-   fetch(`${import.meta.env.VITE_API_BASE_URL}/get-job-list`, {
+const token = getAuthToken();
+
+   fetch(`${API_URL}/get-job-list`, {
      method: "GET",
      headers: {
        "Content-Type": "application/json",

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { InfoItem } from "../UI/InfoItem";
 import { InspectionFields } from "../utils/InspectionFields";
 import { compressVisualData } from "../../Components/utils/VisualTemplateforVisualFields";
+import { getAuthToken, API_URL } from "../utils/apiConfig";
 const initialFormData = {};
 InspectionFields.forEach((field) => {
   if (field.selectedOption) {
@@ -217,9 +218,8 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
         thermalInspection,
       };
 
-      const token = localStorage.getItem("token");
-      const API_URL = import.meta.env.VITE_API_BASE_URL;
-
+    
+const token = getAuthToken();
       try {
         const response = await fetch(`${API_URL}/submit-inspection`, {
           method: "POST",
