@@ -287,19 +287,60 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
                       const dotThermalValue = thermalInspection[fullId];
                       const dotThermalColor = getThermalColor(dotThermalValue);
 
+                    return (
+                      <g key={dotMeta.id}>
+                        <circle
+                          cx={x + dotMeta.dx}
+                          cy={-y + dotMeta.dy}
+                          r={5}
+                          fill={dotThermalColor || "#6cae4a"}
+                          stroke="#4f6b3d"
+                          strokeWidth={1}
+                        />
+                        <text
+                          x={x + dotMeta.dx + 6}
+                          y={-y + dotMeta.dy - 5}
+                          fontSize="12"
+                          fill={thermalColor}
+                        >
+                          {dotThermalValue}
+                        </text>
+                      </g>
+                    );
+                    })}
+                  </g>
+                )} 
+
+                {/* {point.id === "TD" && (
+                  <g>
+                    {[...Array(7)].map((_, i) => {
+                      const dotMeta = [
+                        { id: "TDU1", dx: -30, dy: 40 },
+                        { id: "TDU2", dx: 0, dy: 40 },
+                        { id: "TDU3", dx: 30, dy: 40 },
+                        { id: "TDN", dx: -45, dy: 70 },
+                        { id: "TDR", dx: -15, dy: 70 },
+                        { id: "TDY", dx: 15, dy: 70 },
+                        { id: "TDB", dx: 45, dy: 70 },
+                      ][i];
+
+                      const fullId = dotMeta.id + "266102";
+                      const dotThermalValue = thermalInspection[fullId];
+                      const dotThermalColor = getThermalColor(dotThermalValue);
+
                       return (
                         <g key={dotMeta.id}>
                           <circle
                             cx={x + dotMeta.dx}
-                            cy={-y + dotMeta.dy}
+                            cy={y + dotMeta.dy}
                             r={5}
-                            fill={dotThermalColor || "#6cae4a"}
+                            fill={dotThermalColor}
                             stroke="#4f6b3d"
                             strokeWidth={1}
                           />
                           <text
                             x={x + dotMeta.dx + 6}
-                            y={-y + dotMeta.dy - 5}
+                            y={y + dotMeta.dy - 5}
                             fontSize="12"
                             fill={thermalColor}
                           >
@@ -309,7 +350,7 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
                       );
                     })}
                   </g>
-                )}
+                )} */}
               </g>
             );
           })}
