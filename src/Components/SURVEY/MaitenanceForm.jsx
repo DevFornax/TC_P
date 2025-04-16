@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getAuthToken, API_URL } from "../utils/apiConfig";
+import axios from "../utils/axiosInstance"
 import { getAuthData } from "../utils/authStorage";
 
 function MaitenanceForm({ locationId, deviceId, projectId , locationData }) {
@@ -24,30 +24,19 @@ useEffect(() => {
   }
 }, []);
 
- useEffect(() => {
 
-const token = getAuthToken();
 
-   fetch(`${API_URL}/get-job-list`, {
-     method: "GET",
-     headers: {
-       "Content-Type": "application/json",
-       Authorization: `Bearer ${token}`,
-     },
-   })
-     .then((res) => {
-       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-       return res.json();
-     })
-     .then((data) => {
-       setAllTasks(data);
-       setAvailableTasks(data);
-     })
-     .catch((err) => {
-       console.error("🔥 Failed to fetch tasks:", err);
-     });
- }, []);
-
+useEffect(() => {
+  axios
+    .get("/get-job-list")
+    .then((res) => {
+      setAllTasks(res.data);
+      setAvailableTasks(res.data);
+    })
+    .catch((err) => {
+      console.error("🔥 Failed to fetch tasks:", err.response?.data || err.message);
+    });
+}, []);
 
 useEffect(() => {
   let filtered = [];
