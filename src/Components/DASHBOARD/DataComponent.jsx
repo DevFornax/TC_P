@@ -20,6 +20,7 @@ import {
   SquareChartGantt,
   Trash2,
 } from "lucide-react";
+import { getAuthToken, API_URL } from "../utils/apiConfig";
 
 export default function DataComponent() {
   const [data, setData] = useState([]);
@@ -31,9 +32,9 @@ export default function DataComponent() {
   const [companyFilter, setCompanyFilter] = useState("");
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
 
-  const token = localStorage.getItem("token");
-  const API_URL = import.meta.env.VITE_API_BASE_URL;
+
   const navigate = useNavigate();
+const token = getAuthToken();
 
   const fetchData = async () => {
     setLoading(true);
@@ -453,7 +454,7 @@ export default function DataComponent() {
     <>
       <Topbar />
       <div className="p-8">
-        {/* header  */}
+      
         <div className="flex justify-between items-center mb-4">
           <input
             className="border px-3 py-2 rounded w-1/7"

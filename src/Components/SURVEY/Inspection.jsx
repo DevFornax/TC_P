@@ -770,7 +770,7 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
               <div className="mt-6 flex flex-col sm:flex-row gap-2 sm:justify-end">
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-[#385e72] text-white font-semibold rounded-lg shadow-md hover:bg-[#6aabd2]"
+                  className="px-6 py-2 bg-[#385e72] hover:bg-[#1f3947] text-white font-semibold rounded-lg shadow-md "
                 >
                   Submit Inspection
                 </button>

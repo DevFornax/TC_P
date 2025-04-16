@@ -77,7 +77,6 @@ const LocationSearchFormCard = ({
   return (
     <div className="p-6 mb-5 border border-[#b7cfdc] rounded-2xl shadow-md bg-[#d9e4ec]">
       <div className="grid gap-6 sm:grid-cols-3">
-        {/* Location ID */}
         <div className="flex flex-col">
           <label className="block text-[#385e72] font-semibold mb-2 tracking-wide">
             Location ID 266102
@@ -91,7 +90,6 @@ const LocationSearchFormCard = ({
           />
         </div>
 
-        {/* Device Type */}
         <div className="flex flex-col">
           <label className="block text-[#385e72] font-semibold mb-2 tracking-wide">
             Select Device Type
@@ -109,19 +107,17 @@ const LocationSearchFormCard = ({
           </select>
         </div>
 
-        {/* Search Button */}
         <div className="flex items-end">
           <button
             onClick={handleLocationSearch}
             disabled={loading}
-            className="bg-[#6aabd2] hover:bg-[#385e72] text-white font-semibold px-5 py-3 rounded-lg w-full transition-all duration-300 disabled:opacity-50"
+            className="bg-[#385e72] hover:bg-[#1f3947]  text-white font-semibold px-5 py-3 rounded-lg w-full transition-all duration-300 disabled:opacity-50"
           >
             {loading ? "Checking..." : "Search"}
           </button>
         </div>
       </div>
 
-      {/* Error Text */}
       {error && (
         <p className="text-red-600 text-sm text-right pt-2 font-semibold">
           {error}

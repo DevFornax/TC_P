@@ -139,14 +139,17 @@ const Login = () => {
 
       const data = await res.json();
 
-      if (res.ok && data.success) {
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("token", data.token);
-        navigate("/");
-      } else {
-        alert("Login failed: " + (data.message || "Unknown error"));
-      }
+     if (res.ok && data.success) {
+       const userData = {
+         isLoggedIn: true,
+         user: data.user,
+         token: data.token,
+       };
+       localStorage.setItem("auth", JSON.stringify(userData));
+       navigate("/");
+     } else {
+       alert("Login failed: " + (data.message || "Unknown error"));
+     }
     } catch (err) {
       alert("Login failed: " + err.message);
     } finally {

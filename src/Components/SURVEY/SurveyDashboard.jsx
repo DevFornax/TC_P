@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import LocationSearchFormCard from "./LocationSearchFormCard";
 import DynamicSld from "./sld-survey/DynamicSLD";
-
 import LocationInfoCard from "./LocationInfoCard";
 import MaitenanceForm from "./MaitenanceForm";
 import TopBar from "../Topbar";
 import Inspection from "./Inspection";
+import { getAuthToken, API_URL } from "../utils/apiConfig"
 
 function SurveyDashboard() {
   const sldRef = useRef(null);
@@ -65,8 +64,8 @@ function SurveyDashboard() {
     setError("");
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      const API_URL = import.meta.env.VITE_API_BASE_URL;
+     
+const token = getAuthToken();
       const res = await fetch(`${API_URL}/get-location-data`, {
         method: "POST",
         headers: {

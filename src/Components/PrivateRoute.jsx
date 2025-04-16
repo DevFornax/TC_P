@@ -1,9 +1,14 @@
 import { Navigate } from "react-router-dom";
 
 const PrivateRoute = ({ children }) => {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const authData = JSON.parse(localStorage.getItem("auth"));
 
-  return isLoggedIn ? children : <Navigate to="/login" />;
+  if (!authData || !authData.isLoggedIn) {
+    localStorage.removeItem("auth"); // just in case they’re holding onto stale trash
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 };
 
 export default PrivateRoute;

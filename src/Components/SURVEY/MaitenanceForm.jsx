@@ -130,8 +130,6 @@ useEffect(() => {
 
 
 return (
- 
-
   <div className="border border-[#b7cfdc] rounded-xl shadow-md overflow-hidden transition-all duration-500 ease-in-out">
     <div
       onClick={() => setshowCardOfMaintenanceData(!showCardOfMaintenanceData)}
@@ -155,8 +153,8 @@ return (
               <button
                 onClick={() => setActiveView("form")}
                 className={`w-full sm:w-auto px-4 py-2 ${
-                  activeView === "form" ? "bg-[#385e72]" : "bg-[#b7cfdc]"
-                } text-white rounded-lg shadow hover:bg-[#6aabd2]`}
+                  activeView === "form" ? "bg-[#385e72]" : "bg-[#385e72]"
+                } text-white rounded-lg shadow  hover:bg-[#1f3947]`}
               >
                 Add Record
               </button>
@@ -164,7 +162,7 @@ return (
                 onClick={() => setActiveView("table")}
                 className={`w-full sm:w-auto px-4 py-2 ${
                   activeView === "table" ? "bg-[#385e72]" : "bg-[#b7cfdc]"
-                } text-white rounded-lg shadow hover:bg-[#6aabd2]`}
+                } text-white rounded-lg shadow hover:bg-[#1f3947]`}
               >
                 View Latest Records
               </button>
@@ -187,7 +185,6 @@ return (
                     value={deviceId?.id}
                     className={`w-full py-2 text-sm border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6aabd2] 
         border-[#b7cfdc]`}
-                    
                   />
                 </div>
 
