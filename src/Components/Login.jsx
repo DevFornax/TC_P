@@ -117,6 +117,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { saveAuthData } from "./utils/authStorage";
+import axios from "axios"
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -125,22 +126,52 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
 
-    try {
-      const res = await fetch("http://localhost:5000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+  //   try {
+  //     const res = await fetch("http://localhost:5000/login", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ username, password }),
+  //     });
 
-      const data = await res.json();
+  //     const data = await res.json();
 
-    if (res.ok && data.success) {
+  //   if (res.ok && data.success) {
+  //     saveAuthData({
+  //       isLoggedIn: true,
+  //       user: data.user,
+  //       token: data.token,
+  //     });
+  //     navigate("/");
+  //   } else {
+  //     alert("Login failed: " + (data.message || "Unknown error"));
+  //   }
+  //   } catch (err) {
+  //     alert("Login failed: " + err.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    const res = await axios.post("http://localhost:5000/login", {
+      username,
+      password,
+    });
+
+    const data = res.data;
+
+    if (res.status === 200 && data.success) {
       saveAuthData({
         isLoggedIn: true,
         user: data.user,
@@ -150,13 +181,13 @@ const Login = () => {
     } else {
       alert("Login failed: " + (data.message || "Unknown error"));
     }
-    } catch (err) {
-      alert("Login failed: " + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  } catch (err) {
+    console.error("Login error:", err);
+    alert("Login failed: " + (err.response?.data?.message || err.message));
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="flex items-center justify-center min-h-screen p-3 bg-[#d9e4ec]">
       <div className="flex flex-col md:flex-row w-full max-w-5xl mx-auto bg-white rounded-lg shadow-xl border border-[#b7cfdc] overflow-hidden">

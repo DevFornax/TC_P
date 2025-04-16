@@ -453,7 +453,7 @@ const GeneratePDF = () => {
         </div>
       </div> */}
 
-      <div className="p-4 sm:p-6 md:p-8 bg-[#d9e4ec] min-h-screen">
+      <div className="p-4 sm:p-6 md:p-8 mt-14 bg-[#d9e4ec] min-h-screen">
         <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-6">
           <h2 className="text-xl sm:text-3xl font-bold text-[#385e72] mb-4 sm:mb-0">
             Inspection Data Preview

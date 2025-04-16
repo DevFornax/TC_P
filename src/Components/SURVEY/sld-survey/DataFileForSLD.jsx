@@ -1,11 +1,10 @@
-import TCIcon from "../../utils/SquareIconForFuse";
-// import DotIcon from "../utils/DotIcon";
-import OTCIcon from "../../utils/OTCIcon";
-import SPIcon from "../../utils/DuoBoxIcon";
-import DotIconForLightArrestor from "../../utils/DotIconForLightArrestor";
-import DotIconForSwitch from "../../utils/DotIconForSwitch";
-import SquareIconForFuse from "../../utils/SquareIconForFuse";
-import DuoBoxIcon from "../../utils/DuoBoxIcon";
+
+import OTCIcon from "../../utils/SLDICON/OTCIcon";
+import DotIconForSwitch from "../../utils/SLDICON/DotIconForSwitch";
+import DotIconForLightArrestor from "../../utils/SLDICON/DotIconForLightArrestor"
+import SquareIconForFuse from "../../utils/SLDICON/SquareIconForFuse";
+import DuoBoxIcon from "../../utils/SLDICON/DuoBoxIcon";
+
 
 //////////////////////////////-------------------------------TC-------------------------------------------////////////////////
 export const Transformerwaypoints = [

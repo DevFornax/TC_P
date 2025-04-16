@@ -146,7 +146,7 @@ const handleLocationSearch = async () => {
         </div>
       )}
 
-      <div className="container-fluid mx-auto p-3">
+      <div className="container-fluid mx-auto p-3 mt-14">
         <div className="flex flex-col md:flex-row gap-4 mt-4">
           <div
             ref={sldRef}
