@@ -301,20 +301,24 @@
 
 // export default TopBar;
 
-
-
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAuthData } from "../Components/utils/authStorage";
 
 function TopBar() {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
-
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [closingSidebar, setClosingSidebar] = useState(false);
   const sidebarRef = useRef(null);
   const [showHeader, setShowHeader] = useState(true);
   const lastScrollY = useRef(window.scrollY);
+  const [username, setUsername] = useState("Guest");
+
+  useEffect(() => {
+    const auth = getAuthData();
+    console.log("🧾 Full auth object:", auth);
+    setUsername(auth?.user?.username || "Guest");
+  }, []);
 
   const openSidebar = () => {
     setClosingSidebar(false);
@@ -408,43 +412,57 @@ function TopBar() {
       {showMobileSidebar && (
         <div
           ref={sidebarRef}
-          className={`fixed top-0 left-0 sm:w-64 w-72 h-full bg-[#d9e4ec] shadow-md z-50 p-6 space-y-4 ${
+          className={`fixed top-0 left-0 sm:w-64 w-72 h-full bg-[#d9e4ec] shadow-md z-50 p-6 ${
             closingSidebar ? "animate-slide-out" : "animate-slide-in"
-          }`}
+          } flex flex-col justify-between`}
         >
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-bold text-[#385e72]">
-              Hello, {user?.username}
-            </h2>
-            <button onClick={closeSidebar} className="text-gray-600 text-xl">
-              ✕
+          <div className="space-y-4">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-bold text-[#385e72]">
+                Hello, {username}
+              </h2>
+              <button onClick={closeSidebar} className="text-gray-600 text-xl">
+                ✕
+              </button>
+            </div>
+
+            <button
+              onClick={handleHomeClick}
+              className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
+            >
+              🏠 Home
+            </button>
+            <button
+              onClick={handleDashboardClick}
+              className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
+            >
+              📊 Dashboard
+            </button>
+            <button
+              onClick={handleInspectionToolClick}
+              className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
+            >
+              🔍 Inspection Tool
+            </button>
+            <button
+              onClick={handleLogout}
+              className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
+            >
+              🔒 Logout
             </button>
           </div>
 
-          <button
-            onClick={handleHomeClick}
-            className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
-          >
-            🏠 Home
-          </button>
-          <button
-            onClick={handleDashboardClick}
-            className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
-          >
-            📊 Dashboard
-          </button>
-          <button
-            onClick={handleInspectionToolClick}
-            className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
-          >
-            🔍 Inspection Tool
-          </button>
-          <button
-            onClick={handleLogout}
-            className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
-          >
-            🔒 Logout
-          </button>
+          <div className="text-center text-sm text-[#385e72] pt-6">
+            Made with <span className="text-red-500">❤️</span> by{" "}
+            <a
+              href="https://www.fornaxet.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline text-[#385e72] hover:text-blue-500"
+            >
+              Fornax
+            </a>
+          </div>
         </div>
       )}
 

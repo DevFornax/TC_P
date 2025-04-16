@@ -123,7 +123,7 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
             <div
               className=" flex-1   relative"
               ref={containerRef}
-                           onMouseDown={handleMouseDown}
+              onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
@@ -325,7 +325,6 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                       //   }
                       // };
 
-
                       const handleClick = (id) => {
                         const nextClickState =
                           ((pointClickStates[id] || 0) + 1) % 3;
@@ -335,7 +334,6 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                         }));
 
                         if (id === "TD") {
-                         
                           const baseX = wp.coordinates[0] * Transformerscale;
                           const baseY = -wp.coordinates[1] * Transformerscale;
 
@@ -353,10 +351,9 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                             ];
                             setThermalTDPoints(points);
                           }
-                          return; 
+                          return;
                         }
 
-                       
                         if (
                           [
                             "L1A",
@@ -817,10 +814,10 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                 </svg>
               )}
 
-              <div
+              {/* <div
                 className="absolute bottom-4 right-4 flex flex-col items-center gap-4 p-4 border border-black bg-white rounded-lg sm:block md:block lg:hidden"
                 style={{
-                  zIndex: 1000,
+
                   touchAction: "manipulation",
                 }}
               >
@@ -846,6 +843,66 @@ const [thermalTDPoints, setThermalTDPoints] = useState([]);
                   title="Reset View"
                 >
                   <img src="/reset.svg" alt="" />
+                </button>
+              </div> */}
+
+              <div
+                className="absolute bottom-4 right-4 flex flex-col items-center gap-4 p-4 border rounded-lg sm:block md:block lg:hidden"
+                style={{
+                  backgroundColor: "#d9e4ec", // card background
+                  borderColor: "#b7cfdc", // border
+                  touchAction: "manipulation",
+                }}
+              >
+                <button
+                  onClick={() => setZoom((prev) => Math.min(prev + 0.1, 5))}
+                  className="p-2 rounded-full transition"
+                  style={{
+                    backgroundColor: "#385e72", // primary button
+                  }}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#6aabd2")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#385e72")
+                  }
+                  title="Zoom In"
+                >
+                  <img src="/zoomin.svg" alt="Zoom In" />
+                </button>
+
+                <button
+                  onClick={() => setZoom((prev) => Math.max(prev - 0.1, 0.2))}
+                  className="p-2 rounded-full transition"
+                  style={{
+                    backgroundColor: "#385e72", // primary button
+                  }}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#6aabd2")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#385e72")
+                  }
+                  title="Zoom Out"
+                >
+                  <img src="/zoomout.svg" alt="Zoom Out" />
+                </button>
+
+                <button
+                  onClick={resetView}
+                  className="p-2 rounded-full transition"
+                  style={{
+                    backgroundColor: "#385e72", // primary button
+                  }}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#6aabd2")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#385e72")
+                  }
+                  title="Reset View"
+                >
+                  <img src="/reset.svg" alt="Reset View" />
                 </button>
               </div>
             </div>

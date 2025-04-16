@@ -20,7 +20,7 @@ useEffect(() => {
   const auth = getAuthData();
   if (auth?.user?.username) {
     setCreatedBy(auth.user.username);
-    console.log(auth.user.username);
+   
   }
 }, []);
 

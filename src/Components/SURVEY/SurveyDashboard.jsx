@@ -115,7 +115,7 @@ const handleLocationSearch = async () => {
     setSelection(data.attributes.point_type);
     setProjectId(data.project_id);
     setLocationIDforchild(parseInt(newLocationID));
-    console.log("API called from dashboard");
+   
   } catch (err) {
     console.error("Error fetching new location:", err);
     const errorMsg = err.response?.data?.message || "Something went wrong!";
