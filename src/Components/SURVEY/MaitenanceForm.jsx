@@ -111,6 +111,7 @@ function MaitenanceForm({ locationId, deviceId, projectId, locationData }) {
             <h2 className="text-2xl font-bold text-[#385e72] mb-4 sm:mb-0">
               Maintenance Record
             </h2>
+            <br /><br />
           </div>
           <p className="text-[#385e72] text-center font-semibold">
             Please enter a valid Location ID to proceed with submitting the

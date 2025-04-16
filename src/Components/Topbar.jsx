@@ -304,6 +304,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuthData } from "../Components/utils/authStorage";
+import { Link } from "react-router-dom";
 
 function TopBar() {
   const navigate = useNavigate();
@@ -394,9 +395,12 @@ function TopBar() {
           showHeader ? "translate-y-0" : "-translate-y-full"
         }`}
       >
-        <div className="text-2xl font-semibold tracking-wide">
+        <Link
+          to="/"
+          className="text-2xl font-semibold tracking-wide hover:underline"
+        >
           Fornax ThermoVis
-        </div>
+        </Link> 
 
         <div>
           <button

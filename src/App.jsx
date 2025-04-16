@@ -1,12 +1,13 @@
 import "./App.css";
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import SurveyDashboard from "./Components/SURVEY/SurveyDashboard";
 import EntryPage from "./Components/EntryPage";
 import DataComponent from "./Components/DASHBOARD/DataComponent";
 import GeneratePDF from "./Components/DASHBOARD/sld-downlaod/GeneratePDF";
 import Login from "./Components/Login";
 import PrivateRoute from "./Components/PrivateRoute";
+import FourOFour from "./Components/404";
 
 function App() {
   return (
@@ -38,7 +39,6 @@ function App() {
             </PrivateRoute>
           }
         />
-
         <Route
           path="/generate-pdf"
           element={
@@ -47,6 +47,9 @@ function App() {
             </PrivateRoute>
           }
         />
+
+        {/* Catch-all route for 404 */}
+        <Route path="*" element={<FourOFour />} />
       </Routes>
     </BrowserRouter>
   );

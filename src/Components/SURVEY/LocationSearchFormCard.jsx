@@ -74,7 +74,7 @@ const LocationSearchFormCard = ({
 }) => {
   return (
     <div className="p-6 mb-5 border border-[#b7cfdc] rounded-2xl shadow-md bg-[#d9e4ec]">
-      <div className="grid gap-6 sm:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-3 py-2">
         <div className="flex flex-col">
           <label className="block text-[#385e72] font-semibold mb-2 tracking-wide">
             Location ID 266102

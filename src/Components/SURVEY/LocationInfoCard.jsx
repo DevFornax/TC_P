@@ -128,6 +128,8 @@ export default function LocationInfoCard({ locationdata }) {
             <h2 className="text-2xl font-bold text-[#385e72] mb-4 sm:mb-0">
               Location Data
             </h2>
+            <br />
+            <br />
           </div>
           <p className="text-[#385e72] text-center font-semibold">
             Please select a valid Location ID to view the location details.

@@ -258,6 +258,8 @@ useEffect(() => {
             <h2 className="text-2xl font-bold text-[#385e72] mb-4 sm:mb-0">
               Visual & Thermal Inspection
             </h2>
+            <br />
+            <br />
           </div>
           <p className="text-[#385e72] text-center font-semibold">
             Please enter a valid Location ID to submit the visual and thermal
