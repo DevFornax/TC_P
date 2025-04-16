@@ -1,4 +1,3 @@
-
 // import { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 
@@ -112,12 +111,10 @@
 
 // export default Login;
 
-
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { saveAuthData } from "./utils/authStorage";
-import axios from "axios"
+import axios from "axios";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -158,40 +155,38 @@ const Login = () => {
   //   }
   // };
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-
-  try {
-    const res = await axios.post("http://localhost:5000/login", {
-      username,
-      password,
-    });
-
-    const data = res.data;
-
-    if (res.status === 200 && data.success) {
-      saveAuthData({
-        isLoggedIn: true,
-        user: data.user,
-        token: data.token,
+    try {
+      const res = await axios.post("http://localhost:5000/login", {
+        username,
+        password,
       });
-      navigate("/");
-    } else {
-      alert("Login failed: " + (data.message || "Unknown error"));
+
+      const data = res.data;
+
+      if (res.status === 200 && data.success) {
+        saveAuthData({
+          isLoggedIn: true,
+          user: data.user,
+          token: data.token,
+        });
+        navigate("/");
+      } else {
+        alert("Login failed: " + (data.message || "Unknown error"));
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Login failed: " + (err.response?.data?.message || err.message));
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("Login error:", err);
-    alert("Login failed: " + (err.response?.data?.message || err.message));
-  } finally {
-    setLoading(false);
-  }
-};
+  };
   return (
     <div className="flex items-center justify-center min-h-screen p-3 bg-[#d9e4ec]">
       <div className="flex flex-col md:flex-row w-full max-w-5xl mx-auto bg-white rounded-lg shadow-xl border border-[#b7cfdc] overflow-hidden">
-
         <div className="flex justify-center items-center w-full md:w-1/2 bg-[#d9e4ec] p-6">
           <img
             src="/undraw_qa-engineers_kgp8.svg"

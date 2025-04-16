@@ -6,7 +6,7 @@ import LocationInfoCard from "./LocationInfoCard";
 import MaitenanceForm from "./MaitenanceForm";
 import TopBar from "../Topbar";
 import Inspection from "./Inspection";
-import axios from "../utils/axiosInstance"; 
+import axios from "../utils/axiosInstance";
 
 function SurveyDashboard() {
   const sldRef = useRef(null);
@@ -51,80 +51,77 @@ function SurveyDashboard() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-//   const handleLocationSearch = async () => {
-//     if (!newLocationID || isNaN(newLocationID)) {
-//       setError("Location ID must be a valid number.");
+  //   const handleLocationSearch = async () => {
+  //     if (!newLocationID || isNaN(newLocationID)) {
+  //       setError("Location ID must be a valid number.");
 
-//       setTimeout(() => {
-//         setError(null);
-//       }, 5000);
+  //       setTimeout(() => {
+  //         setError(null);
+  //       }, 5000);
 
-//       return;
-//     }
-//     setError("");
-//     setLoading(true);
-//     try {
-     
-// const token = getAuthToken();
-//       const res = await fetch(`${API_URL}/get-location-data`, {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${token}`,
-//         },
-//         body: JSON.stringify({ location_id: parseInt(newLocationID) }),
-//       });
-//       const data = await res.json();
-//       if (!res.ok) {
-//         setError(data.message || "Location not found");
-//         return;
-//       }
-//       setLocationData(data);
-//       setSelection(data.attributes.point_type);
+  //       return;
+  //     }
+  //     setError("");
+  //     setLoading(true);
+  //     try {
 
-//       setProjectId(data.project_id);
-//       setLocationIDforchild(parseInt(newLocationID));
-//       console.log("Api called from dashbpard");
-//     } catch (err) {
-//       console.error("Error fetching new location:", err);
-//       setError("Something went wrong!");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+  // const token = getAuthToken();
+  //       const res = await fetch(`${API_URL}/get-location-data`, {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         body: JSON.stringify({ location_id: parseInt(newLocationID) }),
+  //       });
+  //       const data = await res.json();
+  //       if (!res.ok) {
+  //         setError(data.message || "Location not found");
+  //         return;
+  //       }
+  //       setLocationData(data);
+  //       setSelection(data.attributes.point_type);
 
+  //       setProjectId(data.project_id);
+  //       setLocationIDforchild(parseInt(newLocationID));
+  //       console.log("Api called from dashbpard");
+  //     } catch (err) {
+  //       console.error("Error fetching new location:", err);
+  //       setError("Something went wrong!");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-const handleLocationSearch = async () => {
-  if (!newLocationID || isNaN(newLocationID)) {
-    setError("Location ID must be a valid number.");
-    setTimeout(() => setError(null), 5000);
-    return;
-  }
+  const handleLocationSearch = async () => {
+    if (!newLocationID || isNaN(newLocationID)) {
+      setError("Location ID must be a valid number.");
+      setTimeout(() => setError(null), 5000);
+      return;
+    }
 
-  setError("");
-  setLoading(true);
+    setError("");
+    setLoading(true);
 
-  try {
-    const res = await axios.post("/get-location-data", {
-      location_id: parseInt(newLocationID),
-    });
+    try {
+      const res = await axios.post("/get-location-data", {
+        location_id: parseInt(newLocationID),
+      });
 
-    const data = res.data;
+      const data = res.data;
 
-    setLocationData(data);
-    setSelection(data.attributes.point_type);
-    setProjectId(data.project_id);
-    setLocationIDforchild(parseInt(newLocationID));
-   
-  } catch (err) {
-    console.error("Error fetching new location:", err);
-    const errorMsg = err.response?.data?.message || "Something went wrong!";
-    setError(errorMsg);
-  } finally {
-    setLoading(false);
-  }
-};
-
+      setLocationData(data);
+      setSelection(data.attributes.point_type);
+      setProjectId(data.project_id);
+      setLocationIDforchild(parseInt(newLocationID));
+    } catch (err) {
+      console.error("Error fetching new location:", err);
+      const errorMsg = err.response?.data?.message || "Something went wrong!";
+      setError(errorMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>

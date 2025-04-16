@@ -61,8 +61,6 @@
 
 // export default LocationSearchFormCard;
 
-
-
 import React from "react";
 
 const LocationSearchFormCard = ({

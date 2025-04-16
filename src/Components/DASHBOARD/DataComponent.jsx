@@ -32,9 +32,8 @@ export default function DataComponent() {
   const [companyFilter, setCompanyFilter] = useState("");
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
 
-
   const navigate = useNavigate();
-const token = getAuthToken();
+  const token = getAuthToken();
 
   const fetchData = async () => {
     setLoading(true);
@@ -99,7 +98,6 @@ const token = getAuthToken();
 
   const columns = useMemo(
     () => [
-  
       {
         id: "select",
         header: ({ table }) => (
@@ -154,7 +152,7 @@ const token = getAuthToken();
         },
         cell: (info) => info.getValue(),
       },
-     
+
       {
         accessorKey: "inspection_done_by",
         header: ({ column }) => (
@@ -329,8 +327,6 @@ const token = getAuthToken();
         },
       },
 
-    
-
       {
         accessorKey: "thermal_inspection",
         header: ({ column }) => (
@@ -454,7 +450,6 @@ const token = getAuthToken();
     <>
       <Topbar />
       <div className="p-8">
-      
         <div className="flex justify-between items-center mb-4">
           <input
             className="border px-3 py-2 rounded w-1/7"
@@ -466,8 +461,6 @@ const token = getAuthToken();
             Showing {data.length} of {total} records
           </p>
         </div>
-
-       
 
         <div className="rounded-md border border-gray-300 overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -524,7 +517,6 @@ const token = getAuthToken();
             </tbody>
           </table>
         </div>
-
 
         <div className="flex w-full flex-col-reverse items-center justify-between md:flex-row md:gap-8 py-4 sticky">
           <div className="flex-1 text-muted-foreground text-sm">

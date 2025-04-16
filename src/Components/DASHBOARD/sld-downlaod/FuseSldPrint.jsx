@@ -1,5 +1,3 @@
-
-
 import React, {
   useRef,
   useState,
@@ -59,19 +57,18 @@ const FuseSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
 
   const handleMouseUp = () => setIsDragging(false);
 
-
- const thermalPointData = Object.entries(thermalInspection).reduce(
-   (acc, [fullId, value]) => {
-     const matchedPrefix = markedPoints.find((prefix) =>
-       fullId.startsWith(prefix)
-     );
-     if (matchedPrefix) {
-       acc[matchedPrefix] = value;
-     }
-     return acc;
-   },
-   {}
- );
+  const thermalPointData = Object.entries(thermalInspection).reduce(
+    (acc, [fullId, value]) => {
+      const matchedPrefix = markedPoints.find((prefix) =>
+        fullId.startsWith(prefix)
+      );
+      if (matchedPrefix) {
+        acc[matchedPrefix] = value;
+      }
+      return acc;
+    },
+    {}
+  );
 
   useImperativeHandle(ref, () => ({
     // exportAsImage: () => {
@@ -106,7 +103,6 @@ const FuseSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
 
       return new Promise((resolve, reject) => {
         img.onload = () => {
-          
           const A4_WIDTH = 794;
           const A4_HEIGHT = 700;
 

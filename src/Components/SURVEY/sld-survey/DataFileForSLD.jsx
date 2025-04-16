@@ -1,10 +1,8 @@
-
 import OTCIcon from "../../utils/SLDICON/OTCIcon";
 import DotIconForSwitch from "../../utils/SLDICON/DotIconForSwitch";
-import DotIconForLightArrestor from "../../utils/SLDICON/DotIconForLightArrestor"
+import DotIconForLightArrestor from "../../utils/SLDICON/DotIconForLightArrestor";
 import SquareIconForFuse from "../../utils/SLDICON/SquareIconForFuse";
 import DuoBoxIcon from "../../utils/SLDICON/DuoBoxIcon";
-
 
 //////////////////////////////-------------------------------TC-------------------------------------------////////////////////
 export const Transformerwaypoints = [
@@ -319,11 +317,6 @@ export const switchCustomIcons = {
       <DotIconForSwitch width={20} height={20} fill={fill} stroke={stroke} />
     </g>
   ),
-  
-
-
-
-  
 };
 
 //////////////////////////////-------------------------------Fuse-------------------------------------------////////////////////
@@ -460,5 +453,4 @@ export const FuseCustomIcons = {
       <SquareIconForFuse width={20} height={20} fill={fill} stroke={stroke} />
     </g>
   ),
-
 };

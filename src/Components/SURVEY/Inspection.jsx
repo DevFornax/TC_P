@@ -4,7 +4,6 @@ import { InspectionFields } from "../utils/InspectionFields";
 import { compressVisualData } from "../../Components/utils/VisualTemplateforVisualFields";
 import axios from "../utils/axiosInstance";
 
-
 const initialFormData = {};
 InspectionFields.forEach((field) => {
   if (field.selectedOption) {
@@ -18,7 +17,6 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
   const [thermalEnabled, setThermalEnabled] = useState(false);
   const [thermalRecords, setThermalRecords] = useState([]);
   const [showCardOfInspection, setshowCardOfInspection] = useState(true);
-
 
   useEffect(() => {
     if (!thermalEnabled) return;
@@ -220,31 +218,29 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
         thermalInspection,
       };
 
-    
+      try {
+        const response = await axios.post("/submit-inspection", finalData);
 
-    try {
-      const response = await axios.post("/submit-inspection", finalData);
+        // If successful
+        alert("Inspection submitted successfully!");
+        console.log("Submission Result:", response.data);
 
-      // If successful
-      alert("Inspection submitted successfully!");
-      console.log("Submission Result:", response.data);
+        setThermalRecords([]);
+        handleReset();
+        onSubmit();
+      } catch (error) {
+        console.error(
+          "Error submitting inspection data:",
+          error.response?.data || error.message
+        );
 
-      setThermalRecords([]);
-      handleReset();
-      onSubmit();
-    } catch (error) {
-      console.error(
-        "Error submitting inspection data:",
-        error.response?.data || error.message
-      );
-
-      alert(
-        `❌ Error: ${
-          error.response?.data?.error ||
-          "An error occurred while submitting the data. Please try again."
-        }`
-      );
-    }
+        alert(
+          `❌ Error: ${
+            error.response?.data?.error ||
+            "An error occurred while submitting the data. Please try again."
+          }`
+        );
+      }
     } else {
       console.log("❌ Validation failed:", errors);
     }

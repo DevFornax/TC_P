@@ -1,6 +1,5 @@
 // import { useState } from "react";
 
-
 // export const SectionWithToggle = ({ title, children }) => {
 //   const [open, setOpen] = useState(false);
 //   return (
@@ -25,7 +24,6 @@
 //     </div>
 //   );
 // };
-
 
 // import { useState } from "react";
 
@@ -52,9 +50,6 @@
 //     </div>
 //   );
 // };
-
-
-
 
 import { useState } from "react";
 

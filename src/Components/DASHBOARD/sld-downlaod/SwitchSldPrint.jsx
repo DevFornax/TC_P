@@ -151,7 +151,6 @@ const SwitchSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
         ref={svgRef}
         viewBox="0 0 1000 700"
         style={{
-
           background: "#fff",
           cursor: isDragging ? "grabbing" : "grab",
         }}

@@ -1,5 +1,3 @@
-
-
 import React, {
   useRef,
   useState,
@@ -59,22 +57,18 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
 
   const handleMouseUp = () => setIsDragging(false);
 
- const thermalPointData = Object.entries(thermalInspection).reduce(
-   (acc, [fullId, value]) => {
-     const matchedPrefix = markedPoints.find((prefix) =>
-       fullId.startsWith(prefix)
-     );
-     if (matchedPrefix) {
-       acc[matchedPrefix] = value;
-     }
-     return acc;
-   },
-   {}
- );
-
-
-
-
+  const thermalPointData = Object.entries(thermalInspection).reduce(
+    (acc, [fullId, value]) => {
+      const matchedPrefix = markedPoints.find((prefix) =>
+        fullId.startsWith(prefix)
+      );
+      if (matchedPrefix) {
+        acc[matchedPrefix] = value;
+      }
+      return acc;
+    },
+    {}
+  );
 
   useImperativeHandle(ref, () => ({
     // exportAsImage: () => {
@@ -110,8 +104,8 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
       return new Promise((resolve, reject) => {
         img.onload = () => {
           // Set A4 size in pixels at 96 DPI
-          const A4_WIDTH = 794; 
-          const A4_HEIGHT = 700; 
+          const A4_WIDTH = 794;
+          const A4_HEIGHT = 700;
 
           const canvas = document.createElement("canvas");
           canvas.width = A4_WIDTH;
@@ -119,7 +113,6 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
 
           const ctx = canvas.getContext("2d");
 
-      
           const scale = Math.min(A4_WIDTH / img.width, A4_HEIGHT / img.height);
 
           const x = (A4_WIDTH - img.width * scale) / 2;
@@ -139,9 +132,8 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
         )}`;
       });
     },
-  })); 
-  
-  
+  }));
+
   return (
     <div className="w-full h-full">
       <svg
@@ -200,7 +192,6 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
           ) : (
             Object.entries(thermalInspection)
               .sort(([, aStatus], [, bStatus]) => {
-               
                 const priority = { H: 0, M: 1 };
                 return (priority[aStatus] ?? 2) - (priority[bStatus] ?? 2);
               })

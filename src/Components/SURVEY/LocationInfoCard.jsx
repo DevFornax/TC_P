@@ -1,4 +1,3 @@
-
 // import React, { useState } from "react";
 // import { InfoItem } from "../UI/InfoItem";
 // import { SectionWithToggle } from "../UI/SectionwithToggle";
@@ -113,9 +112,6 @@
 //     </div>
 //   );
 // }
-
-
-
 
 import React, { useState } from "react";
 import { InfoItem } from "../UI/InfoItem";

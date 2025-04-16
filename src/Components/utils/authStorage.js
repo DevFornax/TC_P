@@ -1,7 +1,8 @@
-
 import CryptoJS from "crypto-js";
 
-const secretKey = import.meta.env.VITE_CRYPTO_SECRET || "a9d94nfn54kYH42jALK1245jJaq1J0a3mt43q24mnv2kjf45e3a1d3249f6b9e745b088a28f4b85a211bd4b8e10a1cf6344fdf38382c91b2d4";
+const secretKey =
+  import.meta.env.VITE_CRYPTO_SECRET ||
+  "a9d94nfn54kYH42jALK1245jJaq1J0a3mt43q24mnv2kjf45e3a1d3249f6b9e745b088a28f4b85a211bd4b8e10a1cf6344fdf38382c91b2d4";
 
 export const saveAuthData = (authObj) => {
   const encrypted = CryptoJS.AES.encrypt(

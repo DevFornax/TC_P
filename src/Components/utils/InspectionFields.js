@@ -1,5 +1,3 @@
-
- 
 export const InspectionFields = [
   {
     label: "Bus Bar",

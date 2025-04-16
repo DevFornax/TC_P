@@ -13,7 +13,6 @@
 
 // export default PrivateRoute;
 
-
 import { Navigate } from "react-router-dom";
 import { getAuthData, clearAuthData } from "../Components/utils/authStorage";
 

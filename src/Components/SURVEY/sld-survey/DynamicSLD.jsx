@@ -27,8 +27,7 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
   const handleMouseUp = () => setIsDragging(false);
   const handleTouchEnd = () => setIsDragging(false);
   const [pointClickStates, setPointClickStates] = useState({});
-const [thermalTDPoints, setThermalTDPoints] = useState([]);
-
+  const [thermalTDPoints, setThermalTDPoints] = useState([]);
 
   useEffect(() => {
     const container = containerRef.current;
