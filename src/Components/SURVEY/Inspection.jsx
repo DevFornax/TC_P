@@ -3,6 +3,7 @@ import { InfoItem } from "../UI/InfoItem";
 import { InspectionFields } from "../utils/InspectionFields";
 import { compressVisualData } from "../../Components/utils/VisualTemplateforVisualFields";
 import axios from "../utils/axiosInstance";
+import { getAuthData } from "../utils/authStorage";
 
 const initialFormData = {};
 InspectionFields.forEach((field) => {
@@ -46,16 +47,19 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
       });
     }
   }, [deviceId, thermalEnabled]);
+  
+useEffect(() => {
+  const userData = getAuthData();
+  console.log("Decrypted userData:", userData);
 
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("user"));
-    if (userData?.username) {
-      setFormData((prev) => ({
-        ...prev,
-        username: userData.username,
-      }));
-    }
-  }, []);
+  if (userData?.user?.username) {
+    setFormData((prev) => ({
+      ...prev,
+      username: userData.user.username,
+    }));
+  }
+}, []);
+
 
   const handleChange = (name, value) => {
     setFormData((prev) => {

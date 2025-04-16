@@ -316,7 +316,6 @@ function TopBar() {
 
   useEffect(() => {
     const auth = getAuthData();
-    console.log("🧾 Full auth object:", auth);
     setUsername(auth?.user?.username || "Guest");
   }, []);
 
