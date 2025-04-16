@@ -116,6 +116,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { saveAuthData } from "./utils/authStorage";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -139,17 +140,16 @@ const Login = () => {
 
       const data = await res.json();
 
-     if (res.ok && data.success) {
-       const userData = {
-         isLoggedIn: true,
-         user: data.user,
-         token: data.token,
-       };
-       localStorage.setItem("auth", JSON.stringify(userData));
-       navigate("/");
-     } else {
-       alert("Login failed: " + (data.message || "Unknown error"));
-     }
+    if (res.ok && data.success) {
+      saveAuthData({
+        isLoggedIn: true,
+        user: data.user,
+        token: data.token,
+      });
+      navigate("/");
+    } else {
+      alert("Login failed: " + (data.message || "Unknown error"));
+    }
     } catch (err) {
       alert("Login failed: " + err.message);
     } finally {

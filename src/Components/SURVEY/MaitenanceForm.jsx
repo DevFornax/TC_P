@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getAuthToken, API_URL } from "../utils/apiConfig";
-
+import { getAuthData } from "../utils/authStorage";
 
 function MaitenanceForm({ locationId, deviceId, projectId , locationData }) {
   const [date, setDate] = useState("");
@@ -13,12 +13,16 @@ function MaitenanceForm({ locationId, deviceId, projectId , locationData }) {
 const [showCardOfMaintenanceData, setshowCardOfMaintenanceData
 ] = useState(false);
   const [activeView, setActiveView] = useState(null);
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user?.username) {
-      setCreatedBy(user.username); 
-    }
-  }, []);
+
+
+
+useEffect(() => {
+  const auth = getAuthData();
+  if (auth?.user?.username) {
+    setCreatedBy(auth.user.username);
+    console.log(auth.user.username);
+  }
+}, []);
 
  useEffect(() => {
 
