@@ -18,7 +18,7 @@ export const visualTemplate = {
   5: { name: "bird_guard", options: { 1: "Yes", 0: "No" } },
   6: {
     name: "do_tc_jumper",
-    options: { 1: "Coated", 2: "Sleeve" },
+    options: { 1: "Coated", 2: "Barred Conductor",  3: "Sleeve" },
   },
   7: { name: "ht_booting", options: { 1: "Yes", 0: "No" } },
   8: { name: "lt_booting", options: { 1: "Yes", 0: "No" } },

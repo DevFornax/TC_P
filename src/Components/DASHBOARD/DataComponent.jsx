@@ -74,7 +74,6 @@ export default function DataComponent() {
 
       const result = await response.json();
       setData(result.data);
-      // console.log("reuslt data:", result.data);
       setTotal(result.total);
     } catch (error) {
       console.error("Error fetching data:", error);
