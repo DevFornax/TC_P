@@ -142,115 +142,230 @@ useEffect(() => {
     setThermalEnabled(false);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
 
-    if (validate()) {
-      const selectedDevice = selection;
+//     if (validate()) {
+//       const selectedDevice = selection;
 
-      const filteredInspectionFields = InspectionFields.filter((field) =>
-        field.device.includes(selectedDevice)
-      );
+//       const filteredInspectionFields = InspectionFields.filter((field) =>
+//         field.device.includes(selectedDevice)
+//       );
 
-      const filteredFormData = {};
-      filteredInspectionFields.forEach((field) => {
-        filteredFormData[field.name] = formData[field.name] || "";
-      });
+//       const filteredFormData = {};
+//       filteredInspectionFields.forEach((field) => {
+//         filteredFormData[field.name] = formData[field.name] || "";
+//       });
 
-      const compressedVisual = compressVisualData(filteredFormData);
+//       console.log(filteredFormData ,"data")
+//       const compressedVisual = compressVisualData(filteredFormData);
 
-      const LocationID = locationdata?.id;
-      const keysToAppendLocation = [
-        "TDB",
-        "TDU1",
-        "TDR",
-        "TDU3",
-        "TDY",
-        "TDN",
-        "TDU2",
-      ];
-      let thermalInspection;
+//       const LocationID = locationdata?.id;
+//       const keysToAppendLocation = [
+//         "TDB",
+//         "TDU1",
+//         "TDR",
+//         "TDU3",
+//         "TDY",
+//         "TDN",
+//         "TDU2",
+//       ];
+//       let thermalInspection;
 
-      const conditionMap = {
-        Medium: "M",
-        High: "H",
-        Normal: "N",
-      };
+//       const conditionMap = {
+//         Medium: "M",
+//         High: "H",
+//         Normal: "N",
+//       };
 
-      if (thermalEnabled) {
-        if (thermalRecords.length > 0) {
-          thermalInspection = Object.fromEntries(
-            thermalRecords.map((point) => {
-              const key = keysToAppendLocation.includes(point.id)
-                ? `${point.id}${LocationID}`
-                : point.id;
+//       if (thermalEnabled) {
+//         if (thermalRecords.length > 0) {
+//           thermalInspection = Object.fromEntries(
+//             thermalRecords.map((point) => {
+//               const key = keysToAppendLocation.includes(point.id)
+//                 ? `${point.id}${LocationID}`
+//                 : point.id;
 
-              const shortCondition =
-                conditionMap[point.condition] || point.condition;
+//               const shortCondition =
+//                 conditionMap[point.condition] || point.condition;
 
-              return [key, shortCondition];
-            })
-          );
-        } else {
-          alert("⚠️ Thermal inspection is enabled but no data selected.");
-          return;
-        }
-      } else {
-        thermalInspection = JSON.stringify({ status: "notdone" });
-      }
+//               return [key, shortCondition];
+//             })
+//           );
+//         } else {
+//           alert("⚠️ Thermal inspection is enabled but no data selected.");
+//           return;
+//         }
+//       } else {
+//         thermalInspection = JSON.stringify({ status: "notdone" });
+//       }
 
-      const minimalLocationData = {
-        id: locationdata?.id,
-        parent_id: locationdata?.parent_id,
-        project_id: locationdata?.project_id,
-        project_name: locationdata?.project_name,
-        substation_id: locationdata?.substation_id,
-        substation_name: locationdata?.substation_name,
-        attributes: {
-          point_type: locationdata?.attributes?.point_type,
-          point_no: locationdata?.attributes?.point_no,
-          area_code: locationdata?.attributes?.area_code,
-          ulid: locationdata?.attributes?.ulid,
-        },
-      };
+//       const minimalLocationData = {
+//         id: locationdata?.id,
+//         parent_id: locationdata?.parent_id,
+//         project_id: locationdata?.project_id,
+//         project_name: locationdata?.project_name,
+//         substation_id: locationdata?.substation_id,
+//         substation_name: locationdata?.substation_name,
+//         attributes: {
+//           point_type: locationdata?.attributes?.point_type,
+//           point_no: locationdata?.attributes?.point_no,
+//           area_code: locationdata?.attributes?.area_code,
+//           ulid: locationdata?.attributes?.ulid,
+//         },
+//       };
 
-      const finalData = {
-        username: formData.username,
-        inspectionDate: formData.inspectionDate,
-        locationdata: minimalLocationData,
-        visualInspection: compressedVisual,
-        thermalInspection,
-      };
+//       const finalData = {
+//         username: formData.username,
+//         inspectionDate: formData.inspectionDate,
+//         locationdata: minimalLocationData,
+//         visualInspection: compressedVisual,
+//         thermalInspection,
+//       };
+// console.log(finalData , "final data")
+//       try {
+//         const response = await axios.post("/submit-inspection", finalData);
 
-      try {
-        const response = await axios.post("/submit-inspection", finalData);
+//         // If successful
+//         alert("Inspection submitted successfully!");
+//         console.log("Submission Result:", response.data);
 
-        // If successful
-        alert("Inspection submitted successfully!");
-        console.log("Submission Result:", response.data);
+//         setThermalRecords([]);
+//         handleReset();
+//         onSubmit();
+//       } catch (error) {
+//         console.error(
+//           "Error submitting inspection data:",
+//           error.response?.data || error.message
+//         );
 
-        setThermalRecords([]);
-        handleReset();
-        onSubmit();
-      } catch (error) {
-        console.error(
-          "Error submitting inspection data:",
-          error.response?.data || error.message
-        );
+//         alert(
+//           `❌ Error: ${
+//             error.response?.data?.error ||
+//             "An error occurred while submitting the data. Please try again."
+//           }`
+//         );
+//       }
+//     } else {
+//       console.log("❌ Validation failed:", errors);
+//     }
+//   };
 
-        alert(
-          `❌ Error: ${
-            error.response?.data?.error ||
-            "An error occurred while submitting the data. Please try again."
-          }`
-        );
-      }
-    } else {
-      console.log("❌ Validation failed:", errors);
-    }
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!validate()) {
+    console.log("❌ Validation failed:", errors);
+    return;
+  }
+
+  const selectedDevice = selection;
+
+  // Filter only applicable inspection fields
+  const filteredInspectionFields = InspectionFields.filter((field) =>
+    field.device.includes(selectedDevice)
+  );
+
+  // Create filtered visual inspection data
+  const filteredFormData = {};
+  filteredInspectionFields.forEach((field) => {
+    filteredFormData[field.name] = formData[field.name] || "";
+  });
+console.log(filteredFormData , "data ")
+  const compressedVisual = compressVisualData(filteredFormData);
+  const LocationID = locationdata?.id;
+
+  const keysToAppendLocation = [
+    "TDB",
+    "TDU1",
+    "TDR",
+    "TDU3",
+    "TDY",
+    "TDN",
+    "TDU2",
+  ];
+
+  const conditionMap = {
+    Medium: "M",
+    High: "H",
+    Normal: "N",
   };
 
-  if (!locationdata)
+  let thermalInspection;
+
+  if (thermalEnabled) {
+    if (!thermalRecords || thermalRecords.length === 0) {
+      alert("⚠️ Thermal inspection is enabled but no data selected.");
+      return;
+    }
+
+    // Map thermal records with short conditions and append location ID if needed
+    thermalInspection = {};
+    thermalRecords.forEach((point) => {
+      const key = keysToAppendLocation.includes(point.id)
+        ? `${point.id}${LocationID}`
+        : point.id;
+
+      const shortCondition = conditionMap[point.condition] || point.condition;
+      thermalInspection[key] = shortCondition;
+    });
+  } else {
+    thermalInspection = { status: "notdone" };
+  }
+
+  // Prepare minimal and clean location data
+  const minimalLocationData = {
+    id: locationdata?.id,
+    parent_id: locationdata?.parent_id,
+    project_id: locationdata?.project_id,
+    project_name: locationdata?.project_name,
+    substation_id: locationdata?.substation_id,
+    substation_name: locationdata?.substation_name,
+    attributes: {
+      point_type: locationdata?.attributes?.point_type || "",
+      point_no: locationdata?.attributes?.point_no || "",
+      area_code: locationdata?.attributes?.area_code || "",
+      ulid: locationdata?.attributes?.ulid || "",
+    },
+  };
+
+  const finalData = {
+    username: formData.username,
+    inspectionDate: formData.inspectionDate,
+    locationdata: minimalLocationData,
+    visualInspection: compressedVisual,
+    thermalInspection,
+  };
+
+  console.log("✅ Final Submission Payload:", finalData);
+
+  try {
+    const response = await axios.post("/submit-inspection", finalData);
+
+    alert("✅ Inspection submitted successfully!");
+    console.log("📦 Server Response:", response.data);
+
+    setThermalRecords([]);
+    handleReset();
+    onSubmit();
+  } catch (error) {
+    console.error(
+      "❌ Submission Error:",
+      error.response?.data || error.message
+    );
+
+    alert(
+      `❌ Error: ${
+        error.response?.data?.error ||
+        "An error occurred while submitting the data. Please try again."
+      }`
+    );
+  }
+};
+
+
+if (!locationdata)
     return (
       <div>
         <div className="p-6 border border-[#b7cfdc] rounded-xl shadow-lg bg-[#d9e4ec] space-y-6">
