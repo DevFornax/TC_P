@@ -67,7 +67,7 @@ export default function EntryPage() {
     {
       title: "Inspection Tool",
       route: "/inspection",
-      image: "/form.svg",
+      image: "/form2.svg",
     },
     {
       title: "Inspection Reports",
@@ -77,7 +77,7 @@ export default function EntryPage() {
     {
       title: "Inspection Reports",
       route: "/data-inspection",
-      image: "/dashboard.svg",
+      image: "/dashbarod2.svg",
     },
     {
       title: "Inspection Tool",

@@ -66,7 +66,12 @@ const GeneratePDF = () => {
     const option = visualTemplate[point]?.options[value];
     return option ? option : "N/A";
   };
-
+const capitalizeFirstLetter = (str) => {
+  return str
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
   const generatePDF = async () => {
     if (!inspectionData) return;
 
@@ -137,7 +142,7 @@ const GeneratePDF = () => {
 
         {
           table: {
-            widths: ["25%", "25%", "25%", "25%"], // 4 columns side by side
+            widths: ["25%", "25%", "25%", "25%"],
             body: [
               [
                 { text: "Date", bold: true },
@@ -578,7 +583,9 @@ const GeneratePDF = () => {
                             ([key, value]) => (
                               <li key={key}>
                                 <strong>
-                                  {visualTemplate[key]?.name.replace(/_/g, " ")}
+                                  {capitalizeFirstLetter(
+                                    visualTemplate[key]?.name.replace(/_/g, " ")
+                                  )}
                                   :
                                 </strong>{" "}
                                 {getOptionText(key, value)}
