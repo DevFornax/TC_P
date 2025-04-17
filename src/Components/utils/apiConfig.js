@@ -11,7 +11,7 @@ import { getAuthData } from "./authStorage";
 const getAuthToken = () => {
   const auth = getAuthData();
   const token = auth?.token || null;
-  console.log("JWT Token for API calls:", token);
+  // console.log("JWT Token for API calls:", token);
 
   return token;
 };

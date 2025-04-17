@@ -50,7 +50,7 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
   
 useEffect(() => {
   const userData = getAuthData();
-  console.log("Decrypted userData:", userData);
+
 
   if (userData?.user?.username) {
     setFormData((prev) => ({
