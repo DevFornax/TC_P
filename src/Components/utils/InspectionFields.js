@@ -2,7 +2,7 @@ export const InspectionFields = [
   {
     label: "Bus Bar",
     name: "bus_bar",
-    options: ["Coated", "Barred Conductor", "Sleeve"],
+    options: ["Coated", "Barred Conductor", "Sleeve", "NI", "NA"],
     type: "select",
     device: ["Transformer", "Switch", "Fuse"],
     selectedOption: "Coated",
@@ -10,7 +10,7 @@ export const InspectionFields = [
   {
     label: "Bus Bar to DO Jumper",
     name: "busbar_do_jumper",
-    options: ["Coated", "Barred Conductor", "Sleeve"],
+    options: ["Coated", "Barred Conductor", "Sleeve", "NI", "NA"],
     type: "select",
     device: ["Transformer", "Switch"],
     selectedOption: "Coated",
@@ -18,7 +18,7 @@ export const InspectionFields = [
   {
     label: "UG Cable Jumper",
     name: "ug_cable_jumper",
-    options: ["Lug", "Binding", "N/A"],
+    options: ["Lug", "Binding", "NI", "NA"],
     type: "select",
     device: ["Transformer"],
     selectedOption: "Lug",
@@ -42,7 +42,7 @@ export const InspectionFields = [
   {
     label: "DO to TC Jumper",
     name: "do_tc_jumper",
-    options: ["Coated", "Barred Conductor", "Sleeve"],
+    options: ["Coated", "Barred Conductor", "Sleeve", "NI", "NA"],
     type: "select",
     device: ["Transformer"],
     selectedOption: "Coated",
@@ -74,7 +74,7 @@ export const InspectionFields = [
   {
     label: "Silica Gel Color",
     name: "silica_gel_color",
-    options: ["Blue", "Orange"],
+    options: ["Blue", "Orange", "NI", "NA"],
     type: "select",
     device: ["Transformer"],
     selectedOption: "Blue",
@@ -90,7 +90,7 @@ export const InspectionFields = [
   {
     label: "Oil Level",
     name: "oil_level",
-    options: ["Normal", "Low"],
+    options: ["Normal", "Low", "NI", "NA"],
     type: "select",
     device: ["Transformer"],
     selectedOption: "Normal",
@@ -122,7 +122,7 @@ export const InspectionFields = [
   {
     label: "LT Cable Connection",
     name: "lt_cable_connection",
-    options: ["Lug", "Patta", "Binding"],
+    options: ["Lug", "Patta", "Binding", "NI", "NA"],
     type: "select",
     device: ["Transformer"],
     selectedOption: "Patta",
