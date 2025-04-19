@@ -269,9 +269,8 @@ function TopBar() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    localStorage.removeItem("auth");
+  
     navigate("/login");
     closeSidebar();
   };

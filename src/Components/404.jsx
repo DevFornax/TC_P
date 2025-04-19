@@ -6,9 +6,7 @@ function FourOFour() {
   const [countdown, setCountdown] = useState(8);
 
   useEffect(() => {
-
     localStorage.removeItem("auth");
-
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev === 1) {
