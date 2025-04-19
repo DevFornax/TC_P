@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -34,15 +34,14 @@ export default function DataComponent() {
   const [pageSize, setPageSize] = useState(10);
   const [globalFilter, setGlobalFilter] = useState("");
   const [loading, setLoading] = useState(false);
-  const [columnVisibility, setColumnVisibility] = useState({
-    inspection_done_by: false,
-  });
-  
+  const [columnVisibility, setColumnVisibility] = useState({});
+
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [rowSelection, setRowSelection] = useState({});
   const [isColumnVisible, setIsColumnVisible] = useState(false);
-  
+  const visibilityRef = useRef(null);
+
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
   const [filterOperator, setFilterOperator] = useState("equals");
   const [filterValue, setFilterValue] = useState("");
@@ -53,7 +52,9 @@ export default function DataComponent() {
   const [deleteModelOpen, setDeleteModelOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
+  // const token = localStorage.getItem("token");
   const token = getAuthToken();
+  // const API_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -74,6 +75,7 @@ export default function DataComponent() {
 
       const result = await response.json();
       setData(result.data);
+      console.log("reuslt data:", result.data);
       setTotal(result.total);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -86,6 +88,17 @@ export default function DataComponent() {
     fetchData();
   }, [pageIndex, pageSize, globalFilter]);
 
+  const capitalizeFirstLetter = (str) => {
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  const formatKeyName = (key) => {
+    return capitalizeFirstLetter(key.replace(/_/g, " "));
+  };
+
   const getVisualInspectionStatus = (visualData) => {
     if (!visualData || typeof visualData !== "object") {
       return <p>No Data</p>;
@@ -94,16 +107,17 @@ export default function DataComponent() {
     return Object.entries(visualData).map(([key, value]) => {
       if (visualTemplate.hasOwnProperty(key)) {
         const { name, options } = visualTemplate[key];
-        const optionName = options[value] || "Unknown";
+        const label = capitalizeFirstLetter(name.replace(/_/g, " ")); // capitalizing label
+        const optionName = options?.[value] || value;
         return (
           <p key={key}>
-            {name}: {optionName}
+            {label}: {optionName}
           </p>
         );
       } else {
         return (
           <p key={key}>
-            {key}: {value}
+            {formatKeyName(key)}: {value}
           </p>
         );
       }
@@ -141,15 +155,21 @@ export default function DataComponent() {
     },
     contains: (row, columnId, filterValue) => {
       const cellValue = String(row.getValue(columnId));
-      return cellValue.toLowerCase().includes(String(filterValue).toLowerCase());
+      return cellValue
+        .toLowerCase()
+        .includes(String(filterValue).toLowerCase());
     },
     startsWith: (row, columnId, filterValue) => {
       const cellValue = String(row.getValue(columnId));
-      return cellValue.toLowerCase().startsWith(String(filterValue).toLowerCase());
+      return cellValue
+        .toLowerCase()
+        .startsWith(String(filterValue).toLowerCase());
     },
     endsWith: (row, columnId, filterValue) => {
       const cellValue = String(row.getValue(columnId));
-      return cellValue.toLowerCase().endsWith(String(filterValue).toLowerCase());
+      return cellValue
+        .toLowerCase()
+        .endsWith(String(filterValue).toLowerCase());
     },
     greaterThan: (row, columnId, filterValue) => {
       const cellValue = Number(row.getValue(columnId));
@@ -182,35 +202,34 @@ export default function DataComponent() {
 
   const columns = useMemo(() => [
     {
-      accessorKey: "location_id",
+      accessorKey: "inspection_id",
+      enableHiding: false,
       header: ({ column }) => {
         const isFiltered = activeFilterColumns.includes(column.id);
         return (
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex gap-2">
+          <div className="flex items-center whitespace-nowrap gap-2 min-w-0">
+            <button
+              className="text-sm font-medium flex items-center"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Inspection ID
+              <ChevronsUpDown className="ms-2 h-4 w-4" />
+            </button>
+            {!isFiltered && (
               <button
-                className="text-sm font-medium flex items-center"
-                onClick={() =>
-                  column.toggleSorting(column.getIsSorted() === "asc")
-                }
+                className="text-sm text-gray-500 hover:text-gray-700"
+                onClick={() => {
+                  setActiveColumn(column);
+                  setFilterDialogOpen(true);
+                  setColumnName("Inspection ID");
+                }}
+                title="Filter"
               >
-                Location ID
-                <ChevronsUpDown className="ms-2 h-4 w-4" />
+                <Funnel className="h-4 w-4" />
               </button>
-              {!isFiltered && (
-                <button
-                  className="text-sm text-gray-500 hover:text-gray-700"
-                  onClick={() => {
-                    setActiveColumn(column);
-                    setFilterDialogOpen(true);
-                    setColumnName("Location ID");
-                  }}
-                  title="Filter"
-                >
-                  <Funnel className="h-4 w-4" />
-                </button>
-              )}
-            </div>
+            )}
             {isFiltered && (
               <button
                 className="border1"
@@ -224,60 +243,6 @@ export default function DataComponent() {
                 }}
               >
                 <CircleX size={18} color="#f87171" />
-              </button>
-            )}
-          </div>
-        );
-      },
-      filterFn: (row, columnId, filter) => {
-        if (!filter || !filter.operator || !filter.value) return true;
-        return filterFunctions[filter.operator](row, columnId, filter.value);
-      },
-      cell: (info) => info.getValue(),
-    },
-    {
-      accessorKey: "inspection_id",
-      header: ({ column }) => {
-        const isFiltered = activeFilterColumns.includes(column.id);
-        return (
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex gap-2">
-              <button
-                className="text-sm font-medium flex items-center"
-                onClick={() =>
-                  column.toggleSorting(column.getIsSorted() === "asc")
-                }
-              >
-                Inspection ID
-                <ChevronsUpDown className="ms-2 h-4 w-4" />
-              </button>
-              {!isFiltered && (
-                <button
-                  className="text-sm text-gray-500 hover:text-gray-700"
-                  onClick={() => {
-                    setActiveColumn(column);
-                    setFilterDialogOpen(true);
-                    setColumnName("Inspection ID");
-                  }}
-                  title="Filter"
-                >
-                  <Funnel className="h-4 w-4" />
-                </button>
-              )}
-            </div>
-            {isFiltered && (
-              <button
-                className="border1"
-                onClick={() => {
-                  const col = table.getColumn(column.id);
-                  if (col) col.setFilterValue(undefined);
-
-                  setActiveFilterColumns((prev) =>
-                    prev.filter((colId) => colId !== column.id)
-                  );
-                }}
-              >
-                <CircleX size={18} color="green" />
               </button>
             )}
           </div>
@@ -294,31 +259,29 @@ export default function DataComponent() {
       header: ({ column }) => {
         const isFiltered = activeFilterColumns.includes(column.id);
         return (
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex gap-2">
+          <div className="flex items-center whitespace-nowrap gap-2 min-w-0">
+            <button
+              className="text-sm font-medium flex items-center"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Inspection Done By
+              <ChevronsUpDown className="ms-2 h-4 w-4" />
+            </button>
+            {!isFiltered && (
               <button
-                className="text-sm font-medium flex items-center"
-                onClick={() =>
-                  column.toggleSorting(column.getIsSorted() === "asc")
-                }
+                className="text-sm text-gray-500 hover:text-gray-700"
+                onClick={() => {
+                  setActiveColumn(column);
+                  setFilterDialogOpen(true);
+                  setColumnName("Inspection Done By");
+                }}
+                title="Filter"
               >
-                Inspection Done By
-                <ChevronsUpDown className="ms-2 h-4 w-4" />
+                <Funnel className="h-4 w-4" />
               </button>
-              {!isFiltered && (
-                <button
-                  className="text-sm text-gray-500 hover:text-gray-700"
-                  onClick={() => {
-                    setActiveColumn(column);
-                    setFilterDialogOpen(true);
-                    setColumnName("Inspection Done By");
-                  }}
-                  title="Filter"
-                >
-                  <Funnel className="h-4 w-4" />
-                </button>
-              )}
-            </div>
+            )}
             {isFiltered && (
               <button
                 className="border1"
@@ -343,13 +306,64 @@ export default function DataComponent() {
       },
       cell: (info) => info.getValue(),
     },
+    {
+      accessorKey: "location_id",
+      header: ({ column }) => {
+        const isFiltered = activeFilterColumns.includes(column.id);
+        return (
+          <div className="flex items-center whitespace-nowrap gap-2 min-w-0">
+            <button
+              className="text-sm font-medium flex items-center"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Location ID
+              <ChevronsUpDown className="ms-2 h-4 w-4" />
+            </button>
+            {!isFiltered && (
+              <button
+                className="text-sm text-gray-500 hover:text-gray-700"
+                onClick={() => {
+                  setActiveColumn(column);
+                  setFilterDialogOpen(true);
+                  setColumnName("Location ID");
+                }}
+                title="Filter"
+              >
+                <Funnel className="h-4 w-4" />
+              </button>
+            )}
+            {isFiltered && (
+              <button
+                className="border1"
+                onClick={() => {
+                  const col = table.getColumn(column.id);
+                  if (col) col.setFilterValue(undefined);
 
+                  setActiveFilterColumns((prev) =>
+                    prev.filter((colId) => colId !== column.id)
+                  );
+                }}
+              >
+                <CircleX size={18} color="#f87171" />
+              </button>
+            )}
+          </div>
+        );
+      },
+      filterFn: (row, columnId, filter) => {
+        if (!filter || !filter.operator || !filter.value) return true;
+        return filterFunctions[filter.operator](row, columnId, filter.value);
+      },
+      cell: (info) => info.getValue(),
+    },
     {
       accessorKey: "project_id",
       header: ({ column }) => {
         const isFiltered = activeFilterColumns.includes(column.id);
         return (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center whitespace-nowrap gap-2 min-w-0">
             <button
               className="text-sm font-medium flex items-center"
               onClick={() =>
@@ -402,31 +416,29 @@ export default function DataComponent() {
       header: ({ column }) => {
         const isFiltered = activeFilterColumns.includes(column.id);
         return (
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex gap-2">
+          <div className="flex items-center whitespace-nowrap gap-2 min-w-0">
+            <button
+              className="text-sm font-medium flex items-center"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Location Type
+              <ChevronsUpDown className="ms-2 h-4 w-4" />
+            </button>
+            {!isFiltered && (
               <button
-                className="text-sm font-medium flex items-center"
-                onClick={() =>
-                  column.toggleSorting(column.getIsSorted() === "asc")
-                }
+                className="text-sm text-gray-500 hover:text-gray-700"
+                onClick={() => {
+                  setActiveColumn(column);
+                  setFilterDialogOpen(true);
+                  setColumnName("Location Type");
+                }}
+                title="Filter"
               >
-                Location Type
-                <ChevronsUpDown className="ms-2 h-4 w-4" />
+                <Funnel className="h-4 w-4" />
               </button>
-              {!isFiltered && (
-                <button
-                  className="text-sm text-gray-500 hover:text-gray-700"
-                  onClick={() => {
-                    setActiveColumn(column);
-                    setFilterDialogOpen(true);
-                    setColumnName("Location Type");
-                  }}
-                  title="Filter"
-                >
-                  <Funnel className="h-4 w-4" />
-                </button>
-              )}
-            </div>
+            )}
             {isFiltered && (
               <button
                 className="border1"
@@ -453,7 +465,7 @@ export default function DataComponent() {
     {
       accessorKey: "visual_inspection",
       header: ({ column }) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center whitespace-nowrap gap-2 min-w-0">
           <button
             className="text-sm font-medium flex items-center"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -503,7 +515,7 @@ export default function DataComponent() {
     {
       accessorKey: "thermal_inspection",
       header: ({ column }) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center whitespace-nowrap gap-2 min-w-0">
           <button
             className="text-sm font-medium flex items-center"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -555,6 +567,67 @@ export default function DataComponent() {
       },
     },
     {
+      accessorKey: "created_at",
+      header: ({ column }) => {
+        const isFiltered = activeFilterColumns.includes(column.id);
+        return (
+          <div className="flex items-center whitespace-nowrap gap-2 min-w-0">
+            <button
+              className="text-sm font-medium flex items-center"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Created At
+              <ChevronsUpDown className="ms-2 h-4 w-4" />
+            </button>
+            {!isFiltered && (
+              <button
+                className="text-sm text-gray-500 hover:text-gray-700"
+                onClick={() => {
+                  setActiveColumn(column);
+                  setFilterDialogOpen(true);
+                  setColumnName("Created At");
+                }}
+                title="Filter"
+              >
+                <Funnel className="h-4 w-4" />
+              </button>
+            )}
+            {isFiltered && (
+              <button
+                className="border1"
+                onClick={() => {
+                  const col = table.getColumn(column.id);
+                  if (col) col.setFilterValue(undefined);
+                  setActiveFilterColumns((prev) =>
+                    prev.filter((colId) => colId !== column.id)
+                  );
+                }}
+              >
+                <CircleX size={18} color="#f87171" />
+              </button>
+            )}
+          </div>
+        );
+      },
+      filterFn: (row, columnId, filter) => {
+        if (!filter || !filter.operator || !filter.value) return true;
+        return filterFunctions[filter.operator](row, columnId, filter.value);
+      },
+      // cell: (info) => info.getValue(),
+      cell: (info) => {
+        const rawValue = info.getValue();
+        const date = new Date(rawValue);
+
+        const formattedDate = date.toISOString().split("T")[0]; // "2025-04-14"
+        const hours = String(date.getHours()).padStart(2, "0"); // "15"
+        const minutes = String(date.getMinutes()).padStart(2, "0"); // "04"
+
+        return `${formattedDate} | ${hours}:${minutes}`;
+      },
+    },
+    {
       id: "actions",
       header: "Actions",
       cell: ({ row }) => {
@@ -564,7 +637,7 @@ export default function DataComponent() {
           <div className="flex gap-1">
             <button
               className="text-blue-400"
-              onClick={() => navigate(`/view/${item.inspection_id}`)}
+              // onClick={() => navigate(`/view/${item.inspection_id}`)}
             >
               <SquareChartGantt className="w-5" />
             </button>
@@ -601,14 +674,14 @@ export default function DataComponent() {
           },
         }
       );
-  
+
       if (!res.ok) {
         const errorText = await res.text();
         throw new Error(errorText || "Failed to delete");
       }
-  
+
       console.log("Deleted successfully");
-      await fetchData()
+      await fetchData();
     } catch (error) {
       console.error("Delete error:", error);
       alert("Failed to delete item.");
@@ -667,10 +740,27 @@ export default function DataComponent() {
   const handleColumnVisiblity = () => {
     setIsColumnVisible((prev) => !prev);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        visibilityRef.current &&
+        !visibilityRef.current.contains(event.target)
+      ) {
+        setIsColumnVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
       <Topbar />
-      <div className="p-8 mt-12">
+      <div className="p-8">
         {/* header  */}
         <div className="flex justify-between items-center mb-4">
           <input
@@ -680,57 +770,55 @@ export default function DataComponent() {
             onChange={(e) => setGlobalFilter(e.target.value)}
           />
           <button
-            className="flex justify-center p-[2px] border border-gray-400 w-[50px] rounded-md"
+            className={`flex justify-center p-[2px] border border-gray-400 w-[50px] rounded-md`}
             onClick={handleColumnVisiblity}
           >
             <SlidersHorizontal className="w-5 text-gray-700" />
-            {isColumnVisible && (
-              <div
-                id="column-toggle-dropdown"
-                role="menu"
-                aria-label="Toggle columns"
-                className="absolute right-8 mt-11 w-64 max-h-72 overflow-auto rounded-md border border-gray-300 bg-white shadow-lg z-50"
-              >
-                <div className="sticky top-0 z-10 bg-gray-100 border-b border-gray-200 px-4 py-2 font-semibold text-gray-700 select-none">
-                  Toggle columns
-                </div>
-
-                <div className="divide-y border2">
-                  {table
-                    .getAllColumns()
-                    .filter(
-                      (column) =>
-                        typeof column.accessorFn !== "undefined" &&
-                        column.getCanHide()
-                    )
-                    .map((column) => (
-                      <label
+          </button>
+          {isColumnVisible && (
+            <div
+              ref={visibilityRef}
+              id="column-toggle-dropdown"
+              role="menu"
+              aria-label="Toggle columns"
+              className="absolute right-8 mt-64 w-64 max-h-72 overflow-auto rounded-md border border-gray-300 bg-white shadow-lg z-50"
+            >
+              <div className="sticky top-0 z-10 bg-gray-100 border-b border-gray-200 px-4 py-2 font-semibold text-gray-700 select-none">
+                Toggle columns
+              </div>
+              <div className="divide-y border2">
+                {table
+                  .getAllColumns()
+                  .filter(
+                    (column) =>
+                      typeof column.accessorFn !== "undefined" &&
+                      column.getCanHide()
+                  )
+                  .map((column) => {
+                    const isVisible = column.getIsVisible();
+                    return (
+                      <div
                         key={column.id}
+                        onClick={() => column.toggleVisibility(!isVisible)}
                         className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100 capitalize text-gray-800"
                       >
-                        <input
-                          type="checkbox"
-                          checked={column.getIsVisible()}
-                          onChange={(e) =>
-                            column.toggleVisibility(e.target.checked)
-                          }
-                          onClick={(e) => e.stopPropagation()}
-                          className="mr-3 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
+                        {isVisible && (
+                          <span className="mr-2 text-gray-500">✔</span>
+                        )}
                         <span>
                           {columnDisplayNames[column.id] || column.id}
                         </span>
-                      </label>
-                    ))}
-                </div>
+                      </div>
+                    );
+                  })}
               </div>
-            )}
-          </button>
+            </div>
+          )}
         </div>
 
         {/* Table  */}
         <div className="rounded-lg border border-gray-300 overflow-x-auto">
-          <table className="min-w-full divide-y  divide-gray-200">
+          <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
@@ -738,7 +826,8 @@ export default function DataComponent() {
                     <th
                       key={header.id}
                       scope="col"
-                      className={`px-6 py-3   bg-[#d9e4ec] text-left text-xs font-medium text-gray-500 uppercase tracking-wider select-none ${
+                      // className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider select-none"
+                      className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider select-none ${
                         activeFilterColumns.includes(header.column.id)
                           ? "border-x2 bg-gray-200"
                           : "border-none"
@@ -759,14 +848,13 @@ export default function DataComponent() {
                 table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className={`${
-                      row.getIsSelected() ? "bg-blue-50" : ""
-                    } hover:bg-gray-200 transition-colors duration-200`}
+                    className={row.getIsSelected() ? "bg-blue-50" : ""}
                     data-state={row.getIsSelected() ? "selected" : undefined}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
+                        // className={`px-6 py-3 whitespace-nowrap text-sm text-gray-700`}
                         className={`px-6 py-3 whitespace-nowrap text-sm ${
                           activeFilterColumns.includes(cell.column.id)
                             ? "bg-blue-50 text-gray-800"
@@ -795,10 +883,13 @@ export default function DataComponent() {
           </table>
         </div>
 
+        {/* Pagination  */}
         <div className="flex w-full flex-col-reverse items-center justify-between md:flex-row md:gap-8 py-4 sticky">
           <div className="flex-1 text-muted-foreground text-sm text-gray-700">
+            {/* {table.getFilteredSelectedRowModel().rows.length} of{" "} */}
             {table.getFilteredRowModel().rows.length} records visible ({total}{" "}
             total)
+            {/* Rows Available: {total} */}
           </div>
           <div className="flex flex-col-reverse items-center gap-4 md:flex-row md:gap-6 lg:gap-8">
             <div className="flex items-center space-x-2">
@@ -876,6 +967,7 @@ export default function DataComponent() {
           </div>
         </div>
 
+        {/* Filter model  */}
         {filterDialogOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-40">
             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
@@ -941,6 +1033,8 @@ export default function DataComponent() {
                       );
                     }
                     setFilterDialogOpen(false);
+                    setFilterOperator("equals");
+                    setFilterValue("");
                   }}
                   className="px-4 py-2 text-sm bg-[#385e72] text-white rounded disabled:bg-[#b7cfdc]"
                   disabled={!filterValue}
@@ -952,6 +1046,7 @@ export default function DataComponent() {
           </div>
         )}
 
+        {/* delete model  */}
         {deleteModelOpen && itemToDelete && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-40">
             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
