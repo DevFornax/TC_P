@@ -38,7 +38,7 @@ export const visualTemplate = {
 export const compressVisualData = (formData) => {
   const compressed = {};
 
-  // Normalize helper (ignore case, convert common inputs)
+
   const normalize = (val) => {
     const map = {
       "n/a": "N/A",
@@ -64,6 +64,7 @@ export const compressVisualData = (formData) => {
         compressed[templateId] = parseInt(matchedOption[0]);
       } else {
         console.warn(`⚠️ No match found for "${name}" → "${userValue}"`);
+        alert(`⚠️ No match found for "${name}" → "${userValue}"`)
       }
     }
   });
