@@ -101,7 +101,8 @@ const LocationSearchFormCard = ({
             <option value="Select">Select an option</option>
             <option value="Transformer">Transformer</option>
             <option value="Switch">Switch</option>
-            <option value="Fuse">Fuse</option>
+            <option value="Fuse">Fuse</option>{" "}
+            <option value="CTPT">CTPT</option>
           </select>
         </div>
 

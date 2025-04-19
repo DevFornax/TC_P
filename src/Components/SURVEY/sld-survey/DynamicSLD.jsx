@@ -813,43 +813,13 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                 </svg>
               )}
 
-              {/* <div
-                className="absolute bottom-4 right-4 flex flex-col items-center gap-4 p-4 border border-black bg-white rounded-lg sm:block md:block lg:hidden"
-                style={{
-
-                  touchAction: "manipulation",
-                }}
-              >
-                <button
-                  onClick={() => setZoom((prev) => Math.min(prev + 0.1, 5))}
-                  className="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition"
-                  title="Zoom In"
-                >
-                  <img src="/zoomin.svg" alt="" />
-                </button>
-
-                <button
-                  onClick={() => setZoom((prev) => Math.max(prev - 0.1, 0.2))}
-                  className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition"
-                  title="Zoom Out"
-                >
-                  <img src="/zoomout.svg" alt="" />
-                </button>
-
-                <button
-                  onClick={resetView}
-                  className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition"
-                  title="Reset View"
-                >
-                  <img src="/reset.svg" alt="" />
-                </button>
-              </div> */}
+            
 
               <div
                 className="absolute bottom-4 right-4 flex flex-col items-center gap-4 p-4 border rounded-lg sm:block md:block lg:hidden"
                 style={{
-                  backgroundColor: "#d9e4ec", // card background
-                  borderColor: "#b7cfdc", // border
+                  backgroundColor: "#d9e4ec",
+                  borderColor: "#b7cfdc", 
                   touchAction: "manipulation",
                 }}
               >
@@ -857,7 +827,7 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                   onClick={() => setZoom((prev) => Math.min(prev + 0.1, 5))}
                   className="p-2 rounded-full transition"
                   style={{
-                    backgroundColor: "#385e72", // primary button
+                    backgroundColor: "#385e72", 
                   }}
                   onMouseOver={(e) =>
                     (e.currentTarget.style.backgroundColor = "#6aabd2")
@@ -874,7 +844,7 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                   onClick={() => setZoom((prev) => Math.max(prev - 0.1, 0.2))}
                   className="p-2 rounded-full transition"
                   style={{
-                    backgroundColor: "#385e72", // primary button
+                    backgroundColor: "#385e72",
                   }}
                   onMouseOver={(e) =>
                     (e.currentTarget.style.backgroundColor = "#6aabd2")
@@ -891,7 +861,7 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                   onClick={resetView}
                   className="p-2 rounded-full transition"
                   style={{
-                    backgroundColor: "#385e72", // primary button
+                    backgroundColor: "#385e72",
                   }}
                   onMouseOver={(e) =>
                     (e.currentTarget.style.backgroundColor = "#6aabd2")
