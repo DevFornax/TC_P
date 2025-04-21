@@ -33,7 +33,7 @@ const getThermalColor = (value) => {
   return null;
 };
 
-const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
+const TcSldPrint = forwardRef(({ thermalInspection = {}, locationId }, ref) => {
   const scale = Transformerscale;
   const svgRef = useRef(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -69,7 +69,8 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
     },
     {}
   );
-
+console.log(locationId, "in child");
+  console.log(thermalInspection, "daqta");
   useImperativeHandle(ref, () => ({
     // exportAsImage: () => {
     //   const svgElement = svgRef.current;
@@ -140,7 +141,6 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
         ref={svgRef}
         viewBox="0 0 1000 700"
         style={{
-          // border: "1px solid black",
           background: "#fff",
           cursor: isDragging ? "grabbing" : "grab",
         }}
@@ -149,37 +149,6 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       >
-        {/* <g transform="translate(0, 60)">
-          {" "}
-          <text x={10} y={0} fontSize="16" fontWeight="bold">
-            Thermal Inspection Status:
-          </text>
-          {Object.entries(thermalInspection).length === 0 ? (
-            <text x={10} y={30} fontSize="14" fill="gray">
-              Thermal Inspection: Not Done
-            </text>
-          ) : (
-            Object.entries(thermalInspection).map(([id, status], index) => (
-              <text
-                key={index}
-                x={10}
-                y={30 + index * 20}
-                fontSize="14"
-                fill={
-                  status === "H" ? "red" : status === "M" ? "green" : "black"
-                }
-              >
-                {id}:{" "}
-                {status === "H"
-                  ? "High"
-                  : status === "M"
-                  ? "Medium"
-                  : "No Data"}
-              </text>
-            ))
-          )}
-        </g> */}
-
         <g transform="translate(0, 60)">
           <text x={10} y={0} fontSize="16" fontWeight="bold">
             Thermal Inspection Status:
@@ -216,8 +185,6 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
           )}
         </g>
 
-        {/* 
-        <g transform={`translate(${dragOffset.x}, ${dragOffset.y})`}> */}
         <g transform="translate(350, 450)">
           {Transformerlines.map((line) => {
             const [x1, y1] = getScaled(line.from);
@@ -283,33 +250,33 @@ const TcSldPrint = forwardRef(({ thermalInspection = {} }, ref) => {
                         { id: "TDB", dx: 45, dy: 70 },
                       ][i];
 
-                      const fullId = dotMeta.id + "266102";
+                      const fullId = dotMeta.id + locationId;
                       const dotThermalValue = thermalInspection[fullId];
                       const dotThermalColor = getThermalColor(dotThermalValue);
 
-                    return (
-                      <g key={dotMeta.id}>
-                        <circle
-                          cx={x + dotMeta.dx}
-                          cy={-y + dotMeta.dy}
-                          r={5}
-                          fill={dotThermalColor || "#6cae4a"}
-                          stroke="#4f6b3d"
-                          strokeWidth={1}
-                        />
-                        <text
-                          x={x + dotMeta.dx + 6}
-                          y={-y + dotMeta.dy - 5}
-                          fontSize="12"
-                          fill={thermalColor}
-                        >
-                          {dotThermalValue}
-                        </text>
-                      </g>
-                    );
+                      return (
+                        <g key={dotMeta.id}>
+                          <circle
+                            cx={x + dotMeta.dx}
+                            cy={-y + dotMeta.dy}
+                            r={5}
+                            fill={dotThermalColor || "#6cae4a"}
+                            stroke="#4f6b3d"
+                            strokeWidth={1}
+                          />
+                          <text
+                            x={x + dotMeta.dx + 6}
+                            y={-y + dotMeta.dy - 5}
+                            fontSize="12"
+                            fill={thermalColor}
+                          >
+                            {dotThermalValue}
+                          </text>
+                        </g>
+                      );
                     })}
                   </g>
-                )} 
+                )}
 
                 {/* {point.id === "TD" && (
                   <g>

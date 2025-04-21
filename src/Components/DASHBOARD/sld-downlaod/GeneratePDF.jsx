@@ -44,6 +44,7 @@ const GeneratePDF = () => {
     }
   }, [location.state]);
 
+
   const formatThermalStatus = (status) => {
     const normalized = String(status).toLowerCase();
     if (normalized === "m") return "Medium";
@@ -277,7 +278,7 @@ const capitalizeFirstLetter = (str) => {
 const generatePDF = async () => {
   if (!inspectionData) return;
 
-  // Convert visual inspection data into table format
+ 
   const visualInspectionData = Object.entries(
     inspectionData.visual_inspection || {}
   ).map(([templateId, selectedValue]) => {
@@ -306,7 +307,6 @@ const generatePDF = async () => {
     ]);
   }
 
-  // Capture SLD as image
   let sldImage = null;
   if (sldRef.current) {
     const canvas = await html2canvas(sldRef.current, {
@@ -316,7 +316,7 @@ const generatePDF = async () => {
     sldImage = canvas.toDataURL("image/png");
   }
 
-  // Format inspection time
+  
   function formatTime(time) {
     const hours = time.getHours();
     const minutes = time.getMinutes();
@@ -482,7 +482,7 @@ const rightLogo =
    docDefinition.content.push(
      { text: "", pageBreak: "before" },
 
-     // Header part for the Remarks page
+    
      {
        columns: [
          {
@@ -507,7 +507,7 @@ const rightLogo =
            margin: [10, 0, 0, 0],
          },
        ],
-       margin: [0, 0, 0, 10], // Space below the logo/header
+       margin: [0, 0, 0, 10],
      },
 
      {
@@ -636,11 +636,26 @@ const rightLogo =
                 }
 
                 if (locationType === "Transformer")
-                  return <TcSldPrint thermalInspection={parsedThermal} />;
+                  return (
+                    <TcSldPrint
+                      thermalInspection={parsedThermal}
+                      locationId={inspectionData?.location_id}
+                    />
+                  );
                 else if (locationType === "Fuse")
-                  return <FuseSldPrint thermalInspection={parsedThermal} />;
+                  return (
+                    <FuseSldPrint
+                      thermalInspection={parsedThermal}
+                      locationId={inspectionData?.location_id}
+                    />
+                  );
                 else if (locationType === "Switch")
-                  return <SwitchSldPrint thermalInspection={parsedThermal} />;
+                  return (
+                    <SwitchSldPrint
+                      thermalInspection={parsedThermal}
+                      locationId={inspectionData?.location_id}
+                    />
+                  );
 
                 return null;
               })()}
