@@ -47,19 +47,17 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
       });
     }
   }, [deviceId, thermalEnabled]);
-  
-useEffect(() => {
-  const userData = getAuthData();
 
+  useEffect(() => {
+    const userData = getAuthData();
 
-  if (userData?.user?.username) {
-    setFormData((prev) => ({
-      ...prev,
-      username: userData.user.username,
-    }));
-  }
-}, []);
-
+    if (userData?.user?.username) {
+      setFormData((prev) => ({
+        ...prev,
+        username: userData.user.username,
+      }));
+    }
+  }, []);
 
   const handleChange = (name, value) => {
     setFormData((prev) => {
@@ -142,123 +140,121 @@ useEffect(() => {
     setThermalEnabled(false);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  if (!validate()) {
-    console.log("❌ Validation failed:", errors);
-    return;
-  }
-
-  const selectedDevice = selection;
-
-  // Filter only applicable inspection fields
-  const filteredInspectionFields = InspectionFields.filter((field) =>
-    field.device.includes(selectedDevice)
-  );
-
-  // Create filtered visual inspection data
-  const filteredFormData = {};
-  filteredInspectionFields.forEach((field) => {
-    filteredFormData[field.name] = formData[field.name] || "";
-  });
-console.log(filteredFormData , "data ")
-  const compressedVisual = compressVisualData(filteredFormData);
-  const LocationID = locationdata?.id;
-
-  const keysToAppendLocation = [
-    "TDB",
-    "TDU1",
-    "TDR",
-    "TDU3",
-    "TDY",
-    "TDN",
-    "TDU2",
-  ];
-
-  const conditionMap = {
-    Medium: "M",
-    High: "H",
-    Normal: "N",
-  };
-
-  let thermalInspection;
-
-  if (thermalEnabled) {
-    if (!thermalRecords || thermalRecords.length === 0) {
-      alert("⚠️ Thermal inspection is enabled but no data selected.");
+    if (!validate()) {
+      console.log("❌ Validation failed:", errors);
       return;
     }
 
-    // Map thermal records with short conditions and append location ID if needed
-    thermalInspection = {};
-    thermalRecords.forEach((point) => {
-      const key = keysToAppendLocation.includes(point.id)
-        ? `${point.id}${LocationID}`
-        : point.id;
+    const selectedDevice = selection;
 
-      const shortCondition = conditionMap[point.condition] || point.condition;
-      thermalInspection[key] = shortCondition;
+    // Filter only applicable inspection fields
+    const filteredInspectionFields = InspectionFields.filter((field) =>
+      field.device.includes(selectedDevice)
+    );
+
+    // Create filtered visual inspection data
+    const filteredFormData = {};
+    filteredInspectionFields.forEach((field) => {
+      filteredFormData[field.name] = formData[field.name] || "";
     });
-  } else {
-    thermalInspection = { status: "notdone" };
-  }
+    console.log(filteredFormData, "data ");
+    const compressedVisual = compressVisualData(filteredFormData);
+    const LocationID = locationdata?.id;
 
-  // Prepare minimal and clean location data
-  const minimalLocationData = {
-    id: locationdata?.id,
-    location_name: locationdata?.location_name,
-    parent_id: locationdata?.parent_id,
-    project_id: locationdata?.project_id,
-    project_name: locationdata?.project_name,
-    substation_id: locationdata?.substation_id,
-    substation_name: locationdata?.substation_name,
-    attributes: {
-      point_type: locationdata?.attributes?.point_type || "",
-      point_no: locationdata?.attributes?.point_no || "",
-      area_code: locationdata?.attributes?.area_code || "",
-      ulid: locationdata?.attributes?.ulid || "",
-    },
+    const keysToAppendLocation = [
+      "TDB",
+      "TDU1",
+      "TDR",
+      "TDU3",
+      "TDY",
+      "TDN",
+      "TDU2",
+    ];
+
+    const conditionMap = {
+      Medium: "M",
+      High: "H",
+      Normal: "N",
+    };
+
+    let thermalInspection;
+
+    if (thermalEnabled) {
+      if (!thermalRecords || thermalRecords.length === 0) {
+        alert("⚠️ Thermal inspection is enabled but no data selected.");
+        return;
+      }
+
+      // Map thermal records with short conditions and append location ID if needed
+      thermalInspection = {};
+      thermalRecords.forEach((point) => {
+        const key = keysToAppendLocation.includes(point.id)
+          ? `${point.id}${LocationID}`
+          : point.id;
+
+        const shortCondition = conditionMap[point.condition] || point.condition;
+        thermalInspection[key] = shortCondition;
+      });
+    } else {
+      thermalInspection = { status: "notdone" };
+    }
+
+    // Prepare minimal and clean location data
+    const minimalLocationData = {
+      id: locationdata?.id,
+      location_name: locationdata?.location_name,
+      parent_id: locationdata?.parent_id,
+      project_id: locationdata?.project_id,
+      project_name: locationdata?.project_name,
+      substation_id: locationdata?.substation_id,
+      substation_name: locationdata?.substation_name,
+      attributes: {
+        point_type: locationdata?.attributes?.point_type || "",
+        point_no: locationdata?.attributes?.point_no || "",
+        area_code: locationdata?.attributes?.area_code || "",
+        ulid: locationdata?.attributes?.ulid || "",
+      },
+    };
+
+    const finalData = {
+      username: formData.username,
+      inspectionDate: formData.inspectionDate,
+      locationdata: minimalLocationData,
+      visualInspection: compressedVisual,
+      thermalInspection,
+      notes: formData.notes,
+    };
+
+    console.log("✅ Final Submission Payload:", finalData);
+
+    try {
+      const response = await axios.post("/submit-inspection", finalData);
+
+      alert("✅ Inspection submitted successfully!");
+      console.log("📦 Server Response:", response.data);
+
+      setThermalRecords([]);
+      handleReset();
+      onSubmit();
+    } catch (error) {
+      console.error(
+        "❌ Submission Error:",
+        error.response?.data || error.message
+      );
+
+      alert(
+        `❌ Error: ${
+          error.response?.data?.error ||
+          "An error occurred while submitting the data. Please try again."
+        }`
+      );
+    }
   };
 
-  const finalData = {
-    username: formData.username,
-    inspectionDate: formData.inspectionDate,
-    locationdata: minimalLocationData,
-    visualInspection: compressedVisual,
-    thermalInspection,
-    notes: formData.notes
-  };
-
-  console.log("✅ Final Submission Payload:", finalData);
-
-  try {
-    const response = await axios.post("/submit-inspection", finalData);
-
-    alert("✅ Inspection submitted successfully!");
-    console.log("📦 Server Response:", response.data);
-
-    setThermalRecords([]);
-    handleReset();
-    onSubmit();
-  } catch (error) {
-    console.error(
-      "❌ Submission Error:",
-      error.response?.data || error.message
-    );
-
-    alert(
-      `❌ Error: ${
-        error.response?.data?.error ||
-        "An error occurred while submitting the data. Please try again."
-      }`
-    );
-  }
-};
-
-
-if (!locationdata)
+  if (!locationdata)
     return (
       <div>
         <div className="p-6 border border-[#b7cfdc] rounded-xl shadow-lg bg-[#d9e4ec] space-y-6">
@@ -438,27 +434,21 @@ if (!locationdata)
                   ))}
                 </div>
 
-                <div className="border p-4 rounded-xl shadow bg-white">
+                <div className="border p-4  mt-4 rounded-xl shadow bg-white">
                   <label className="block text-sm font-medium text-[#385e72] mb-1">
-       Notes
+                    Notes
                   </label>
                   <input
                     type="textarea"
                     name="notes"
                     value={formData.notes || ""}
-                    onChange={(e) =>
-                      handleChange("notes", e.target.value)
-                    }
+                    onChange={(e) => handleChange("notes", e.target.value)}
                     className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6aabd2] ${
-                      errors.notes
-                        ? "border-red-500"
-                        : "border-[#b7cfdc]"
+                      errors.notes ? "border-red-500" : "border-[#b7cfdc]"
                     }`}
                   />
                   {errors.notes && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.notes}
-                    </p>
+                    <p className="text-sm text-red-500 mt-1">{errors.notes}</p>
                   )}
                 </div>
               </div>

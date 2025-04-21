@@ -138,7 +138,7 @@ export default function LocationInfoCard({ locationdata }) {
       </div>
     );
 
-  const { id, project_id, project_name, substation_name, attributes } =
+  const { id, project_id, project_name, substation_name, attributes , location_name } =
     locationdata;
   const {
     point_type,
@@ -191,6 +191,7 @@ export default function LocationInfoCard({ locationdata }) {
               <InfoItem label="Point Type" value={point_type} />
               <InfoItem label="Point No" value={point_no} />
               <InfoItem label="Area Code" value={area_code} />
+              <InfoItem label="location name" value={location_name ? location_name :"NA"} />
             </div>
 
             <div className="col-span-1 sm:col-span-2 flex flex-col sm:flex-row items-start sm:items-center gap-2">
