@@ -52,9 +52,7 @@ export default function DataComponent() {
   const [deleteModelOpen, setDeleteModelOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
-  // const token = localStorage.getItem("token");
   const token = getAuthToken();
-  // const API_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -75,7 +73,6 @@ export default function DataComponent() {
 
       const result = await response.json();
       setData(result.data);
-      console.log("reuslt data:", result.data);
       setTotal(result.total);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -107,7 +104,7 @@ export default function DataComponent() {
     return Object.entries(visualData).map(([key, value]) => {
       if (visualTemplate.hasOwnProperty(key)) {
         const { name, options } = visualTemplate[key];
-        const label = capitalizeFirstLetter(name.replace(/_/g, " ")); // capitalizing label
+        const label = capitalizeFirstLetter(name.replace(/_/g, " ")); 
         const optionName = options?.[value] || value;
         return (
           <p key={key}>
@@ -125,18 +122,25 @@ export default function DataComponent() {
   };
 
   const getThermalInspectionStatus = (thermalData) => {
+    const formatStatus = (status) => {
+      const lowerStatus = status.toLowerCase();
+      if (lowerStatus === "notdone") return "Not Done";
+      if (status === "M") return "Medium";
+      if (status === "H") return "High";
+      return status.at(0).toUpperCase() + status.slice(1).toLowerCase();
+    };
+
     if (typeof thermalData === "string") {
       const parsedData = JSON.parse(thermalData);
       return (
         <p key="thermal-status">
-          {parsedData.status.at(0).toUpperCase() +
-            parsedData.status.slice(1).toLowerCase() || "Unknown"}
+          {formatStatus(parsedData.status) || "Unknown"}
         </p>
       );
     } else if (typeof thermalData === "object") {
       return Object.entries(thermalData).map(([deviceId, status]) => (
         <p key={deviceId}>
-          {deviceId}: {status}
+          {deviceId}: {formatStatus(status)}
         </p>
       ));
     } else {
@@ -481,9 +485,7 @@ export default function DataComponent() {
               setColumnName("Visual Inspection");
             }}
             title="Filter"
-          >
-            {/* <Funnel className="h-4 w-4" /> */}
-          </button>
+          ></button>
         </div>
       ),
       filterFn: (row, columnId, filter) => {
@@ -531,9 +533,7 @@ export default function DataComponent() {
               setColumnName("Thermal Inspection");
             }}
             title="Filter"
-          >
-            {/* <Funnel className="h-4 w-4" /> */}
-          </button>
+          ></button>
         </div>
       ),
       filterFn: (row, columnId, filter) => {
@@ -615,7 +615,6 @@ export default function DataComponent() {
         if (!filter || !filter.operator || !filter.value) return true;
         return filterFunctions[filter.operator](row, columnId, filter.value);
       },
-      // cell: (info) => info.getValue(),
       cell: (info) => {
         const rawValue = info.getValue();
         const date = new Date(rawValue);
@@ -637,7 +636,7 @@ export default function DataComponent() {
           <div className="flex gap-1">
             <button
               className="text-blue-400"
-              // onClick={() => navigate(`/view/${item.inspection_id}`)}
+              onClick={() => navigate(`/view/${item.inspection_id}`)}
             >
               <SquareChartGantt className="w-5" />
             </button>
@@ -680,7 +679,6 @@ export default function DataComponent() {
         throw new Error(errorText || "Failed to delete");
       }
 
-      console.log("Deleted successfully");
       await fetchData();
     } catch (error) {
       console.error("Delete error:", error);
@@ -725,7 +723,6 @@ export default function DataComponent() {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    // onColumnVisibilityChange:
   });
 
   const columnDisplayNames = {
@@ -760,8 +757,8 @@ export default function DataComponent() {
   return (
     <>
       <Topbar />
-      <div className="p-8">
-        {/* header  */}
+      <div className="p-8 mt-12">
+       
         <div className="flex justify-between items-center mb-4">
           <input
             className="border border-gray-300 px-3 py-1 rounded-md w-[200px]"
@@ -826,7 +823,6 @@ export default function DataComponent() {
                     <th
                       key={header.id}
                       scope="col"
-                      // className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider select-none"
                       className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider select-none ${
                         activeFilterColumns.includes(header.column.id)
                           ? "border-x2 bg-gray-200"
@@ -854,7 +850,6 @@ export default function DataComponent() {
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
-                        // className={`px-6 py-3 whitespace-nowrap text-sm text-gray-700`}
                         className={`px-6 py-3 whitespace-nowrap text-sm ${
                           activeFilterColumns.includes(cell.column.id)
                             ? "bg-blue-50 text-gray-800"
@@ -886,10 +881,8 @@ export default function DataComponent() {
         {/* Pagination  */}
         <div className="flex w-full flex-col-reverse items-center justify-between md:flex-row md:gap-8 py-4 sticky">
           <div className="flex-1 text-muted-foreground text-sm text-gray-700">
-            {/* {table.getFilteredSelectedRowModel().rows.length} of{" "} */}
             {table.getFilteredRowModel().rows.length} records visible ({total}{" "}
             total)
-            {/* Rows Available: {total} */}
           </div>
           <div className="flex flex-col-reverse items-center gap-4 md:flex-row md:gap-6 lg:gap-8">
             <div className="flex items-center space-x-2">
