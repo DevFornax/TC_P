@@ -77,7 +77,7 @@ const LocationSearchFormCard = ({
       <div className="grid gap-6 sm:grid-cols-3 py-2">
         <div className="flex flex-col">
           <label className="block text-[#385e72] font-semibold mb-2 tracking-wide">
-            Location ID 266102
+            Location ID 
           </label>
           <input
             type="text"

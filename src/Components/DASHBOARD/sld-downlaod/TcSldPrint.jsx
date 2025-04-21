@@ -72,29 +72,7 @@ const TcSldPrint = forwardRef(({ thermalInspection = {}, locationId }, ref) => {
 console.log(locationId, "in child");
   console.log(thermalInspection, "daqta");
   useImperativeHandle(ref, () => ({
-    // exportAsImage: () => {
-    //   const svgElement = svgRef.current;
-    //   if (!svgElement) return null;
-
-    //   const svgString = new XMLSerializer().serializeToString(svgElement);
-    //   const canvas = document.createElement("canvas");
-    //   const ctx = canvas.getContext("2d");
-    //   const img = new Image();
-
-    //   return new Promise((resolve, reject) => {
-    //     img.onload = () => {
-    //       canvas.width = img.width;
-    //       canvas.height = img.height;
-    //       ctx.drawImage(img, 0, 0);
-    //       const png = canvas.toDataURL("image/png");
-    //       resolve(png);
-    //     };
-    //     img.onerror = reject;
-    //     img.src = `data:image/svg+xml;base64,${btoa(
-    //       unescape(encodeURIComponent(svgString))
-    //     )}`;
-    //   });
-    // },
+  
     exportAsImage: () => {
       const svgElement = svgRef.current;
       if (!svgElement) return null;
@@ -104,7 +82,7 @@ console.log(locationId, "in child");
 
       return new Promise((resolve, reject) => {
         img.onload = () => {
-          // Set A4 size in pixels at 96 DPI
+       
           const A4_WIDTH = 794;
           const A4_HEIGHT = 700;
 
@@ -139,7 +117,7 @@ console.log(locationId, "in child");
     <div className="w-full h-full">
       <svg
         ref={svgRef}
-        viewBox="0 0 1000 700"
+        viewBox="0 0 800 700"
         style={{
           background: "#fff",
           cursor: isDragging ? "grabbing" : "grab",
@@ -149,9 +127,9 @@ console.log(locationId, "in child");
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       >
-        <g transform="translate(0, 60)">
+        {/* <g transform="translate(0, 63)">
           <text x={10} y={0} fontSize="16" fontWeight="bold">
-            Thermal Inspection Status:
+            Thermal Inspection 
           </text>
 
           {Object.entries(thermalInspection).length === 0 ? (
@@ -183,9 +161,9 @@ console.log(locationId, "in child");
                 </text>
               ))
           )}
-        </g>
+        </g> */}
 
-        <g transform="translate(350, 450)">
+        <g transform="translate(180, 450)">
           {Transformerlines.map((line) => {
             const [x1, y1] = getScaled(line.from);
             const [x2, y2] = getScaled(line.to);

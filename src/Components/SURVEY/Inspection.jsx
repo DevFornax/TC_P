@@ -18,6 +18,42 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
   const [thermalEnabled, setThermalEnabled] = useState(false);
   const [thermalRecords, setThermalRecords] = useState([]);
   const [showCardOfInspection, setshowCardOfInspection] = useState(true);
+  const [notesEnabled, setNotesEnabled] = useState(false);
+  const [notesRows, setNotesRows] = useState([""]); 
+
+
+useEffect(() => {
+  if (notesEnabled) {
+    setFormData((prev) => ({
+      ...prev,
+      notes: notesRows,
+    }));
+  } else {
+    setFormData((prev) => ({
+      ...prev,
+      notes: [],
+    }));
+  }
+}, [notesRows, notesEnabled]);
+
+
+  const handleAddNoteRow = () => {
+    setNotesRows([...notesRows, ""]);
+  };
+
+  const handleRemoveNoteRow = (index) => {
+    if (notesRows.length > 1) {
+      const updated = [...notesRows];
+      updated.splice(index, 1);
+      setNotesRows(updated);
+    }
+  };
+
+  const handleNoteChange = (index, value) => {
+    const updated = [...notesRows];
+    updated[index] = value;
+    setNotesRows(updated);
+  };
 
   useEffect(() => {
     if (!thermalEnabled) return;
@@ -124,6 +160,14 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
       }
     }
 
+    if (notesEnabled) {
+      notesRows.forEach((note, i) => {
+        if (!note || note.trim() === "") {
+          newErrors[`note_${i}`] = "Note is required";
+        }
+      });
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -150,12 +194,10 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
 
     const selectedDevice = selection;
 
-    // Filter only applicable inspection fields
     const filteredInspectionFields = InspectionFields.filter((field) =>
       field.device.includes(selectedDevice)
     );
 
-    // Create filtered visual inspection data
     const filteredFormData = {};
     filteredInspectionFields.forEach((field) => {
       filteredFormData[field.name] = formData[field.name] || "";
@@ -188,7 +230,6 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
         return;
       }
 
-      // Map thermal records with short conditions and append location ID if needed
       thermalInspection = {};
       thermalRecords.forEach((point) => {
         const key = keysToAppendLocation.includes(point.id)
@@ -202,7 +243,6 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
       thermalInspection = { status: "notdone" };
     }
 
-    // Prepare minimal and clean location data
     const minimalLocationData = {
       id: locationdata?.id,
       location_name: locationdata?.location_name,
@@ -218,14 +258,20 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
         ulid: locationdata?.attributes?.ulid || "",
       },
     };
+    // Process Notes
+    let processedNotes = null;
 
+    if (notesEnabled) {
+      const notesArray = notesRows.filter((note) => note.trim() !== "");
+      processedNotes = notesArray.length > 0 ? notesArray : null;
+    }
     const finalData = {
       username: formData.username,
       inspectionDate: formData.inspectionDate,
       locationdata: minimalLocationData,
       visualInspection: compressedVisual,
       thermalInspection,
-      notes: formData.notes,
+      notes: processedNotes,
     };
 
     console.log("✅ Final Submission Payload:", finalData);
@@ -272,6 +318,7 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
         </div>
       </div>
     );
+    
   const {
     id,
     project_id,
@@ -433,8 +480,7 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
                     </div>
                   ))}
                 </div>
-
-                <div className="border p-4  mt-4 rounded-xl shadow bg-white">
+                {/* <div className="border p-4  mt-4 rounded-xl shadow bg-white">
                   <label className="block text-sm font-medium text-[#385e72] mb-1">
                     Notes
                   </label>
@@ -451,7 +497,82 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
                     <p className="text-sm text-red-500 mt-1">{errors.notes}</p>
                   )}
                 </div>
+*/}
+                <div className="border p-4 mt-4 rounded-xl shadow bg-white">
+                  <label className="block text-sm font-medium text-[#385e72] mb-2">
+                    Add Notes?
+                  </label>
+                  <div className="flex gap-4 mb-4">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        checked={notesEnabled}
+                        onChange={() => setNotesEnabled(true)}
+                      />
+                      <span>Yes</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        checked={!notesEnabled}
+                        onChange={() => {
+                          setNotesEnabled(false);
+                          setNotesRows([""]);
+                        }}
+                      />
+                      <span>No</span>
+                    </label>
+                  </div>
+
+                  {notesEnabled &&
+                    notesRows.map((note, index) => (
+                      <div key={index} className="flex items-start gap-2 mb-2">
+                        <input
+                          type="text"
+                          value={note}
+                          onChange={(e) =>
+                            handleNoteChange(index, e.target.value)
+                          }
+                          className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6aabd2] ${
+                            errors[`note_${index}`]
+                              ? "border-red-500"
+                              : "border-[#b7cfdc]"
+                          }`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveNoteRow(index)}
+                          className="px-2 py-1 text-sm bg-red-500 text-white rounded-lg disabled:opacity-50"
+                          disabled={notesRows.length === 1}
+                        >
+                          ❌
+                        </button>
+                        {index === notesRows.length - 1 && (
+                          <button
+                            type="button"
+                            onClick={handleAddNoteRow}
+                            className="px-2 py-1 text-sm bg-green-500 text-white rounded-lg"
+                          >
+                            ➕
+                          </button>
+                        )}
+
+                        {/* Display error for individual note */}
+                        {errors[`note_${index}`] && (
+                          <p className="text-sm text-red-500 mt-1">
+                            {errors[`note_${index}`]}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+
+                  {/* General error for notes */}
+                  {errors.notes && (
+                    <p className="text-sm text-red-500 mt-1">{errors.notes}</p>
+                  )}
+                </div>
               </div>
+
               <div className="mt-6 p-6 pl-0 border ">
                 <label className="block font-bold mb-2 text-[#385e72]">
                   Thermal Inspection Records
