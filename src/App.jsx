@@ -8,6 +8,7 @@ import GeneratePDF from "./Components/DASHBOARD/sld-downlaod/GeneratePDF";
 import Login from "./Components/Login";
 import PrivateRoute from "./Components/PrivateRoute";
 import FourOFour from "./Components/404";
+import MapView from "./Components/MAPVIEW/MapView";
 
 function App() {
   return (
@@ -47,8 +48,14 @@ function App() {
             </PrivateRoute>
           }
         />
-
-        {/* Catch-all route for 404 */}
+        <Route
+          path="/map-view"
+          element={
+            <PrivateRoute>
+       <MapView/>
+            </PrivateRoute>
+          }
+        />
         <Route path="*" element={<FourOFour />} />
       </Routes>
     </BrowserRouter>

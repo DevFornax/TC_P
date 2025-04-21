@@ -10,22 +10,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { visualTemplate } from "../utils/VisualTemplateforVisualFields";
 import Topbar from "../Topbar";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  ChevronsUpDown,
-  CircleX,
-  FileDown,
-  Funnel,
-  FunnelX,
-  SlidersHorizontal,
-  SquareChartGantt,
-  Trash2,
-} from "lucide-react";
-
+import { Funnel } from "../UI/Icons/Funnel";
+import { ChevronsUpDown } from "../UI/Icons/ChevronUpDown";
+import { CircleX } from "../UI/Icons/CircleX";
 import { getAuthToken, API_URL } from "../utils/apiConfig";
+
 
 export default function DataComponent() {
   const [data, setData] = useState([]);
@@ -636,9 +625,13 @@ export default function DataComponent() {
           <div className="flex gap-1">
             <button
               className="text-blue-400"
-              onClick={() => navigate(`/view/${item.inspection_id}`)}
+              // onClick={() => navigate(`/view/${item.inspection_id}`)}
             >
-              <SquareChartGantt className="w-5" />
+              <img
+                src="/table-icon/SquareChartGantt.svg"
+                alt="squarechart"
+                className="w-5"
+              />
             </button>
             <button
               className="text-red-400"
@@ -647,13 +640,18 @@ export default function DataComponent() {
                 setItemToDelete(item);
               }}
             >
-              <Trash2 className="w-5" />
+              <img src="/table-icon/Trash2.svg" alt="trash" className="w-5 0" />
             </button>
             <button
               className="text-green-400"
               onClick={() => handleDownloadPDF(item)}
             >
-              <FileDown className="w-5" />
+            
+              <img
+                src="/table-icon/FileDown.svg"
+                alt="file dowm"
+                className="w-5"
+              />
             </button>
           </div>
         );
@@ -758,7 +756,6 @@ export default function DataComponent() {
     <>
       <Topbar />
       <div className="p-8 mt-12">
-       
         <div className="flex justify-between items-center mb-4">
           <input
             className="border border-gray-300 px-3 py-1 rounded-md w-[200px]"
@@ -770,7 +767,8 @@ export default function DataComponent() {
             className={`flex justify-center p-[2px] border border-gray-400 w-[50px] rounded-md`}
             onClick={handleColumnVisiblity}
           >
-            <SlidersHorizontal className="w-5 text-gray-700" />
+          
+            <img src="table-icon/SlidersHorizontal.svg" alt="sidebar horison" className="h-5 w-5" />
           </button>
           {isColumnVisible && (
             <div
@@ -930,7 +928,12 @@ export default function DataComponent() {
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">Go to first page</span>
-                <ChevronsLeft className="h-4 w-4" />
+
+                <img
+                  src="/table-icon/ChevronsLeft.svg"
+                  alt="chevronsleft"
+                  className="h-4 w-4"
+                />
               </button>
               <button
                 className="h-8 w-8 p-0 rounded border border-gray-300 flex items-center justify-center disabled:opacity-50"
@@ -938,7 +941,12 @@ export default function DataComponent() {
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">Go to previous page</span>
-                <ChevronLeft className="h-4 w-4" />
+
+                <img
+                  src="/table-icon/ChevronLeft.svg"
+                  alt="chevronleft"
+                  className="h-4 w-4"
+                />
               </button>
               <button
                 className="h-8 w-8 p-0 rounded border border-gray-300 flex items-center justify-center disabled:opacity-50"
@@ -946,7 +954,12 @@ export default function DataComponent() {
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">Go to next page</span>
-                <ChevronRight className="h-4 w-4" />
+
+                <img
+                  src="/table-icon/ChevronRight.svg"
+                  alt="chevronRight"
+                  className="h-4 w-4"
+                />
               </button>
               <button
                 className="h-8 w-8 p-0 rounded border border-gray-300 flex items-center justify-center disabled:opacity-50"
@@ -954,7 +967,13 @@ export default function DataComponent() {
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">Go to last page</span>
-                <ChevronsRight className="h-4 w-4" />
+               
+
+                <img
+                  src="/table-icon/ChevronsRight.svg"
+                  alt="chevronsRight"
+                  className="h-4 w-4"
+                />
               </button>
             </div>
           </div>

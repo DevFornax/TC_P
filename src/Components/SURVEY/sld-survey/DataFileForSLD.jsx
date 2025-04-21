@@ -1,8 +1,8 @@
-import OTCIcon from "../../utils/SLDICON/OTCIcon";
-import DotIconForSwitch from "../../utils/SLDICON/DotIconForSwitch";
-import DotIconForLightArrestor from "../../utils/SLDICON/DotIconForLightArrestor";
-import SquareIconForFuse from "../../utils/SLDICON/SquareIconForFuse";
-import DuoBoxIcon from "../../utils/SLDICON/DuoBoxIcon";
+import OTCIcon from "../../UI/Icons/SLDICON/OTCIcon";
+import DotIconForSwitch from "../../UI/Icons/SLDICON/DotIconForSwitch";
+import DotIconForLightArrestor from "../../UI/Icons/SLDICON/DotIconForLightArrestor";
+import SquareIconForFuse from "../../UI/Icons/SLDICON/SquareIconForFuse";
+import DuoBoxIcon from "../../UI/Icons/SLDICON/DuoBoxIcon";
 
 //////////////////////////////-------------------------------TC-------------------------------------------////////////////////
 export const Transformerwaypoints = [

@@ -75,8 +75,8 @@ export default function EntryPage() {
       image: "/dashboard.svg",
     },
     {
-      title: "Inspection Reports",
-      route: "/data-inspection",
+      title: "Map View",
+      route: "/map-view",
       image: "/dashbarod2.svg",
     },
     {
