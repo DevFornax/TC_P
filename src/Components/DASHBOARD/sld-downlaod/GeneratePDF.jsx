@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FornaxLogo , DGVCLLogo } from "../../utils/Base64PdfLogo";
+import { FornaxLogo, DGVCLLogo } from "../../utils/Base64PdfLogo";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import html2canvas from "html2canvas";
@@ -44,7 +44,7 @@ const GeneratePDF = () => {
       setInspectionData(location.state.inspectionData);
     }
   }, [location.state]);
-
+  console.log(inspectionData, "inspectiondata");
 
   const formatThermalStatus = (status) => {
     const normalized = String(status).toLowerCase();
@@ -68,13 +68,12 @@ const GeneratePDF = () => {
     const option = visualTemplate[point]?.options[value];
     return option ? option : "N/A";
   };
-const capitalizeFirstLetter = (str) => {
-  return str
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-};
-
+  const capitalizeFirstLetter = (str) => {
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
 
   // const generatePDF = async () => {
   //   if (!inspectionData) return;
@@ -272,287 +271,330 @@ const capitalizeFirstLetter = (str) => {
   //     .download(`inspection_${inspectionData.inspection_id}.pdf`);
   // };
 
+  const generatePDF = async () => {
+    if (!inspectionData) return;
 
-  
+    // const visualInspectionData = Object.entries(
+    //   inspectionData.visual_inspection || {}
+    // ).map(([templateId, selectedValue]) => {
+    //   const template = visualTemplate[templateId];
+    //   if (!template) return { label: `Unknown (${templateId})`, value: "N/A" };
 
+    //   const label = template.name.replace(/_/g, " ");
+    //   const humanReadable = template.options[selectedValue] || "Not Available";
+    // console.log("Visual Inspection Data", { label, value: humanReadable });
+    //   return {
+    //     label: label.charAt(0).toUpperCase() + label.slice(1),
+    //     value: humanReadable,
+    //   };
+    // });
 
-const generatePDF = async () => {
-  if (!inspectionData) return;
+    const visualInspectionData = Object.entries(
+      inspectionData.visual_inspection || {}
+    ).map(([templateId, selectedValue]) => {
+      const template = visualTemplate[templateId];
+      if (!template) return { label: `Unknown (${templateId})`, value: "N/A" };
 
- 
-  // const visualInspectionData = Object.entries(
-  //   inspectionData.visual_inspection || {}
-  // ).map(([templateId, selectedValue]) => {
-  //   const template = visualTemplate[templateId];
-  //   if (!template) return { label: `Unknown (${templateId})`, value: "N/A" };
+      const knownAbbr = ["HT", "LT", "DO", "UG", "NI", "TC"];
 
-  //   const label = template.name.replace(/_/g, " ");
-  //   const humanReadable = template.options[selectedValue] || "Not Available";
-  // console.log("Visual Inspection Data", { label, value: humanReadable });
-  //   return {
-  //     label: label.charAt(0).toUpperCase() + label.slice(1),
-  //     value: humanReadable,
-  //   };
-  // });
+      const label = template.name
+        .replace(/_/g, " ")
+        .split(" ")
+        .map((word) => {
+          const upper = word.toUpperCase();
+          return knownAbbr.includes(upper)
+            ? upper
+            : word.charAt(0).toUpperCase() + word.slice(1);
+        })
+        .join(" ");
+      const humanReadable = template.options[selectedValue] || "Not Available";
 
-const visualInspectionData = Object.entries(
-  inspectionData.visual_inspection || {}
-).map(([templateId, selectedValue]) => {
-  const template = visualTemplate[templateId];
-  if (!template) return { label: `Unknown (${templateId})`, value: "N/A" };
+      console.log({ label, value: humanReadable });
 
- const knownAbbr = ["HT", "LT", "DO", "UG", "NI", "TC"];
-
- const label = template.name
-   .replace(/_/g, " ")
-   .split(" ")
-   .map((word) => {
-     const upper = word.toUpperCase();
-     return knownAbbr.includes(upper)
-       ? upper
-       : word.charAt(0).toUpperCase() + word.slice(1);
-   })
-   .join(" ");
-  const humanReadable = template.options[selectedValue] || "Not Available";
-
-  console.log({ label, value: humanReadable });
-
-  return {
-    label,
-    value: humanReadable,
-  };
-});
-
-
-  const chunkedVisualRows = [];
-  for (let i = 0; i < visualInspectionData.length; i += 2) {
-    const left = visualInspectionData[i];
-    const right = visualInspectionData[i + 1];
-
-    chunkedVisualRows.push([
-      { text: left?.label || "", bold: true },
-      { text: left?.value || "" },
-      { text: right?.label || "", bold: true },
-      { text: right?.value || "" },
-    ]);
-  }
-
-  let sldImage = null;
-  if (sldRef.current) {
-    const canvas = await html2canvas(sldRef.current, {
-      useCORS: true,
-      scale: 2,
+      return {
+        label,
+        value: humanReadable,
+      };
     });
-    sldImage = canvas.toDataURL("image/png");
-  }
 
-  
-  function formatTime(time) {
-    const hours = time.getHours();
-    const minutes = time.getMinutes();
-    const suffix = hours < 12 ? "AM" : "PM";
-    const formattedTime = `${hours % 12 || 12}:${
-      minutes < 10 ? "0" + minutes : minutes
-    } ${suffix}`;
+    const chunkedVisualRows = [];
+    for (let i = 0; i < visualInspectionData.length; i += 2) {
+      const left = visualInspectionData[i];
+      const right = visualInspectionData[i + 1];
 
-    let partOfDay = "";
-    if (hours >= 5 && hours < 12) partOfDay = "Morning";
-    else if (hours >= 12 && hours < 17) partOfDay = "Afternoon";
-    else if (hours >= 17 && hours < 21) partOfDay = "Evening";
-    else partOfDay = "Night";
+      chunkedVisualRows.push([
+        { text: left?.label || "", bold: true },
+        { text: left?.value || "" },
+        { text: right?.label || "", bold: true },
+        { text: right?.value || "" },
+      ]);
+    }
 
-    return `${formattedTime} `;
-  }
+    let sldImage = null;
+    if (sldRef.current) {
+      const canvas = await html2canvas(sldRef.current, {
+        useCORS: true,
+        scale: 2,
+      });
+      sldImage = canvas.toDataURL("image/png");
+    }
 
+    function formatTime(time) {
+      const hours = time.getHours();
+      const minutes = time.getMinutes();
+      const suffix = hours < 12 ? "AM" : "PM";
+      const formattedTime = `${hours % 12 || 12}:${
+        minutes < 10 ? "0" + minutes : minutes
+      } ${suffix}`;
 
+      let partOfDay = "";
+      if (hours >= 5 && hours < 12) partOfDay = "Morning";
+      else if (hours >= 12 && hours < 17) partOfDay = "Afternoon";
+      else if (hours >= 17 && hours < 21) partOfDay = "Evening";
+      else partOfDay = "Night";
 
- 
-  const docDefinition = {
-    content: [
-      {
-        columns: [
-          {
-            image: FornaxLogo,
-            width: 60,
-            height: 60,
-            margin: [0, 0, 10, 0],
-          },
-          {
-            stack: [
-              { text: "Inspection Report", style: "header" },
-              { text: "Thermal & Visual Inspection", style: "subheader" },
-            ],
-            alignment: "center",
-            margin: [0, 10, 0, 0],
-          },
-          {
-            image: DGVCLLogo,
-            width: 60,
-            height: 60,
-            alignment: "right",
-            margin: [10, 0, 0, 0],
-          },
-        ],
-      },
-      {
-        table: {
-          widths: ["25%", "25%", "25%", "25%"],
-          body: [
-            [
-              { text: "Date", bold: true },
-              new Date(inspectionData.inspection_date).toLocaleDateString(
-                "en-GB"
-              ),
-              { text: "Time", bold: true },
-              formatTime(new Date(inspectionData.inspection_date)),
-            ],
-            [
-              { text: "Inspection ID", bold: true },
-              inspectionData.inspection_id,
-              { text: "Inspection Done By", bold: true },
-              inspectionData.inspection_done_by,
-            ],
-            [
-              { text: "Location Id", bold: true },
-              inspectionData.location_id,
-              { text: "Project ID", bold: true },
-              inspectionData.project_id,
-            ],
-            [
-              { text: "Location Type", bold: true },
-              inspectionData.location_type,
-              { text: "Location Name", bold: true },
-              inspectionData.location_name,
-            ],
+      return `${formattedTime} `;
+    }
+
+    const docDefinition = {
+      content: [
+        {
+          columns: [
+            {
+              image: FornaxLogo,
+              width: 60,
+              height: 60,
+              margin: [0, 0, 10, 0],
+            },
+            {
+              stack: [
+                { text: "Inspection Report", style: "header" },
+                { text: "Thermal & Visual Inspection", style: "subheader" },
+              ],
+              alignment: "center",
+              margin: [0, 10, 0, 0],
+            },
+            {
+              image: DGVCLLogo,
+              width: 60,
+              height: 60,
+              alignment: "right",
+              margin: [10, 0, 0, 0],
+            },
           ],
         },
-        layout: {
-          fillColor: (rowIndex) => (rowIndex % 2 === 0 ? "#f2f2f2" : null),
-        },
-        margin: [0, 10, 0, 10],
-      },
-      {
-        text: "Visual Inspection Results",
-        style: "sectionHeader",
-        margin: [0, 10, 0, 5],
-      },
-      {
-        table: {
-          widths: ["25%", "25%", "25%", "25%"],
-          body: [
-            [
-              { text: "Item Type", style: "tableHeader" },
-              { text: "Data", style: "tableHeader" },
-              { text: "Item Type", style: "tableHeader" },
-              { text: "Data", style: "tableHeader" },
+        {
+          table: {
+            widths: ["25%", "25%", "25%", "25%"],
+            body: [
+              [
+                { text: "Inspection ID", bold: true },
+                inspectionData.inspection_id || "",
+                { text: "Date & Time", bold: true },
+                `${new Date(inspectionData.inspection_date).toLocaleDateString(
+                  "en-GB"
+                )} ${formatTime(new Date(inspectionData.inspection_date))}`,
+              ],
+
+              [
+                { text: "Substation ID", bold: true },
+                inspectionData.substation_id || "",
+                { text: "Substation Name", bold: true },
+                inspectionData.substation_name || "",
+              ],
+              [
+                { text: "Project ID", bold: true },
+                inspectionData.project_id || "",
+                { text: "Project Name", bold: true },
+                inspectionData.project_name || "",
+              ],
+              [
+                { text: "Location ID", bold: true },
+                inspectionData.location_id || "",
+                { text: "Location Type", bold: true },
+                inspectionData.location_type || "",
+              ],
+              [
+                {
+                  text: "Location Name",
+                  bold: true,
+                },
+                {
+                  text: inspectionData.location_name || "",
+                  colSpan: 3,
+                },
+                {},
+                {},
+              ],
             ],
-            ...chunkedVisualRows,
-          ],
+          },
+          layout: {
+            fillColor: (rowIndex) => (rowIndex % 2 === 0 ? "#f2f2f2" : null),
+          },
+          margin: [0, 10, 0, 10],
         },
-        layout: {
-          fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
+        // {
+        //   table: {
+        //     widths: ["25%", "25%", "25%", "25%"],
+        //     body: [
+        //       [
+        //         { text: "Inspection ID", bold: true },
+        //         inspectionData.inspection_id || "",
+        //         { text: "Date & Time", bold: true },
+        //         `${new Date(inspectionData.inspection_date).toLocaleDateString(
+        //           "en-GB"
+        //         )} ${formatTime(new Date(inspectionData.inspection_date))}`,
+        //       ],
+        //       [
+        //         { text: "Substation", bold: true },
+        //         `${inspectionData.substation_id || ""} (${
+        //           inspectionData.substation_name || "N/A"
+        //         })`,
+        //         { text: "Project", bold: true },
+        //         `${inspectionData.project_id || ""} (${
+        //           inspectionData.project_name || "N/A"
+        //         })`,
+        //       ],
+        //       [
+        //         { text: "Location ID", bold: true },
+        //         inspectionData.location_id || "",
+        //         { text: "Location Type", bold: true },
+        //         inspectionData.location_type || "",
+        //       ],
+        //       [
+        //         { text: "Location Name", bold: true },
+        //         {
+        //           text: inspectionData.location_name || "",
+        //           colSpan: 3,
+        //         },
+        //         {},
+        //         {},
+        //       ],
+        //     ],
+        //   },
+        //   layout: {
+        //     fillColor: (rowIndex) => (rowIndex % 2 === 0 ? "#f2f2f2" : null),
+        //   },
+        //   margin: [0, 10, 0, 10],
+        // },
+        {
+          text: "Visual Inspection Results",
+          style: "sectionHeader",
+          margin: [0, 10, 0, 5],
         },
-      },
-      sldImage
-        ? {
-            text: "Thermal Inspection Results",
-            style: "sectionHeader",
-            margin: [0, 15, 0, 5],
-          }
-        : null,
-      sldImage
-        ? {
-            image: sldImage,
-            width: 500,
-            margin: [0, 5, 0, 10],
-          }
-        : null,
-    ].filter(Boolean),
-    footer: (currentPage, pageCount) => ({
-      text: `TwinVision - Powered by Fornax `,
-      alignment: "right",
-      style: "footer",
-      margin: [0, 10, 20, 10],
-    }),
-    styles: {
-      header: {
-        fontSize: 18,
-        bold: true,
-      },
-      sectionHeader: {
-        fontSize: 16,
-        bold: true,
-        decoration: "underline",
-      },
-      tableHeader: {
-        bold: true,
-        fontSize: 10,
-        color: "black",
-      },
-      tableContent: {
-        fontSize: 9, 
-      },
-      footer: {
-        fontSize: 10,
-        italics: true,
+        {
+          table: {
+            widths: ["25%", "25%", "25%", "25%"],
+            body: [
+              [
+                { text: "Item Type", style: "tableHeader" },
+                { text: "Data", style: "tableHeader" },
+                { text: "Item Type", style: "tableHeader" },
+                { text: "Data", style: "tableHeader" },
+              ],
+              ...chunkedVisualRows,
+            ],
+          },
+          layout: {
+            fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
+          },
+        },
+        sldImage
+          ? {
+              text: "Thermal Inspection Results",
+              style: "sectionHeader",
+              margin: [0, 15, 0, 5],
+            }
+          : null,
+        sldImage
+          ? {
+              image: sldImage,
+              width: 500,
+              margin: [0, 5, 0, 10],
+            }
+          : null,
+      ].filter(Boolean),
+      footer: (currentPage, pageCount) => ({
+        text: `TwinVision - Powered by Fornax `,
         alignment: "right",
+        style: "footer",
+        margin: [0, 10, 20, 10],
+      }),
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+        },
+        sectionHeader: {
+          fontSize: 16,
+          bold: true,
+          decoration: "underline",
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 10,
+          color: "black",
+        },
+        tableContent: {
+          fontSize: 9,
+        },
+        footer: {
+          fontSize: 10,
+          italics: true,
+          alignment: "right",
+        },
       },
-    },
+    };
+
+    if (inspectionData?.remarks) {
+      docDefinition.content.push(
+        { text: "", pageBreak: "before" },
+
+        {
+          columns: [
+            {
+              image: FornaxLogo,
+              width: 60,
+              height: 60,
+              margin: [0, 0, 10, 0],
+            },
+            {
+              stack: [
+                { text: "Inspection Report", style: "header" },
+                { text: "Thermal & Visual Inspection", style: "subheader" },
+              ],
+              alignment: "center",
+              margin: [0, 10, 0, 0],
+            },
+            {
+              image: DGVCLLogo,
+              width: 60,
+              height: 60,
+              alignment: "right",
+              margin: [10, 0, 0, 0],
+            },
+          ],
+          margin: [0, 0, 0, 10],
+        },
+
+        {
+          text: "Additional Remarks",
+          style: "sectionHeader",
+          margin: [0, 10, 0, 5],
+        },
+
+        {
+          text: inspectionData.remarks,
+          fontSize: 16,
+          margin: [0, 0, 0, 10],
+        }
+      );
+    }
+
+    pdfMake
+      .createPdf(docDefinition)
+      .download(`inspection_${inspectionData.inspection_id}.pdf`);
   };
-
- if (inspectionData?.remarks) {
-   docDefinition.content.push(
-     { text: "", pageBreak: "before" },
-
-    
-     {
-       columns: [
-         {
-           image: FornaxLogo,
-           width: 60,
-           height: 60,
-           margin: [0, 0, 10, 0],
-         },
-         {
-           stack: [
-             { text: "Inspection Report", style: "header" },
-             { text: "Thermal & Visual Inspection", style: "subheader" },
-           ],
-           alignment: "center",
-           margin: [0, 10, 0, 0],
-         },
-         {
-           image: DGVCLLogo,
-           width: 60,
-           height: 60,
-           alignment: "right",
-           margin: [10, 0, 0, 0],
-         },
-       ],
-       margin: [0, 0, 0, 10],
-     },
-
-     {
-       text: "Additional Remarks",
-       style: "sectionHeader",
-       margin: [0, 10, 0, 5],
-     },
-
-     {
-       text: inspectionData.remarks,
-       fontSize: 16,
-       margin: [0, 0, 0, 10],
-     }
-   );
- }
-
-  pdfMake
-    .createPdf(docDefinition)
-    .download(`inspection_${inspectionData.inspection_id}.pdf`);
-};
-
-
-
 
   return (
     <>
@@ -602,10 +644,25 @@ const visualInspectionData = Object.entries(
               <p>
                 <strong>Created At:</strong>{" "}
                 {new Date(inspectionData?.created_at).toLocaleString()}
+              </p>{" "}
+              <p>
+                <strong>Project Id</strong> {inspectionData?.project_id}
+              </p>
+              <p>
+                <strong>Project Name</strong> {inspectionData?.project_name}
+              </p>
+              <p>
+                <strong>Substation Id</strong> {inspectionData?.substation_id}
+              </p>
+              <p>
+                <strong>Substation Name</strong>{" "}
+                {inspectionData?.substation_name}
               </p>
               <p>
                 <strong>Remarks:</strong>{" "}
-                {inspectionData?.remarks}
+                {inspectionData?.remarks?.trim()
+                  ? inspectionData.remarks
+                  : "No remarks"}
               </p>
             </div>
           </div>
