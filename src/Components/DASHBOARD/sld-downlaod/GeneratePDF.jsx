@@ -44,7 +44,7 @@ const GeneratePDF = () => {
       setInspectionData(location.state.inspectionData);
     }
   }, [location.state]);
-  console.log(inspectionData, "inspectiondata");
+ 
 
   
 
@@ -457,7 +457,7 @@ function generateDynamicThermalTable(inspectionData) {
         fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
       },
       margin: [0, 0, 0, 20],
-      fontSize: 11,
+      fontSize: 10,
     };
   }
 
@@ -481,7 +481,7 @@ function generateDynamicThermalTable(inspectionData) {
         },
         
       margin: [0, 0, 0, 20],
-      fontSize: 11,
+      fontSize: 10,
     };
   }
 
@@ -506,13 +506,12 @@ function generateDynamicThermalTable(inspectionData) {
     },
     margin: [0, 0, 0, 20],
   
-    fontSize: 11,
+    fontSize: 10,
   };
 }
 
   const docDefinition = {
     content: [
-      // Header
       {
         columns: [
           {
@@ -609,25 +608,79 @@ function generateDynamicThermalTable(inspectionData) {
         },
         margin: [0, 0, 0, 20],
       },
-
       {
-        text: "Additional Remarks",
-        style: "sectionHeader",
-        margin: [0, 20, 0, 10],
-      },
-      {
-        ul: inspectionData?.remarks
-          ? Array.isArray(inspectionData.remarks)
-            ? inspectionData.remarks
-            : inspectionData.remarks
-                .replace(/[\{\}\"]/g, "")
-                .split(",")
-                .map((remark) => remark.trim())
-          : undefined,
-        text: !inspectionData?.remarks ? "No remarks" : undefined,
-        fontSize: 12,
-        lineHeight: 1.1,
-        margin: [10, 10, 0, 20],
+        columns: [
+          {
+            width: "*",
+            stack: [
+              {
+                text: "Additional Remarks",
+                style: "sectionHeader",
+                margin: [0, 0, 0, 10], 
+              },
+              inspectionData?.remarks
+                ? {
+                    ul: Array.isArray(inspectionData.remarks)
+                      ? inspectionData.remarks
+                      : inspectionData.remarks
+                          .replace(/[\{\}\"]/g, "")
+                          .split(",")
+                          .map((remark) => remark.trim()),
+                    fontSize: 10,
+                    lineHeight: 1.2,
+                    margin: [0, 0, 10, 0],
+                  }
+                : {
+                    text: "No additional remarks provided.",
+                    fontSize: 10,
+                    margin: [0, 0, 10, 0],
+                  },
+            ],
+            margin: [0, 0, 0, 0],
+          },
+          {
+            width: 1,
+            canvas: [
+              {
+                type: "line",
+                x1: 0,
+                y1: 0,
+                x2: 0,
+                y2: 140, 
+                lineWidth: 1,
+                lineColor: "#ccc",
+              },
+            ],
+            margin: [5, 20, 5, 0],
+          },
+          {
+            width: "30%",
+            stack: [
+              {
+                text: "Location Info",
+                style: "sectionHeader",
+                alignment: "right",
+                margin: [0, 0, 0, 10], 
+              },
+              {
+                qr: `https://www.google.com/maps?q=${inspectionData?.lat},${inspectionData?.lang}`,
+                fit: 90,
+                alignment: "right",
+                margin: [0, 0, 0, 10],
+              },
+              {
+                text: "View on Google Maps",
+                link: `https://www.google.com/maps?q=${inspectionData?.lat},${inspectionData?.lang}`,
+                color: "blue",
+                decoration: "underline",
+                alignment: "right",
+                fontSize: 10,
+                margin: [0, 0, 0, 0],
+              },
+            ],
+            margin: [0, 0, 0, 0],
+          },
+        ],
       },
 
       {
@@ -679,7 +732,6 @@ function generateDynamicThermalTable(inspectionData) {
             margin: [0, 10, 0, 10],
           },
           generateDynamicThermalTable(inspectionData),
-
         ],
       },
     ].filter(Boolean),
@@ -693,33 +745,301 @@ function generateDynamicThermalTable(inspectionData) {
 
     styles: {
       header: {
-        fontSize: 18,
+        fontSize: 15, // Reduced from 18 to 16
         bold: true,
       },
       subheader: {
-        fontSize: 14,
+        fontSize: 11, // Reduced from 14 to 12
         italics: true,
       },
       sectionHeader: {
-        fontSize: 16,
+        fontSize: 12, // Reduced from 16 to 14
         bold: true,
         decoration: "underline",
       },
       tableHeader: {
         bold: true,
-        fontSize: 10,
+        fontSize: 9, // Reduced from 10 to 8
         color: "black",
       },
       tableContent: {
-        fontSize: 9,
+        fontSize: 7, // Reduced from 9 to 7
       },
       footer: {
-        fontSize: 10,
+        fontSize: 8, // Reduced from 10 to 8
         italics: true,
         alignment: "right",
       },
     },
   };
+
+
+
+// const docDefinition = {
+//   content: [
+//     // Header
+//     {
+//       columns: [
+//         {
+//           image: FornaxLogo,
+//           width: 60,
+//           height: 60,
+//           margin: [0, 0, 10, 0],
+//         },
+//         {
+//           stack: [
+//             { text: "Inspection Report", style: "header" },
+//             { text: "Thermal & Visual Inspection", style: "subheader" },
+//           ],
+//           alignment: "center",
+//           margin: [0, 10, 0, 0],
+//         },
+//         {
+//           image: DGVCLLogo,
+//           width: 60,
+//           height: 60,
+//           alignment: "right",
+//           margin: [10, 0, 0, 0],
+//         },
+//       ],
+//       margin: [0, 0, 0, 10],
+//     },
+
+//     {
+//       text: "General Information",
+//       style: "sectionHeader",
+//       margin: [0, 20, 0, 10],
+//     },
+
+//     {
+//       table: {
+//         widths: ["25%", "25%", "25%", "25%"],
+//         body: [
+//           [
+//             { text: "Inspection ID", bold: true },
+//             inspectionData.inspection_id || "",
+//             { text: "Date & Time", bold: true },
+//             `${new Date(inspectionData.inspection_date).toLocaleDateString(
+//               "en-GB"
+//             )} ${formatTime(new Date(inspectionData.inspection_date))}`,
+//           ],
+//           [
+//             { text: "Substation Name", bold: true },
+//             inspectionData.substation_name || "",
+//             { text: "Project", bold: true },
+//             `${inspectionData.project_id || ""} - ${
+//               inspectionData.project_name || ""
+//             }`,
+//           ],
+//           [
+//             { text: "Location ID", bold: true },
+//             inspectionData.location_id || "",
+//             { text: "Location Type", bold: true },
+//             inspectionData.location_type || "",
+//           ],
+//           [
+//             { text: "Location Name", bold: true },
+//             { text: inspectionData.location_name || "", colSpan: 3 },
+//             {},
+//             {},
+//           ],
+//         ],
+//       },
+//       layout: {
+//         fillColor: (rowIndex) => (rowIndex % 2 === 0 ? "#f2f2f2" : null),
+//       },
+//       margin: [0, 0, 0, 10],
+//     },
+
+//     {
+//       text: "Visual Inspection Results",
+//       style: "sectionHeader",
+//       margin: [0, 20, 0, 10],
+//     },
+//     {
+//       table: {
+//         widths: ["25%", "25%", "25%", "25%"],
+//         body: [
+//           [
+//             { text: "Item Type", style: "tableHeader" },
+//             { text: "Data", style: "tableHeader" },
+//             { text: "Item Type", style: "tableHeader" },
+//             { text: "Data", style: "tableHeader" },
+//           ],
+//           ...chunkedVisualRows,
+//         ],
+//       },
+//       layout: {
+//         fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
+//       },
+//       margin: [0, 0, 0, 10],
+//     },
+
+//     {
+//       columns: [
+//         {
+//           width: "*",
+//           stack: [
+//             {
+//               text: "Additional Remarks",
+//               style: "sectionHeader",
+//               margin: [0, 0, 0, 8], // space below title
+//             },
+//             inspectionData?.remarks
+//               ? {
+//                   ul: Array.isArray(inspectionData.remarks)
+//                     ? inspectionData.remarks
+//                     : inspectionData.remarks
+//                         .replace(/[\{\}\"]/g, "")
+//                         .split(",")
+//                         .map((remark) => remark.trim()),
+//                   fontSize: 10,
+//                   lineHeight: 1.2,
+//                   margin: [0, 0, 10, 0],
+//                 }
+//               : {
+//                   text: "No additional remarks provided.",
+//                   fontSize: 10,
+//                   margin: [0, 0, 10, 0],
+//                 },
+//           ],
+//           margin: [0, 20, 0, 0],
+//         },
+//         {
+//           width: 1,
+//           canvas: [
+//             {
+//               type: "line",
+//               x1: 0,
+//               y1: 0,
+//               x2: 0,
+//               y2: 10, // adjust as needed
+//               lineWidth: 1,
+//               lineColor: "#ccc",
+//             },
+//           ],
+//           margin: [5, 20, 5, 0],
+//         },
+//         {
+//           width: "30%",
+//           stack: [
+//             {
+//               text: "Location Info",
+//               style: "sectionHeader",
+//               alignment: "right",
+//               margin: [0, 0, 0, 8], // space below title
+//             },
+//             {
+//               qr: `https://www.google.com/maps?q=${inspectionData?.lat},${inspectionData?.lang}`,
+//               fit: 90,
+//               alignment: "right",
+//               margin: [0, 0, 0, 10],
+//             },
+//             {
+//               text: "View on Google Maps",
+//               link: `https://www.google.com/maps?q=${inspectionData?.lat},${inspectionData?.lang}`,
+//               color: "blue",
+//               decoration: "underline",
+//               alignment: "right",
+//               fontSize: 10,
+//               margin: [0, 0, 0, 0],
+//             },
+//           ],
+//           margin: [0, 0, 0, 0],
+//         },
+//       ],
+//     },
+
+//     // Page break before thermal inspection section
+//     {
+//       stack: [
+//         { text: "", pageBreak: "before" },
+//         {
+//           columns: [
+//             {
+//               image: FornaxLogo,
+//               width: 60,
+//               height: 60,
+//               margin: [0, 0, 10, 0],
+//             },
+//             {
+//               stack: [
+//                 { text: "Inspection Report", style: "header" },
+//                 {
+//                   text: "Thermal & Visual Inspection",
+//                   style: "subheader",
+//                 },
+//               ],
+//               alignment: "center",
+//               margin: [0, 10, 0, 0],
+//             },
+//             {
+//               image: DGVCLLogo,
+//               width: 60,
+//               height: 60,
+//               alignment: "right",
+//               margin: [10, 0, 0, 0],
+//             },
+//           ],
+//           margin: [0, 0, 0, 10],
+//         },
+//         {
+//           text: "Thermal Inspection Results",
+//           style: "sectionHeader",
+//           margin: [0, 10, 0, 10],
+//         },
+//         {
+//           image: sldImage,
+//           width: 500,
+//           margin: [0, 5, 0, 10],
+//         },
+
+//         {
+//           text: "Inspected Points",
+//           style: "header",
+//           margin: [0, 10, 0, 10],
+//         },
+//         generateDynamicThermalTable(inspectionData),
+//       ],
+//     },
+//   ].filter(Boolean),
+
+//   footer: (currentPage, pageCount) => ({
+//     text: `TwinVision - Powered by Fornax`,
+//     alignment: "right",
+//     style: "footer",
+//     margin: [0, 10, 20, 10],
+//   }),
+
+//   styles: {
+//     header: {
+//       fontSize: 18,
+//       bold: true,
+//     },
+//     subheader: {
+//       fontSize: 14,
+//       italics: true,
+//     },
+//     sectionHeader: {
+//       fontSize: 16,
+//       bold: true,
+//       decoration: "underline",
+//     },
+//     tableHeader: {
+//       bold: true,
+//       fontSize: 10,
+//       color: "black",
+//     },
+//     tableContent: {
+//       fontSize: 9,
+//     },
+//     footer: {
+//       fontSize: 10,
+//       italics: true,
+//       alignment: "right",
+//     },
+//   },
+// };
 
   
     pdfMake
@@ -788,6 +1108,15 @@ function generateDynamicThermalTable(inspectionData) {
               <p>
                 <strong>Substation Name</strong>{" "}
                 {inspectionData?.substation_name}
+              </p>
+              <p>
+                <a
+                  href={`https://www.google.com/maps?q=${inspectionData?.lat},${inspectionData?.lang}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <strong> View on Google Maps</strong>
+                </a>
               </p>
               <p>
                 <strong>Remarks:</strong>{" "}

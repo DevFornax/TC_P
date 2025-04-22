@@ -20,7 +20,7 @@ export default function EntryPage() {
     {
       title: "Map View",
       route: "/map-view",
-      image: "/dashbarod2.svg",
+      image: "/mapview.svg",
     },
     {
       title: "Inspection Tool",

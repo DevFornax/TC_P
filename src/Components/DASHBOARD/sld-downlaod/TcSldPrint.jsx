@@ -69,8 +69,7 @@ const TcSldPrint = forwardRef(({ thermalInspection = {}, locationId }, ref) => {
     },
     {}
   );
-console.log(locationId, "in child");
-  console.log(thermalInspection, "daqta");
+
   useImperativeHandle(ref, () => ({
   
     exportAsImage: () => {

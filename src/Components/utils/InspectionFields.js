@@ -71,14 +71,7 @@ export const InspectionFields = [
     device: ["Transformer"],
     selectedOption: "No",
   },
-  {
-    label: "Silica Gel Color",
-    name: "silica_gel_color",
-    options: ["Blue", "Orange", "NI", "NA"],
-    type: "select",
-    device: ["Transformer"],
-    selectedOption: "Blue",
-  },
+ 
   {
     label: "Oil Leakage Visible",
     name: "oil_leakage",
@@ -87,14 +80,7 @@ export const InspectionFields = [
     device: ["Transformer"],
     selectedOption: "No",
   },
-  {
-    label: "Oil Level",
-    name: "oil_level",
-    options: ["Normal", "Low", "NI", "NA"],
-    type: "select",
-    device: ["Transformer"],
-    selectedOption: "Normal",
-  },
+
   {
     label: "TC Fencing",
     name: "tc_fencing",
@@ -128,4 +114,22 @@ export const InspectionFields = [
     selectedOption: "Patta",
   },
 ];
-``
+
+
+
+//  {
+//     label: "Silica Gel Color",
+//     name: "silica_gel_color",
+//     options: ["Blue", "Orange", "NI", "NA"],
+//     type: "select",
+//     device: ["Transformer"],
+//     selectedOption: "Blue",
+//   },
+//     {
+//     label: "Oil Level",
+//     name: "oil_level",
+//     options: ["Normal", "Low", "NI", "NA"],
+//     type: "select",
+//     device: ["Transformer"],
+//     selectedOption: "Normal",
+//   },

@@ -19,23 +19,22 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
   const [thermalRecords, setThermalRecords] = useState([]);
   const [showCardOfInspection, setshowCardOfInspection] = useState(true);
   const [notesEnabled, setNotesEnabled] = useState(false);
-  const [notesRows, setNotesRows] = useState([""]); 
+  const [notesRows, setNotesRows] = useState([""]);
+  const [actionRequired, setActionRequired] = useState("");
 
-
-useEffect(() => {
-  if (notesEnabled) {
-    setFormData((prev) => ({
-      ...prev,
-      notes: notesRows,
-    }));
-  } else {
-    setFormData((prev) => ({
-      ...prev,
-      notes: [],
-    }));
-  }
-}, [notesRows, notesEnabled]);
-
+  useEffect(() => {
+    if (notesEnabled) {
+      setFormData((prev) => ({
+        ...prev,
+        notes: notesRows,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        notes: [],
+      }));
+    }
+  }, [notesRows, notesEnabled]);
 
   const handleAddNoteRow = () => {
     setNotesRows([...notesRows, ""]);
@@ -167,6 +166,10 @@ useEffect(() => {
         }
       });
     }
+    if (!actionRequired) {
+      newErrors.actionRequired =
+        "Action required based on inspection is required";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -182,6 +185,7 @@ useEffect(() => {
     setErrors({});
     setThermalRecords([]);
     setThermalEnabled(false);
+    setActionRequired("");
   };
 
   const handleSubmit = async (e) => {
@@ -258,7 +262,7 @@ useEffect(() => {
         ulid: locationdata?.attributes?.ulid || "",
       },
     };
-    // Process Notes
+
     let processedNotes = null;
 
     if (notesEnabled) {
@@ -272,6 +276,7 @@ useEffect(() => {
       visualInspection: compressedVisual,
       thermalInspection,
       notes: processedNotes,
+      actionRequired: actionRequired,
     };
 
     console.log("✅ Final Submission Payload:", finalData);
@@ -318,7 +323,7 @@ useEffect(() => {
         </div>
       </div>
     );
-    
+
   const {
     id,
     project_id,
@@ -480,96 +485,102 @@ useEffect(() => {
                     </div>
                   ))}
                 </div>
-                {/* <div className="border p-4  mt-4 rounded-xl shadow bg-white">
-                  <label className="block text-sm font-medium text-[#385e72] mb-1">
-                    Notes
-                  </label>
-                  <input
-                    type="textarea"
-                    name="notes"
-                    value={formData.notes || ""}
-                    onChange={(e) => handleChange("notes", e.target.value)}
-                    className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6aabd2] ${
-                      errors.notes ? "border-red-500" : "border-[#b7cfdc]"
-                    }`}
-                  />
-                  {errors.notes && (
-                    <p className="text-sm text-red-500 mt-1">{errors.notes}</p>
-                  )}
-                </div>
-*/}
-                <div className="border p-4 mt-4 rounded-xl shadow bg-white">
-                  <label className="block text-sm font-medium text-[#385e72] mb-2">
-                    Add Notes?
-                  </label>
-                  <div className="flex gap-4 mb-4">
-                    <label className="flex items-center space-x-2">
-                      <input
-                        type="radio"
-                        checked={notesEnabled}
-                        onChange={() => setNotesEnabled(true)}
-                      />
-                      <span>Yes</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input
-                        type="radio"
-                        checked={!notesEnabled}
-                        onChange={() => {
-                          setNotesEnabled(false);
-                          setNotesRows([""]);
-                        }}
-                      />
-                      <span>No</span>
-                    </label>
-                  </div>
 
-                  {notesEnabled &&
-                    notesRows.map((note, index) => (
-                      <div key={index} className="flex items-start gap-2 mb-2">
-                        <input
-                          type="text"
-                          value={note}
-                          onChange={(e) =>
-                            handleNoteChange(index, e.target.value)
-                          }
-                          className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6aabd2] ${
-                            errors[`note_${index}`]
-                              ? "border-red-500"
-                              : "border-[#b7cfdc]"
-                          }`}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveNoteRow(index)}
-                          className="px-2 py-1 text-sm bg-red-500 text-white rounded-lg disabled:opacity-50"
-                          disabled={notesRows.length === 1}
-                        >
-                          ❌
-                        </button>
-                        {index === notesRows.length - 1 && (
-                          <button
-                            type="button"
-                            onClick={handleAddNoteRow}
-                            className="px-2 py-1 text-sm bg-green-500 text-white rounded-lg"
-                          >
-                            ➕
-                          </button>
-                        )}
-
-                        {/* Display error for individual note */}
-                        {errors[`note_${index}`] && (
-                          <p className="text-sm text-red-500 mt-1">
-                            {errors[`note_${index}`]}
-                          </p>
-                        )}
+                <div className=" border p-6 pl-0 rounded-xl">
+                  <div className="flex flex-col lg:flex-row gap-6">
+                    <div className="w-full lg:w-1/2 border p-4 rounded-xl shadow bg-white">
+                      <label className="block text-sm font-medium text-[#385e72] mb-2">
+                        Add Notes?
+                      </label>
+                      <div className="flex gap-4 mb-4">
+                        <label className="flex items-center space-x-2">
+                          <input
+                            type="radio"
+                            checked={notesEnabled}
+                            onChange={() => setNotesEnabled(true)}
+                          />
+                          <span>Yes</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                          <input
+                            type="radio"
+                            checked={!notesEnabled}
+                            onChange={() => {
+                              setNotesEnabled(false);
+                              setNotesRows([""]);
+                            }}
+                          />
+                          <span>No</span>
+                        </label>
                       </div>
-                    ))}
 
-                  {/* General error for notes */}
-                  {errors.notes && (
-                    <p className="text-sm text-red-500 mt-1">{errors.notes}</p>
-                  )}
+                      {notesEnabled &&
+                        notesRows.map((note, index) => (
+                          <div
+                            key={index}
+                            className="flex items-start gap-2 mb-2"
+                          >
+                            <input
+                              type="text"
+                              value={note}
+                              onChange={(e) =>
+                                handleNoteChange(index, e.target.value)
+                              }
+                              className={`w-full py-2 px-3 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#6aabd2] ${
+                                errors[`note_${index}`]
+                                  ? "border-red-500"
+                                  : "border-[#b7cfdc]"
+                              }`}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveNoteRow(index)}
+                              className="px-2 py-1 text-sm bg-red-500 text-white rounded-lg disabled:opacity-50"
+                              disabled={notesRows.length === 1}
+                            >
+                              ❌
+                            </button>
+                            {index === notesRows.length - 1 && (
+                              <button
+                                type="button"
+                                onClick={handleAddNoteRow}
+                                className="px-2 py-1 text-sm bg-green-500 text-white rounded-lg"
+                              >
+                                ➕
+                              </button>
+                            )}
+                          </div>
+                        ))}
+
+                      {errors.notes && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.notes}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="w-full lg:w-1/2 border p-4 rounded-xl shadow bg-white">
+                      <label className="block text-sm font-medium text-[#385e72] mb-2">
+                        Action Required Based on Inspection
+                      </label>
+                      <select
+                        name="actionRequired"
+                        value={actionRequired} // Ensure you're using `actionRequired` here
+                        onChange={(e) => setActionRequired(e.target.value)}
+                        className="w-full py-2 px-3 border border-[#b7cfdc] rounded-lg shadow-sm text-sm focus:outline-none"
+                      >
+                        <option value="">Select action</option>
+                        <option value="immediate">Immediate</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="none">None</option>
+                      </select>
+                      {errors.actionRequired && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.actionRequired}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
 
