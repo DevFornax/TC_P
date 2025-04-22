@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuthData } from "../Components/utils/authStorage";
@@ -19,9 +17,21 @@ function TopBar() {
     setUsername(auth?.user?.username || "Guest");
   }, []);
 
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape" && showMobileSidebar) {
+        closeSidebar();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [showMobileSidebar]);
+
   const openSidebar = () => {
     if (!showMobileSidebar) {
-
       setClosingSidebar(false);
       setShowMobileSidebar(true);
     }
@@ -49,9 +59,12 @@ function TopBar() {
     closeSidebar();
   };
 
+  const handleMapViewClick = () => {
+    navigate("/map-view");
+    closeSidebar();
+  };
   const handleLogout = () => {
     localStorage.removeItem("auth");
-  
     navigate("/login");
     closeSidebar();
   };
@@ -134,6 +147,7 @@ function TopBar() {
       {showMobileSidebar && (
         <div
           ref={sidebarRef}
+          style={{ zIndex: 1000 }}
           className={`fixed top-0 left-0 sm:w-64 w-72 h-full bg-[#d9e4ec] shadow-md z-50 p-6 ${
             closingSidebar ? "animate-slide-out" : "animate-slide-in"
           } flex flex-col justify-between`}
@@ -171,6 +185,12 @@ function TopBar() {
               className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
             >
               🔒 Logout
+            </button>
+            <button
+              onClick={handleMapViewClick}
+              className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
+            >
+              🌍 Map View
             </button>
           </div>
 
