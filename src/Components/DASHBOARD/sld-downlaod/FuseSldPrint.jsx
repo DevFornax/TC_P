@@ -72,29 +72,7 @@ const FuseSldPrint = forwardRef(
     );
 
     useImperativeHandle(ref, () => ({
-      // exportAsImage: () => {
-      //   const svgElement = svgRef.current;
-      //   if (!svgElement) return null;
-
-      //   const svgString = new XMLSerializer().serializeToString(svgElement);
-      //   const canvas = document.createElement("canvas");
-      //   const ctx = canvas.getContext("2d");
-      //   const img = new Image();
-
-      //   return new Promise((resolve, reject) => {
-      //     img.onload = () => {
-      //       canvas.width = img.width;
-      //       canvas.height = img.height;
-      //       ctx.drawImage(img, 0, 0);
-      //       const png = canvas.toDataURL("image/png");
-      //       resolve(png);
-      //     };
-      //     img.onerror = reject;
-      //     img.src = `data:image/svg+xml;base64,${btoa(
-      //       unescape(encodeURIComponent(svgString))
-      //     )}`;
-      //   });
-      // },
+     
       exportAsImage: () => {
         const svgElement = svgRef.current;
         if (!svgElement) return null;
@@ -141,7 +119,7 @@ const FuseSldPrint = forwardRef(
       <div className="w-full h-full">
         <svg
           ref={svgRef}
-          viewBox="0 0 1000 700"
+          viewBox="0 0 800 700"
           style={{
             background: "#fff",
             cursor: isDragging ? "grabbing" : "grab",
@@ -151,43 +129,9 @@ const FuseSldPrint = forwardRef(
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
+        
+
           {/* <g transform="translate(0, 60)">
-          <text x={10} y={0} fontSize="16" fontWeight="bold">
-            Thermal Inspection Status:
-          </text>
-
-          {Object.entries(thermalInspection).length === 0 ? (
-            <text x={10} y={30} fontSize="14" fill="gray">
-              Thermal Inspection: Not Done
-            </text>
-          ) : (
-            Object.entries(thermalInspection)
-              .sort(([, aStatus], [, bStatus]) => {
-                const priority = { H: 0, M: 1 };
-                return (priority[aStatus] ?? 2) - (priority[bStatus] ?? 2);
-              })
-              .map(([id, status], index) => (
-                <text
-                  key={index}
-                  x={10}
-                  y={30 + index * 20}
-                  fontSize="14"
-                  fill={
-                    status === "H" ? "red" : status === "M" ? "green" : "black"
-                  }
-                >
-                  {id}:{" "}
-                  {status === "H"
-                    ? "High"
-                    : status === "M"
-                    ? "Medium"
-                    : "No Data"}
-                </text>
-              ))
-          )}
-        </g> */}
-
-          <g transform="translate(0, 60)">
             {" "}
             <text x={10} y={0} fontSize="16" fontWeight="bold">
               Thermal Inspection Status:
@@ -216,10 +160,10 @@ const FuseSldPrint = forwardRef(
                 </text>
               ))
             )}
-          </g>
+          </g> */}
 
           {/* <g transform={`translate(${dragOffset.x}, ${dragOffset.y})`}> */}
-          <g transform="translate(350, 450)">
+          <g transform="translate(180, 450)">
             {FuseLines.map((line) => {
               const [x1, y1] = getScaled(line.from);
               const [x2, y2] = getScaled(line.to);

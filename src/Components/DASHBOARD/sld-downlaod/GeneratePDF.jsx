@@ -413,12 +413,101 @@ const GeneratePDF = () => {
 
       return `${formattedTime} `;
     }
+    
 function chunkArray(arr, size) {
   const result = [];
   for (let i = 0; i < arr.length; i += size) {
     result.push(arr.slice(i, i + size));
   }
   return result;
+}
+
+
+
+function generateDynamicThermalTable(inspectionData) {
+  const entries = Object.entries(inspectionData?.thermal_inspection || {}).map(
+    ([pointId, status]) => {
+      const condition =
+        status === "H"
+          ? "High"
+          : status === "M"
+          ? "Medium"
+          : status === "L"
+          ? "Low"
+          : "Normal";
+
+      return [pointId, condition];
+    }
+  );
+
+  const count = entries.length;
+
+  if (count <= 3) {
+    const body = [["Point ID", "Condition"]];
+    entries.forEach(([pointId, condition]) => {
+      body.push([pointId, condition]);
+    });
+
+    return {
+      table: {
+        widths: ["30%", "30%"],
+        body,
+      },
+      layout: {
+        fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
+      },
+      margin: [0, 0, 0, 20],
+      fontSize: 11,
+    };
+  }
+
+  
+  if (count <= 16) {
+    const body = [["Point ID", "Condition", "Point ID", "Condition"]];
+    const chunks = chunkArray(entries, 2); 
+    chunks.forEach((pair) => {
+      const flat = pair.flat();
+      while (flat.length < 4) flat.push("");
+      body.push(flat);
+    });
+
+    return {
+      table: {
+        widths: ["25%", "25%", "25%", "25%"],
+        body,
+      },
+    layout: {
+          fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
+        },
+        
+      margin: [0, 0, 0, 20],
+      fontSize: 11,
+    };
+  }
+
+
+  const body = [
+    ["Point ID", "Condition", "Point ID", "Condition", "Point ID", "Condition"],
+  ];
+  const chunks = chunkArray(entries, 3);
+  chunks.forEach((triplet) => {
+    const flat = triplet.flat();
+    while (flat.length < 6) flat.push("");
+    body.push(flat);
+  });
+
+  return {
+    table: {
+      widths: ["16.66%", "16.66%", "16.66%", "16.66%", "16.66%", "16.66%"],
+      body,
+    },
+    layout: {
+      fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
+    },
+    margin: [0, 0, 0, 20],
+  
+    fontSize: 11,
+  };
 }
 
   const docDefinition = {
@@ -583,53 +672,14 @@ function chunkArray(arr, size) {
             width: 500,
             margin: [0, 5, 0, 10],
           },
-          
-          {
-            table: {
-              widths: [
-                "20.66%",
-                "10.66%",
-                "20.66%",
-                "10.66%",
-                "20.66%",
-                "10.66%",
-              ],
-              body: [
-                [
-                  "Point ID",
-                  "Condition",
-                  "Point ID",
-                  "Condition",
-                  "Point ID",
-                  "Condition",
-                ],
-                ...chunkArray(
-                  Object.entries(inspectionData?.thermal_inspection || {}).map(
-                    ([pointId, status]) => {
-                      const condition =
-                        status === "H"
-                          ? "High"
-                          : status === "M"
-                          ? "Med"
-                          : status === "L"
-                          ? "Low"
-                          : "Normal";
 
-                      return [pointId, condition];
-                    }
-                  ),
-                  3 
-                ).map((triplet) => {
-                  const flat = triplet.flat();
-                  while (flat.length < 6) flat.push(""); 
-                  return flat;
-                }),
-              ],
-            },
-            layout: "lightHorizontalLines",
-            margin: [0, 0, 0, 20],
-            fontSize: 11,
+          {
+            text: "Inspected Points",
+            style: "header",
+            margin: [0, 10, 0, 10],
           },
+          generateDynamicThermalTable(inspectionData),
+
         ],
       },
     ].filter(Boolean),

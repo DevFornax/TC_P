@@ -153,7 +153,7 @@ const SwitchSldPrint = forwardRef(
       <div className="w-full h-full">
         <svg
           ref={svgRef}
-          viewBox="0 0 1000 700"
+          viewBox="0 0 800 700"
           style={{
             background: "#fff",
             cursor: isDragging ? "grabbing" : "grab",
@@ -163,43 +163,8 @@ const SwitchSldPrint = forwardRef(
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
+        
           {/* <g transform="translate(0, 60)">
-          <text x={10} y={0} fontSize="16" fontWeight="bold">
-            Thermal Inspection Status:
-          </text>
-
-          {Object.entries(thermalInspection).length === 0 ? (
-            <text x={10} y={30} fontSize="14" fill="gray">
-              Thermal Inspection: Not Done
-            </text>
-          ) : (
-            Object.entries(thermalInspection)
-              .sort(([, aStatus], [, bStatus]) => {
-                const priority = { H: 0, M: 1 };
-                return (priority[aStatus] ?? 2) - (priority[bStatus] ?? 2);
-              })
-              .map(([id, status], index) => (
-                <text
-                  key={index}
-                  x={10}
-                  y={30 + index * 20}
-                  fontSize="14"
-                  fill={
-                    status === "H" ? "red" : status === "M" ? "green" : "black"
-                  }
-                >
-                  {id}:{" "}
-                  {status === "H"
-                    ? "High"
-                    : status === "M"
-                    ? "Medium"
-                    : "No Data"}
-                </text>
-              ))
-          )}
-        </g> */}
-
-          <g transform="translate(0, 60)">
             {" "}
             <text x={10} y={0} fontSize="16" fontWeight="bold">
               Thermal Inspection Status:
@@ -228,9 +193,9 @@ const SwitchSldPrint = forwardRef(
                 </text>
               ))
             )}
-          </g>
+          </g> */}
           {/* <g transform={`translate(${dragOffset.x}, ${dragOffset.y})`}> */}
-          <g transform="translate(350, 450)">
+          <g transform="translate(180, 450)">
             {switchLines.map((line) => {
               const [x1, y1] = getScaled(line.from);
               const [x2, y2] = getScaled(line.to);

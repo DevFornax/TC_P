@@ -10,8 +10,10 @@ export default function MapView() {
   };
 
   return (
-    <div className="relative h-screen w-full">
-      {/* Sidebar */}
+   <>
+   
+    <div className="relative w-full">
+
       <div
         className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-[999] transform transition-transform duration-300 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -21,7 +23,7 @@ export default function MapView() {
         <div className="p-4">🗂️ Your stuff here!</div>
       </div>
 
-      {/* Toggle Button */}
+
       <button
         className="absolute top-28 left-3 z-[1000] bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 shadow"
         onClick={toggleSidebar}
@@ -29,7 +31,7 @@ export default function MapView() {
         {sidebarOpen ? "Close" : "Menu"}
       </button>
 
-      {/* Map */}
+
       <MapContainer
         center={[23.0225, 72.5714]}
         zoom={13}
@@ -45,5 +47,6 @@ export default function MapView() {
         </Marker>
       </MapContainer>
     </div>
+   </>
   );
 }
