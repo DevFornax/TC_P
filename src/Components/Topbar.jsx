@@ -131,7 +131,7 @@ function TopBar() {
           to="/"
           className="text-2xl font-semibold tracking-wide hover:underline"
         >
-          Fornax ThermoVis
+          Fornax TwinVison
         </Link>
 
         <div>

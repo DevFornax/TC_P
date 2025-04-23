@@ -234,96 +234,6 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                         strokeColor = "red";
                       }
 
-                      // const handleClick = (id) => {
-                      //   const nextClickState =
-                      //     ((pointClickStates[id] || 0) + 1) % 3;
-                      //   setPointClickStates((prev) => ({
-                      //     ...prev,
-                      //     [id]: nextClickState,
-                      //   }));
-
-                      //   if (
-                      //     [
-                      //       "TD",
-                      //       "L1A",
-                      //       "L1B",
-                      //       "L1C",
-                      //       "S1A",
-                      //       "S1B",
-                      //       "S1C",
-                      //       "SP",
-                      //       "F1A",
-                      //       "F1B",
-                      //       "F1C",
-                      //       "TL",
-                      //       "TR",
-                      //       "DB",
-                      //     ].includes(id)
-                      //   ) {
-                      //     let condition = "Normal";
-                      //     if (nextClickState === 1) condition = "Medium";
-                      //     if (nextClickState === 2) condition = "High";
-
-                      //     setSelectedPoint({
-                      //       id: `${id}${locationID}`,
-                      //       condition,
-                      //     });
-                      //   } else if (id.startsWith("TD")) {
-                      //     let condition = "Normal";
-                      //     if (nextClickState === 1) condition = "Medium";
-                      //     if (nextClickState === 2) condition = "High";
-
-                      //     setSelectedPoint({
-                      //       id,
-                      //       condition,
-                      //     });
-                      //   }
-
-                      //   if (id === "TD") {
-                      //     const baseX = wp.coordinates[0] * Transformerscale;
-                      //     const baseY = -wp.coordinates[1] * Transformerscale;
-
-                      //     if (thermalTDPoints.length > 0) {
-                      //       setThermalTDPoints([]);
-                      //     } else {
-                      //       const points = [
-                      //         {
-                      //           id: "TDU1",
-                      //           x: baseX - 30,
-                      //           y: baseY + 20,
-                      //         },
-                      //         { id: "TDU2", x: baseX, y: baseY + 20 },
-                      //         {
-                      //           id: "TDU3",
-                      //           x: baseX + 30,
-                      //           y: baseY + 20,
-                      //         },
-                      //         {
-                      //           id: "TDN",
-                      //           x: baseX - 45,
-                      //           y: baseY + 50,
-                      //         },
-                      //         {
-                      //           id: "TDR",
-                      //           x: baseX - 15,
-                      //           y: baseY + 50,
-                      //         },
-                      //         {
-                      //           id: "TDY",
-                      //           x: baseX + 15,
-                      //           y: baseY + 50,
-                      //         },
-                      //         {
-                      //           id: "TDB",
-                      //           x: baseX + 45,
-                      //           y: baseY + 50,
-                      //         },
-                      //       ];
-                      //       setThermalTDPoints(points);
-                      //     }
-                      //   }
-                      // };
-
                       const handleClick = (id) => {
                         const nextClickState =
                           ((pointClickStates[id] || 0) + 1) % 3;
@@ -463,7 +373,7 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                 </svg>
               )}
 
-              {selection === "Switch" && (
+              {(selection === "Switch" || selection === "CTPT") && (
                 <svg
                   width="100%"
                   height="100%"
@@ -813,13 +723,11 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                 </svg>
               )}
 
-            
-
               <div
                 className="absolute bottom-4 right-4 flex flex-col items-center gap-4 p-4 border rounded-lg sm:block md:block lg:hidden"
                 style={{
                   backgroundColor: "#d9e4ec",
-                  borderColor: "#b7cfdc", 
+                  borderColor: "#b7cfdc",
                   touchAction: "manipulation",
                 }}
               >
@@ -827,7 +735,7 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                   onClick={() => setZoom((prev) => Math.min(prev + 0.1, 5))}
                   className="p-2 rounded-full transition"
                   style={{
-                    backgroundColor: "#385e72", 
+                    backgroundColor: "#385e72",
                   }}
                   onMouseOver={(e) =>
                     (e.currentTarget.style.backgroundColor = "#6aabd2")

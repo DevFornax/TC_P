@@ -37,7 +37,7 @@ export default function EntryPage() {
         style={{ minHeight: "calc(100vh - 56px)" }}
       >
         <h1 className="text-3xl md:text-4xl font-bold text-[#385e72] text-center mb-10">
-          Welcome to <span className="text-[#6aabd2]">Fornax ThermoVis</span>
+          Welcome to <span className="text-[#6aabd2]">Fornax TwinVision</span>
         </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full max-w-4xl">

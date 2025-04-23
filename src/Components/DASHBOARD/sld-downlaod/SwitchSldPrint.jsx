@@ -58,17 +58,6 @@ const SwitchSldPrint = forwardRef(
 
     const handleMouseUp = () => setIsDragging(false);
 
-    //   const thermalPointData = Object.entries(thermalInspection).reduce(
-    //     (acc, [fullId, value]) => {
-    //       const prefix = fullId.slice(0, 3);
-    //       if (markedPoints.includes(prefix)) {
-    //         acc[prefix] = value;
-    //       }
-    //       return acc;
-    //     },
-    //     {}
-    //   );
-
     const thermalPointData = Object.entries(thermalInspection).reduce(
       (acc, [fullId, value]) => {
         const matchedPrefix = markedPoints.find((prefix) =>
@@ -83,29 +72,7 @@ const SwitchSldPrint = forwardRef(
     );
 
     useImperativeHandle(ref, () => ({
-      // exportAsImage: () => {
-      //   const svgElement = svgRef.current;
-      //   if (!svgElement) return null;
-
-      //   const svgString = new XMLSerializer().serializeToString(svgElement);
-      //   const canvas = document.createElement("canvas");
-      //   const ctx = canvas.getContext("2d");
-      //   const img = new Image();
-
-      //   return new Promise((resolve, reject) => {
-      //     img.onload = () => {
-      //       canvas.width = img.width;
-      //       canvas.height = img.height;
-      //       ctx.drawImage(img, 0, 0);
-      //       const png = canvas.toDataURL("image/png");
-      //       resolve(png);
-      //     };
-      //     img.onerror = reject;
-      //     img.src = `data:image/svg+xml;base64,${btoa(
-      //       unescape(encodeURIComponent(svgString))
-      //     )}`;
-      //   });
-      // },
+    
       exportAsImage: () => {
         const svgElement = svgRef.current;
         if (!svgElement) return null;

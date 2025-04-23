@@ -44,9 +44,6 @@ const GeneratePDF = () => {
       setInspectionData(location.state.inspectionData);
     }
   }, [location.state]);
- 
-
-  
 
   if (!inspectionData) return;
   let thermalInspectionData = inspectionData.thermal_inspection;
@@ -69,284 +66,6 @@ const GeneratePDF = () => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
-
-  
-
-  // const generatePDF = async () => {
-  //   if (!inspectionData) return;
-
-  //   // const visualInspectionData = Object.entries(
-  //   //   inspectionData.visual_inspection || {}
-  //   // ).map(([templateId, selectedValue]) => {
-  //   //   const template = visualTemplate[templateId];
-  //   //   if (!template) return { label: `Unknown (${templateId})`, value: "N/A" };
-
-  //   //   const label = template.name.replace(/_/g, " ");
-  //   //   const humanReadable = template.options[selectedValue] || "Not Available";
-  //   // console.log("Visual Inspection Data", { label, value: humanReadable });
-  //   //   return {
-  //   //     label: label.charAt(0).toUpperCase() + label.slice(1),
-  //   //     value: humanReadable,
-  //   //   };
-  //   // });
-
-  //   const visualInspectionData = Object.entries(
-  //     inspectionData.visual_inspection || {}
-  //   ).map(([templateId, selectedValue]) => {
-  //     const template = visualTemplate[templateId];
-  //     if (!template) return { label: `Unknown (${templateId})`, value: "N/A" };
-
-  //     const knownAbbr = ["HT", "LT", "DO", "UG", "NI", "TC"];
-
-  //     const label = template.name
-  //       .replace(/_/g, " ")
-  //       .split(" ")
-  //       .map((word) => {
-  //         const upper = word.toUpperCase();
-  //         return knownAbbr.includes(upper)
-  //           ? upper
-  //           : word.charAt(0).toUpperCase() + word.slice(1);
-  //       })
-  //       .join(" ");
-  //     const humanReadable = template.options[selectedValue] || "Not Available";
-
-  //     console.log({ label, value: humanReadable });
-
-  //     return {
-  //       label,
-  //       value: humanReadable,
-  //     };
-  //   });
-
-  //   const chunkedVisualRows = [];
-  //   for (let i = 0; i < visualInspectionData.length; i += 2) {
-  //     const left = visualInspectionData[i];
-  //     const right = visualInspectionData[i + 1];
-
-  //     chunkedVisualRows.push([
-  //       { text: left?.label || "", bold: true },
-  //       { text: left?.value || "" },
-  //       { text: right?.label || "", bold: true },
-  //       { text: right?.value || "" },
-  //     ]);
-  //   }
-
-  //   let sldImage = null;
-  //   if (sldRef.current) {
-  //     const canvas = await html2canvas(sldRef.current, {
-  //       useCORS: true,
-  //       scale: 2,
-  //     });
-  //     sldImage = canvas.toDataURL("image/png");
-  //   }
-
-  //   function formatTime(time) {
-  //     const hours = time.getHours();
-  //     const minutes = time.getMinutes();
-  //     const suffix = hours < 12 ? "AM" : "PM";
-  //     const formattedTime = `${hours % 12 || 12}:${
-  //       minutes < 10 ? "0" + minutes : minutes
-  //     } ${suffix}`;
-
-  //     let partOfDay = "";
-  //     if (hours >= 5 && hours < 12) partOfDay = "Morning";
-  //     else if (hours >= 12 && hours < 17) partOfDay = "Afternoon";
-  //     else if (hours >= 17 && hours < 21) partOfDay = "Evening";
-  //     else partOfDay = "Night";
-
-  //     return `${formattedTime} `;
-  //   }
-
-  //   const docDefinition = {
-  //     content: [
-  //       {
-  //         columns: [
-  //           {
-  //             image: FornaxLogo,
-  //             width: 60,
-  //             height: 60,
-  //             margin: [0, 0, 10, 0],
-  //           },
-  //           {
-  //             stack: [
-  //               { text: "Inspection Report", style: "header" },
-  //               { text: "Thermal & Visual Inspection", style: "subheader" },
-  //             ],
-  //             alignment: "center",
-  //             margin: [0, 10, 0, 0],
-  //           },
-  //           {
-  //             image: DGVCLLogo,
-  //             width: 60,
-  //             height: 60,
-  //             alignment: "right",
-  //             margin: [10, 0, 0, 0],
-  //           },
-  //         ],
-  //       },
-  //       {
-  //         table: {
-  //           widths: ["25%", "25%", "25%", "25%"],
-  //           body: [
-  //             [
-  //               { text: "Inspection ID", bold: true },
-  //               inspectionData.inspection_id || "",
-  //               { text: "Date & Time", bold: true },
-  //               `${new Date(inspectionData.inspection_date).toLocaleDateString(
-  //                 "en-GB"
-  //               )} ${formatTime(new Date(inspectionData.inspection_date))}`,
-  //             ],
-  //             [
-  //               { text: "Substation Name", bold: true },
-  //               inspectionData.substation_name || "",
-  //               { text: "Project", bold: true },
-  //               `${inspectionData.project_id || ""} - ${
-  //                 inspectionData.project_name || ""
-  //               } `,
-  //             ],
-  //             [
-  //               { text: "Location ID", bold: true },
-  //               inspectionData.location_id || "",
-  //               { text: "Location Type", bold: true },
-  //               inspectionData.location_type || "",
-  //             ],
-  //             [
-  //               { text: "Location Name", bold: true },
-  //               { text: inspectionData.location_name || "", colSpan: 3 },
-  //               {},
-  //               {},
-  //             ],
-  //           ],
-  //         },
-  //         layout: {
-  //           fillColor: (rowIndex) => (rowIndex % 2 === 0 ? "#f2f2f2" : null),
-  //         },
-  //         margin: [0, 10, 0, 10],
-  //       },
-
-  //       {
-  //         text: "Visual Inspection Results",
-  //         style: "sectionHeader",
-  //         margin: [0, 10, 0, 5],
-  //       },
-  //       {
-  //         table: {
-  //           widths: ["25%", "25%", "25%", "25%"],
-  //           body: [
-  //             [
-  //               { text: "Item Type", style: "tableHeader" },
-  //               { text: "Data", style: "tableHeader" },
-  //               { text: "Item Type", style: "tableHeader" },
-  //               { text: "Data", style: "tableHeader" },
-  //             ],
-  //             ...chunkedVisualRows,
-  //           ],
-  //         },
-  //         layout: {
-  //           fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
-  //         },
-  //       },
-  //       sldImage
-  //         ? {
-  //             text: "Thermal Inspection Results",
-  //             style: "sectionHeader",
-  //             margin: [0, 15, 0, 5],
-  //           }
-  //         : null,
-  //       sldImage
-  //         ? {
-  //             image: sldImage,
-  //             width: 500,
-  //             margin: [0, 5, 0, 10],
-  //           }
-  //         : null,
-  //     ].filter(Boolean),
-  //     footer: (currentPage, pageCount) => ({
-  //       text: `TwinVision - Powered by Fornax `,
-  //       alignment: "right",
-  //       style: "footer",
-  //       margin: [0, 10, 20, 10],
-  //     }),
-  //     styles: {
-  //       header: {
-  //         fontSize: 18,
-  //         bold: true,
-  //       },
-  //       sectionHeader: {
-  //         fontSize: 16,
-  //         bold: true,
-  //         decoration: "underline",
-  //       },
-  //       tableHeader: {
-  //         bold: true,
-  //         fontSize: 10,
-  //         color: "black",
-  //       },
-  //       tableContent: {
-  //         fontSize: 9,
-  //       },
-  //       footer: {
-  //         fontSize: 10,
-  //         italics: true,
-  //         alignment: "right",
-  //       },
-  //     },
-  //   };
-
-  //   if (inspectionData?.remarks) {
-  //     docDefinition.content.push(
-  //       { text: "", pageBreak: "before" },
-
-  //       {
-  //         columns: [
-  //           {
-  //             image: FornaxLogo,
-  //             width: 60,
-  //             height: 60,
-  //             margin: [0, 0, 10, 0],
-  //           },
-  //           {
-  //             stack: [
-  //               { text: "Inspection Report", style: "header" },
-  //               { text: "Thermal & Visual Inspection", style: "subheader" },
-  //             ],
-  //             alignment: "center",
-  //             margin: [0, 10, 0, 0],
-  //           },
-  //           {
-  //             image: DGVCLLogo,
-  //             width: 60,
-  //             height: 60,
-  //             alignment: "right",
-  //             margin: [10, 0, 0, 0],
-  //           },
-  //         ],
-  //         margin: [0, 0, 0, 10],
-  //       },
-
-  //       {
-  //         text: "Additional Remarks",
-  //         style: "sectionHeader",
-  //         margin: [0, 10, 0, 5],
-  //       },
-
-  //       {
-  //         text: inspectionData.remarks,
-  //         fontSize: 16,
-  //         margin: [0, 0, 0, 10],
-  //       }
-  //     );
-  //   }
-
-  //   pdfMake
-  //     .createPdf(docDefinition)
-  //     .download(`inspection_${inspectionData.inspection_id}.pdf`);
-  // };
-
-
-
-
-
 
   const generatePDF = async () => {
     if (!inspectionData) return;
@@ -405,7 +124,7 @@ const GeneratePDF = () => {
         minutes < 10 ? "0" + minutes : minutes
       } ${suffix}`;
 
-    let partOfDay;
+      let partOfDay;
       if (hours >= 5 && hours < 12) partOfDay = "Morning";
       else if (hours >= 12 && hours < 17) partOfDay = "Afternoon";
       else if (hours >= 17 && hours < 21) partOfDay = "Evening";
@@ -413,635 +132,370 @@ const GeneratePDF = () => {
 
       return `${formattedTime} `;
     }
-    
-function chunkArray(arr, size) {
-  const result = [];
-  for (let i = 0; i < arr.length; i += size) {
-    result.push(arr.slice(i, i + size));
-  }
-  return result;
-}
 
-
-
-function generateDynamicThermalTable(inspectionData) {
-  const entries = Object.entries(inspectionData?.thermal_inspection || {}).map(
-    ([pointId, status]) => {
-      const condition =
-        status === "H"
-          ? "High"
-          : status === "M"
-          ? "Medium"
-          : status === "L"
-          ? "Low"
-          : "Normal";
-
-      return [pointId, condition];
+    function chunkArray(arr, size) {
+      const result = [];
+      for (let i = 0; i < arr.length; i += size) {
+        result.push(arr.slice(i, i + size));
+      }
+      return result;
     }
-  );
 
-  const count = entries.length;
+    function generateDynamicThermalTable(inspectionData) {
+      const entries = Object.entries(
+        inspectionData?.thermal_inspection || {}
+      ).map(([pointId, status]) => {
+        const condition =
+          status === "H"
+            ? "High"
+            : status === "M"
+            ? "Medium"
+            : status === "L"
+            ? "Low"
+            : "Normal";
 
-  if (count <= 3) {
-    const body = [["Point ID", "Condition"]];
-    entries.forEach(([pointId, condition]) => {
-      body.push([pointId, condition]);
-    });
+        return [pointId, condition];
+      });
 
-    return {
-      table: {
-        widths: ["30%", "30%"],
-        body,
-      },
-      layout: {
-        fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
-      },
-      margin: [0, 0, 0, 20],
-      fontSize: 10,
-    };
-  }
+      const count = entries.length;
 
-  
-  if (count <= 16) {
-    const body = [["Point ID", "Condition", "Point ID", "Condition"]];
-    const chunks = chunkArray(entries, 2); 
-    chunks.forEach((pair) => {
-      const flat = pair.flat();
-      while (flat.length < 4) flat.push("");
-      body.push(flat);
-    });
+      if (count <= 3) {
+        const body = [["Point ID", "Condition"]];
+        entries.forEach(([pointId, condition]) => {
+          body.push([pointId, condition]);
+        });
 
-    return {
-      table: {
-        widths: ["25%", "25%", "25%", "25%"],
-        body,
-      },
-    layout: {
-          fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
-        },
-        
-      margin: [0, 0, 0, 20],
-      fontSize: 10,
-    };
-  }
-
-
-  const body = [
-    ["Point ID", "Condition", "Point ID", "Condition", "Point ID", "Condition"],
-  ];
-  const chunks = chunkArray(entries, 3);
-  chunks.forEach((triplet) => {
-    const flat = triplet.flat();
-    while (flat.length < 6) flat.push("");
-    body.push(flat);
-  });
-
-  return {
-    table: {
-      widths: ["16.66%", "16.66%", "16.66%", "16.66%", "16.66%", "16.66%"],
-      body,
-    },
-    layout: {
-      fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
-    },
-    margin: [0, 0, 0, 20],
-  
-    fontSize: 10,
-  };
-}
-
-  const docDefinition = {
-    content: [
-      {
-        columns: [
-          {
-            image: FornaxLogo,
-            width: 60,
-            height: 60,
-            margin: [0, 0, 10, 0],
+        return {
+          table: {
+            widths: ["30%", "30%"],
+            body,
           },
-          {
-            stack: [
-              { text: "Inspection Report", style: "header" },
-              { text: "Thermal & Visual Inspection", style: "subheader" },
-            ],
-            alignment: "center",
-            margin: [0, 10, 0, 0],
+          layout: {
+            fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
           },
-          {
-            image: DGVCLLogo,
-            width: 60,
-            height: 60,
-            alignment: "right",
-            margin: [10, 0, 0, 0],
+          margin: [0, 0, 0, 20],
+          fontSize: 10,
+        };
+      }
+
+      if (count <= 16) {
+        const body = [["Point ID", "Condition", "Point ID", "Condition"]];
+        const chunks = chunkArray(entries, 2);
+        chunks.forEach((pair) => {
+          const flat = pair.flat();
+          while (flat.length < 4) flat.push("");
+          body.push(flat);
+        });
+
+        return {
+          table: {
+            widths: ["25%", "25%", "25%", "25%"],
+            body,
           },
+          layout: {
+            fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
+          },
+
+          margin: [0, 0, 0, 20],
+          fontSize: 10,
+        };
+      }
+
+      const body = [
+        [
+          "Point ID",
+          "Condition",
+          "Point ID",
+          "Condition",
+          "Point ID",
+          "Condition",
         ],
-        margin: [0, 0, 0, 10],
-      },
+      ];
+      const chunks = chunkArray(entries, 3);
+      chunks.forEach((triplet) => {
+        const flat = triplet.flat();
+        while (flat.length < 6) flat.push("");
+        body.push(flat);
+      });
 
-      {
-        text: "General Information",
-        style: "sectionHeader",
-        margin: [0, 20, 0, 10],
-      },
-
-      {
+      return {
         table: {
-          widths: ["25%", "25%", "25%", "25%"],
-          body: [
-            [
-              { text: "Inspection ID", bold: true },
-              inspectionData.inspection_id || "",
-              { text: "Date & Time", bold: true },
-              `${new Date(inspectionData.inspection_date).toLocaleDateString(
-                "en-GB"
-              )} ${formatTime(new Date(inspectionData.inspection_date))}`,
-            ],
-            [
-              { text: "Substation Name", bold: true },
-              inspectionData.substation_name || "",
-              { text: "Project", bold: true },
-              `${inspectionData.project_id || ""} - ${
-                inspectionData.project_name || ""
-              }`,
-            ],
-            [
-              { text: "Location ID", bold: true },
-              inspectionData.location_id || "",
-              { text: "Location Type", bold: true },
-              inspectionData.location_type || "",
-            ],
-            [
-              { text: "Location Name", bold: true },
-              { text: inspectionData.location_name || "", colSpan: 3 },
-              {},
-              {},
-            ],
-          ],
-        },
-        layout: {
-          fillColor: (rowIndex) => (rowIndex % 2 === 0 ? "#f2f2f2" : null),
-        },
-        margin: [0, 0, 0, 10],
-      },
-
-      {
-        text: "Visual Inspection Results",
-        style: "sectionHeader",
-        margin: [0, 20, 0, 10],
-      },
-      {
-        table: {
-          widths: ["25%", "25%", "25%", "25%"],
-          body: [
-            [
-              { text: "Item Type", style: "tableHeader" },
-              { text: "Data", style: "tableHeader" },
-              { text: "Item Type", style: "tableHeader" },
-              { text: "Data", style: "tableHeader" },
-            ],
-            ...chunkedVisualRows,
-          ],
+          widths: ["16.66%", "16.66%", "16.66%", "16.66%", "16.66%", "16.66%"],
+          body,
         },
         layout: {
           fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
         },
         margin: [0, 0, 0, 20],
-      },
-      {
-        columns: [
-          {
-            width: "*",
-            stack: [
-              {
-                text: "Additional Remarks",
-                style: "sectionHeader",
-                margin: [0, 0, 0, 10], 
-              },
-              inspectionData?.remarks
-                ? {
-                    ul: Array.isArray(inspectionData.remarks)
-                      ? inspectionData.remarks
-                      : inspectionData.remarks
-                          .replace(/[\{\}\"]/g, "")
-                          .split(",")
-                          .map((remark) => remark.trim()),
-                    fontSize: 10,
-                    lineHeight: 1.2,
-                    margin: [0, 0, 10, 0],
-                  }
-                : {
-                    text: "No additional remarks provided.",
-                    fontSize: 10,
-                    margin: [0, 0, 10, 0],
-                  },
-            ],
-            margin: [0, 0, 0, 0],
-          },
-          {
-            width: 1,
-            canvas: [
-              {
-                type: "line",
-                x1: 0,
-                y1: 0,
-                x2: 0,
-                y2: 140, 
-                lineWidth: 1,
-                lineColor: "#ccc",
-              },
-            ],
-            margin: [5, 20, 5, 0],
-          },
-          {
-            width: "30%",
-            stack: [
-              {
-                text: "Location Info",
-                style: "sectionHeader",
-                alignment: "right",
-                margin: [0, 0, 0, 10], 
-              },
-              {
-                qr: `https://www.google.com/maps?q=${inspectionData?.lat},${inspectionData?.lang}`,
-                fit: 90,
-                alignment: "right",
-                margin: [0, 0, 0, 10],
-              },
-              {
-                text: "View on Google Maps",
-                link: `https://www.google.com/maps?q=${inspectionData?.lat},${inspectionData?.lang}`,
-                color: "blue",
-                decoration: "underline",
-                alignment: "right",
-                fontSize: 10,
-                margin: [0, 0, 0, 0],
-              },
-            ],
-            margin: [0, 0, 0, 0],
-          },
-        ],
-      },
 
-      {
-        stack: [
-          { text: "", pageBreak: "before" },
-          {
-            columns: [
-              {
-                image: FornaxLogo,
-                width: 60,
-                height: 60,
-                margin: [0, 0, 10, 0],
-              },
-              {
-                stack: [
-                  { text: "Inspection Report", style: "header" },
-                  {
-                    text: "Thermal & Visual Inspection",
-                    style: "subheader",
-                  },
-                ],
-                alignment: "center",
-                margin: [0, 10, 0, 0],
-              },
-              {
-                image: DGVCLLogo,
-                width: 60,
-                height: 60,
-                alignment: "right",
-                margin: [10, 0, 0, 0],
-              },
+        fontSize: 10,
+      };
+    }
+
+    const docDefinition = {
+      content: [
+        {
+          columns: [
+            {
+              image: FornaxLogo,
+              width: 60,
+              height: 60,
+              margin: [0, 0, 10, 0],
+            },
+            {
+              stack: [
+                { text: "Inspection Report", style: "header" },
+                { text: "Thermal & Visual Inspection", style: "subheader" },
+              ],
+              alignment: "center",
+              margin: [0, 10, 0, 0],
+            },
+            {
+              image: DGVCLLogo,
+              width: 60,
+              height: 60,
+              alignment: "right",
+              margin: [10, 0, 0, 0],
+            },
+          ],
+          margin: [0, 0, 0, 10],
+        },
+
+        {
+          text: "General Information",
+          style: "sectionHeader",
+          margin: [0, 20, 0, 10],
+        },
+
+        {
+          table: {
+            widths: ["25%", "25%", "25%", "25%"],
+            body: [
+              [
+                { text: "Inspection ID", bold: true },
+                inspectionData.inspection_id || "",
+                { text: "Date & Time", bold: true },
+                `${new Date(inspectionData.inspection_date).toLocaleDateString(
+                  "en-GB"
+                )} ${formatTime(new Date(inspectionData.inspection_date))}`,
+              ],
+              [
+                { text: "Substation Name", bold: true },
+                inspectionData.substation_name || "",
+                { text: "Project", bold: true },
+                `${inspectionData.project_id || ""} - ${
+                  inspectionData.project_name || ""
+                }`,
+              ],
+              [
+                { text: "Location ID", bold: true },
+                inspectionData.location_id || "",
+                { text: "Location Type", bold: true },
+                inspectionData.location_type || "",
+              ],
+              [
+                { text: "Location Name", bold: true },
+                { text: inspectionData.location_name || "", colSpan: 3 },
+                {},
+                {},
+              ],
             ],
-            margin: [0, 0, 0, 10],
           },
-          {
-            text: "Thermal Inspection Results",
-            style: "sectionHeader",
-            margin: [0, 10, 0, 10],
+          layout: {
+            fillColor: (rowIndex) => (rowIndex % 2 === 0 ? "#f2f2f2" : null),
           },
-          {
-            image: sldImage,
-            width: 500,
-            margin: [0, 5, 0, 10],
-          },
+          margin: [0, 0, 0, 10],
+        },
 
-          {
-            text: "Inspected Points",
-            style: "header",
-            margin: [0, 10, 0, 10],
+        {
+          text: "Visual Inspection Results",
+          style: "sectionHeader",
+          margin: [0, 20, 0, 10],
+        },
+        {
+          table: {
+            widths: ["25%", "25%", "25%", "25%"],
+            body: [
+              [
+                { text: "Item Type", style: "tableHeader" },
+                { text: "Data", style: "tableHeader" },
+                { text: "Item Type", style: "tableHeader" },
+                { text: "Data", style: "tableHeader" },
+              ],
+              ...chunkedVisualRows,
+            ],
           },
-          generateDynamicThermalTable(inspectionData),
-        ],
-      },
-    ].filter(Boolean),
+          layout: {
+            fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
+          },
+          margin: [0, 0, 0, 20],
+        },
+        {
+          columns: [
+            {
+              width: "*",
+              stack: [
+                {
+                  text: "Additional Remarks",
+                  style: "sectionHeader",
+                  margin: [0, 0, 0, 10],
+                },
+                inspectionData?.remarks
+                  ? {
+                      ul: Array.isArray(inspectionData.remarks)
+                        ? inspectionData.remarks
+                        : inspectionData.remarks
+                            .replace(/[\{\}\"]/g, "")
+                            .split(",")
+                            .map((remark) => remark.trim()),
+                      fontSize: 10,
+                      lineHeight: 1.2,
+                      margin: [0, 0, 10, 0],
+                    }
+                  : {
+                      text: "No additional remarks provided.",
+                      fontSize: 10,
+                      margin: [0, 0, 10, 0],
+                    },
+              ],
+              margin: [0, 0, 0, 0],
+            },
+            {
+              width: 1,
+              canvas: [
+                {
+                  type: "line",
+                  x1: 0,
+                  y1: 0,
+                  x2: 0,
+                  y2: 140,
+                  lineWidth: 1,
+                  lineColor: "#ccc",
+                },
+              ],
+              margin: [5, 20, 5, 0],
+            },
+            {
+              width: "30%",
+              stack: [
+                {
+                  text: "Location Info",
+                  style: "sectionHeader",
+                  alignment: "right",
+                  margin: [0, 0, 0, 10],
+                },
+                {
+                  qr: `https://www.google.com/maps?q=${inspectionData?.lat},${inspectionData?.lang}`,
+                  fit: 90,
+                  alignment: "right",
+                  margin: [0, 0, 0, 10],
+                },
+                {
+                  text: "View on Google Maps",
+                  link: `https://www.google.com/maps?q=${inspectionData?.lat},${inspectionData?.lang}`,
+                  color: "blue",
+                  decoration: "underline",
+                  alignment: "right",
+                  fontSize: 10,
+                  margin: [0, 0, 0, 0],
+                },
+              ],
+              margin: [0, 0, 0, 0],
+            },
+          ],
+        },
 
-    footer: (currentPage, pageCount) => ({
-      text: `TwinVision - Powered by Fornax`,
-      alignment: "right",
-      style: "footer",
-      margin: [0, 10, 20, 10],
-    }),
+        {
+          stack: [
+            { text: "", pageBreak: "before" },
+            {
+              columns: [
+                {
+                  image: FornaxLogo,
+                  width: 60,
+                  height: 60,
+                  margin: [0, 0, 10, 0],
+                },
+                {
+                  stack: [
+                    { text: "Inspection Report", style: "header" },
+                    {
+                      text: "Thermal & Visual Inspection",
+                      style: "subheader",
+                    },
+                  ],
+                  alignment: "center",
+                  margin: [0, 10, 0, 0],
+                },
+                {
+                  image: DGVCLLogo,
+                  width: 60,
+                  height: 60,
+                  alignment: "right",
+                  margin: [10, 0, 0, 0],
+                },
+              ],
+              margin: [0, 0, 0, 10],
+            },
+            {
+              text: "Thermal Inspection Results",
+              style: "sectionHeader",
+              margin: [0, 10, 0, 10],
+            },
+            {
+              image: sldImage,
+              width: 500,
+              margin: [0, 5, 0, 10],
+            },
 
-    styles: {
-      header: {
-        fontSize: 15, // Reduced from 18 to 16
-        bold: true,
-      },
-      subheader: {
-        fontSize: 11, // Reduced from 14 to 12
-        italics: true,
-      },
-      sectionHeader: {
-        fontSize: 12, // Reduced from 16 to 14
-        bold: true,
-        decoration: "underline",
-      },
-      tableHeader: {
-        bold: true,
-        fontSize: 9, // Reduced from 10 to 8
-        color: "black",
-      },
-      tableContent: {
-        fontSize: 7, // Reduced from 9 to 7
-      },
-      footer: {
-        fontSize: 8, // Reduced from 10 to 8
-        italics: true,
+            {
+              text: "Inspected Points",
+              style: "header",
+              margin: [0, 10, 0, 10],
+            },
+            generateDynamicThermalTable(inspectionData),
+          ],
+        },
+      ].filter(Boolean),
+
+      footer: (currentPage, pageCount) => ({
+        text: `TwinVision - Powered by Fornax`,
         alignment: "right",
+        style: "footer",
+        margin: [0, 10, 20, 10],
+      }),
+
+      styles: {
+        header: {
+          fontSize: 15, // Reduced from 18 to 16
+          bold: true,
+        },
+        subheader: {
+          fontSize: 11, // Reduced from 14 to 12
+          italics: true,
+        },
+        sectionHeader: {
+          fontSize: 12, // Reduced from 16 to 14
+          bold: true,
+          decoration: "underline",
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 9, // Reduced from 10 to 8
+          color: "black",
+        },
+        tableContent: {
+          fontSize: 7, // Reduced from 9 to 7
+        },
+        footer: {
+          fontSize: 8, // Reduced from 10 to 8
+          italics: true,
+          alignment: "right",
+        },
       },
-    },
-  };
+    };
 
 
-
-// const docDefinition = {
-//   content: [
-//     // Header
-//     {
-//       columns: [
-//         {
-//           image: FornaxLogo,
-//           width: 60,
-//           height: 60,
-//           margin: [0, 0, 10, 0],
-//         },
-//         {
-//           stack: [
-//             { text: "Inspection Report", style: "header" },
-//             { text: "Thermal & Visual Inspection", style: "subheader" },
-//           ],
-//           alignment: "center",
-//           margin: [0, 10, 0, 0],
-//         },
-//         {
-//           image: DGVCLLogo,
-//           width: 60,
-//           height: 60,
-//           alignment: "right",
-//           margin: [10, 0, 0, 0],
-//         },
-//       ],
-//       margin: [0, 0, 0, 10],
-//     },
-
-//     {
-//       text: "General Information",
-//       style: "sectionHeader",
-//       margin: [0, 20, 0, 10],
-//     },
-
-//     {
-//       table: {
-//         widths: ["25%", "25%", "25%", "25%"],
-//         body: [
-//           [
-//             { text: "Inspection ID", bold: true },
-//             inspectionData.inspection_id || "",
-//             { text: "Date & Time", bold: true },
-//             `${new Date(inspectionData.inspection_date).toLocaleDateString(
-//               "en-GB"
-//             )} ${formatTime(new Date(inspectionData.inspection_date))}`,
-//           ],
-//           [
-//             { text: "Substation Name", bold: true },
-//             inspectionData.substation_name || "",
-//             { text: "Project", bold: true },
-//             `${inspectionData.project_id || ""} - ${
-//               inspectionData.project_name || ""
-//             }`,
-//           ],
-//           [
-//             { text: "Location ID", bold: true },
-//             inspectionData.location_id || "",
-//             { text: "Location Type", bold: true },
-//             inspectionData.location_type || "",
-//           ],
-//           [
-//             { text: "Location Name", bold: true },
-//             { text: inspectionData.location_name || "", colSpan: 3 },
-//             {},
-//             {},
-//           ],
-//         ],
-//       },
-//       layout: {
-//         fillColor: (rowIndex) => (rowIndex % 2 === 0 ? "#f2f2f2" : null),
-//       },
-//       margin: [0, 0, 0, 10],
-//     },
-
-//     {
-//       text: "Visual Inspection Results",
-//       style: "sectionHeader",
-//       margin: [0, 20, 0, 10],
-//     },
-//     {
-//       table: {
-//         widths: ["25%", "25%", "25%", "25%"],
-//         body: [
-//           [
-//             { text: "Item Type", style: "tableHeader" },
-//             { text: "Data", style: "tableHeader" },
-//             { text: "Item Type", style: "tableHeader" },
-//             { text: "Data", style: "tableHeader" },
-//           ],
-//           ...chunkedVisualRows,
-//         ],
-//       },
-//       layout: {
-//         fillColor: (rowIndex) => (rowIndex === 0 ? "#eee" : null),
-//       },
-//       margin: [0, 0, 0, 10],
-//     },
-
-//     {
-//       columns: [
-//         {
-//           width: "*",
-//           stack: [
-//             {
-//               text: "Additional Remarks",
-//               style: "sectionHeader",
-//               margin: [0, 0, 0, 8], // space below title
-//             },
-//             inspectionData?.remarks
-//               ? {
-//                   ul: Array.isArray(inspectionData.remarks)
-//                     ? inspectionData.remarks
-//                     : inspectionData.remarks
-//                         .replace(/[\{\}\"]/g, "")
-//                         .split(",")
-//                         .map((remark) => remark.trim()),
-//                   fontSize: 10,
-//                   lineHeight: 1.2,
-//                   margin: [0, 0, 10, 0],
-//                 }
-//               : {
-//                   text: "No additional remarks provided.",
-//                   fontSize: 10,
-//                   margin: [0, 0, 10, 0],
-//                 },
-//           ],
-//           margin: [0, 20, 0, 0],
-//         },
-//         {
-//           width: 1,
-//           canvas: [
-//             {
-//               type: "line",
-//               x1: 0,
-//               y1: 0,
-//               x2: 0,
-//               y2: 10, // adjust as needed
-//               lineWidth: 1,
-//               lineColor: "#ccc",
-//             },
-//           ],
-//           margin: [5, 20, 5, 0],
-//         },
-//         {
-//           width: "30%",
-//           stack: [
-//             {
-//               text: "Location Info",
-//               style: "sectionHeader",
-//               alignment: "right",
-//               margin: [0, 0, 0, 8], // space below title
-//             },
-//             {
-//               qr: `https://www.google.com/maps?q=${inspectionData?.lat},${inspectionData?.lang}`,
-//               fit: 90,
-//               alignment: "right",
-//               margin: [0, 0, 0, 10],
-//             },
-//             {
-//               text: "View on Google Maps",
-//               link: `https://www.google.com/maps?q=${inspectionData?.lat},${inspectionData?.lang}`,
-//               color: "blue",
-//               decoration: "underline",
-//               alignment: "right",
-//               fontSize: 10,
-//               margin: [0, 0, 0, 0],
-//             },
-//           ],
-//           margin: [0, 0, 0, 0],
-//         },
-//       ],
-//     },
-
-//     // Page break before thermal inspection section
-//     {
-//       stack: [
-//         { text: "", pageBreak: "before" },
-//         {
-//           columns: [
-//             {
-//               image: FornaxLogo,
-//               width: 60,
-//               height: 60,
-//               margin: [0, 0, 10, 0],
-//             },
-//             {
-//               stack: [
-//                 { text: "Inspection Report", style: "header" },
-//                 {
-//                   text: "Thermal & Visual Inspection",
-//                   style: "subheader",
-//                 },
-//               ],
-//               alignment: "center",
-//               margin: [0, 10, 0, 0],
-//             },
-//             {
-//               image: DGVCLLogo,
-//               width: 60,
-//               height: 60,
-//               alignment: "right",
-//               margin: [10, 0, 0, 0],
-//             },
-//           ],
-//           margin: [0, 0, 0, 10],
-//         },
-//         {
-//           text: "Thermal Inspection Results",
-//           style: "sectionHeader",
-//           margin: [0, 10, 0, 10],
-//         },
-//         {
-//           image: sldImage,
-//           width: 500,
-//           margin: [0, 5, 0, 10],
-//         },
-
-//         {
-//           text: "Inspected Points",
-//           style: "header",
-//           margin: [0, 10, 0, 10],
-//         },
-//         generateDynamicThermalTable(inspectionData),
-//       ],
-//     },
-//   ].filter(Boolean),
-
-//   footer: (currentPage, pageCount) => ({
-//     text: `TwinVision - Powered by Fornax`,
-//     alignment: "right",
-//     style: "footer",
-//     margin: [0, 10, 20, 10],
-//   }),
-
-//   styles: {
-//     header: {
-//       fontSize: 18,
-//       bold: true,
-//     },
-//     subheader: {
-//       fontSize: 14,
-//       italics: true,
-//     },
-//     sectionHeader: {
-//       fontSize: 16,
-//       bold: true,
-//       decoration: "underline",
-//     },
-//     tableHeader: {
-//       bold: true,
-//       fontSize: 10,
-//       color: "black",
-//     },
-//     tableContent: {
-//       fontSize: 9,
-//     },
-//     footer: {
-//       fontSize: 10,
-//       italics: true,
-//       alignment: "right",
-//     },
-//   },
-// };
-
-  
     pdfMake
       .createPdf(docDefinition)
       .download(`inspection_${inspectionData.inspection_id}.pdf`);
@@ -1180,7 +634,7 @@ function generateDynamicThermalTable(inspectionData) {
                 if (parsedThermal?.status === "notdone") {
                   if (locationType === "Transformer") return <TcSldPrint />;
                   else if (locationType === "Fuse") return <FuseSldPrint />;
-                  else if (locationType === "Switch") return <SwitchSldPrint />;
+                  else if (locationType === "Switch"|| locationType === "CTPT") return <SwitchSldPrint />;
                 }
 
                 if (locationType === "Transformer")
@@ -1197,7 +651,7 @@ function generateDynamicThermalTable(inspectionData) {
                       locationId={inspectionData?.location_id}
                     />
                   );
-                else if (locationType === "Switch")
+                else if (locationType === "Switch" ||  locationType === "CTPT")
                   return (
                     <SwitchSldPrint
                       thermalInspection={parsedThermal}

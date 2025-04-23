@@ -72,7 +72,6 @@ const FuseSldPrint = forwardRef(
     );
 
     useImperativeHandle(ref, () => ({
-     
       exportAsImage: () => {
         const svgElement = svgRef.current;
         if (!svgElement) return null;
@@ -129,8 +128,6 @@ const FuseSldPrint = forwardRef(
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
-        
-
           {/* <g transform="translate(0, 60)">
             {" "}
             <text x={10} y={0} fontSize="16" fontWeight="bold">

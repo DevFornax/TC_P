@@ -177,7 +177,8 @@ const TcSldPrint = forwardRef(({ thermalInspection = {}, locationId }, ref) => {
                 strokeWidth={2}
               />
             );
-          })}
+          })} 
+          
 
           {Transformerwaypoints.map((point) => {
             if (!TransformervisiblePointIds.includes(point.id)) return null;

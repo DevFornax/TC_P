@@ -4,7 +4,7 @@ export const InspectionFields = [
     name: "bus_bar",
     options: ["Coated", "Barred Conductor", "Sleeve", "NI", "NA"],
     type: "select",
-    device: ["Transformer", "Switch", "Fuse"],
+    device: ["Transformer", "Switch", "CTPT", "Fuse"],
     selectedOption: "Coated",
   },
   {
@@ -12,7 +12,7 @@ export const InspectionFields = [
     name: "busbar_do_jumper",
     options: ["Coated", "Barred Conductor", "Sleeve", "NI", "NA"],
     type: "select",
-    device: ["Transformer", "Switch"],
+    device: ["Transformer", "Switch", "CTPT"],
     selectedOption: "Coated",
   },
   {
@@ -36,7 +36,7 @@ export const InspectionFields = [
     name: "bird_guard",
     options: ["Yes", "No"],
     type: "radio",
-    device: ["Transformer", "Switch"],
+    device: ["Transformer", "Switch" , "CTPT"],
     selectedOption: "Yes",
   },
   {

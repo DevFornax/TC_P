@@ -8,8 +8,7 @@ const LeftSidebar = ({
   oninspectionDataBasedOnActionRequiredFetched,
   locationIdFromMaptoLeftsidebar,
 }) => {
-
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("search");
   const [id, setId] = useState("");
   const [method, setMethod] = useState("project");
@@ -21,12 +20,9 @@ const navigate = useNavigate();
     const fetchLocationInfo = async () => {
       if (locationIdFromMaptoLeftsidebar) {
         try {
-          const response = await axios.post(
-            "/get-location-data",
-            {
-              location_id: locationIdFromMaptoLeftsidebar,
-            }
-          );
+          const response = await axios.post("/get-location-data", {
+            location_id: locationIdFromMaptoLeftsidebar,
+          });
           setLocationInfo(response.data);
         } catch (err) {
           console.error("❌ Error fetching location info:", err);

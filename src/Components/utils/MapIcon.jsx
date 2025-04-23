@@ -4,42 +4,42 @@ import "leaflet/dist/leaflet.css";
 export const transformerIcon = new L.Icon({
   iconUrl: "/map_icons/Transformer.svg",
   iconSize: [23, 23],
-  iconAnchor: [15, 15], // center of icon
+  iconAnchor: [15, 15],  
   popupAnchor: [0, -32],
 });
 
 export const transformerImmediate = new L.Icon({
   iconUrl: "/map_icons/Transformer-red.svg",
   iconSize: [23, 23],
-  iconAnchor: [15, 15], // center of icon
+  iconAnchor: [15, 15],  
   popupAnchor: [0, -32],
 });
 
 export const transformerModerate = new L.Icon({
   iconUrl: "/map_icons/Transformer-yellow.svg",
   iconSize: [23, 23],
-  iconAnchor: [15, 15], // center of icon
+  iconAnchor: [15, 15],  
   popupAnchor: [0, -32],
 }); 
 
 export const ctptIcon = new L.Icon({
   iconUrl: "/map_icons/CTPT.svg",
   iconSize: [23, 23],
-  iconAnchor: [15, 15], // center of icon
+  iconAnchor: [15, 15],  
   popupAnchor: [0, -32],
 });
 
 export const ctptImmediate = new L.Icon({
   iconUrl: "/map_icons/ctpt-red.svg",
   iconSize: [23, 23],
-  iconAnchor: [15, 15], // center of icon
+  iconAnchor: [15, 15],  
   popupAnchor: [0, -32],
 });
 
 export const ctptIconrModerate = new L.Icon({
   iconUrl: "/map_icons/ctpt-yellow.svg",
   iconSize: [23, 23],
-  iconAnchor: [15, 15], // center of icon
+  iconAnchor: [15, 15],  
   popupAnchor: [0, -32],
 });
 
@@ -48,21 +48,21 @@ export const ctptIconrModerate = new L.Icon({
 export const switchIcon = new L.Icon({
   iconUrl: "/map_icons/Switch.svg",
   iconSize: [23, 23],
-  iconAnchor: [15, 15], // center of icon
+  iconAnchor: [15, 15],  
   popupAnchor: [0, -32],
 });
 
 export const switchIconImmediate = new L.Icon({
   iconUrl: "/map_icons/switch-red.svg",
   iconSize: [23, 23],
-  iconAnchor: [15, 15], // center of icon
+  iconAnchor: [15, 15],  
   popupAnchor: [0, -32],
 });
 
 export const switchIconModerate = new L.Icon({
   iconUrl: "/map_icons/switch-yellow.svg",
   iconSize: [23, 23],
-  iconAnchor: [15, 15], // center of icon
+  iconAnchor: [15, 15],  
   popupAnchor: [0, -32],
 });
 

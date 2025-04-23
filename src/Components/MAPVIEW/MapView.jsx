@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useRef ,Fragment } from "react";
+import L from "leaflet";
+
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import {
   MapContainer,
   TileLayer,
   Marker,
-  Popup,
   LayersControl,
   ZoomControl,
   ScaleControl,
-  CircleMarker 
+  CircleMarker,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import {
@@ -27,6 +28,8 @@ import {
 import Topbar from "../Topbar";
 import LeftSidebar from "./LeftSidebar";
 import RightSidebar from "./RightSidebar";
+import { Navigate, useNavigate } from "react-router-dom";
+
 const gujaratBounds = [
   [19.1, 67.0],
   [25.6, 75.5],
@@ -34,6 +37,7 @@ const gujaratBounds = [
 
 export default function MapView() {
   const mapRef = useRef(null);
+const navigate = useNavigate();
   const [LeftsidebarOpen, setLeftSidebarOpen] = useState(true);
   const [RightsidebarOpen, setRightSidebarOpen] = useState(false);
   const [mapHeight, setMapHeight] = useState("calc(100vh - 4px)");
@@ -42,7 +46,11 @@ export default function MapView() {
   const [activeLayer, setActiveLayer] = useState("OpenStreetMap");
   const [locationForRightSidebar, setlocationForRightSidebar] = useState(null);
   const [locationForLeftSidebar, setlocationForLeftSidebar] = useState(null);
+  const [actionForRightsidebar, setactionForRightsidebar] = useState(null);
   const [layerKey, setLayerKey] = useState(0);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [customPopupPosition, setCustomPopupPosition] = useState(null);
+
   const [
     inspectionDataBasedOnActionRequired,
     setinspectionDataBasedOnActionRequired,
@@ -52,7 +60,11 @@ export default function MapView() {
     setLocations([]);
     setRightSidebarOpen(false);
     setLayerKey((prev) => prev + 1);
-    setlocationForLeftSidebar(null)
+    setlocationForLeftSidebar(null);
+    setSelectedLocation(null);
+    setCustomPopupPosition(null);
+    setActiveLocationId(null);
+    setlocationForLeftSidebar(null);
   };
 
   const toggleLeftSidebar = () => {
@@ -62,6 +74,9 @@ export default function MapView() {
   const toggleRightSidebar = () => {
     setRightSidebarOpen(!RightsidebarOpen);
   };
+  const navigateHome = () =>{
+    navigate("/")
+  }
 
   const handleLocationDataFetched = (fetchedLocations) => {
     setLocations((prev) => {
@@ -115,7 +130,7 @@ export default function MapView() {
           LeftsidebarOpen={LeftsidebarOpen}
           toggleLeftSidebar={toggleLeftSidebar}
           onLocationDataFetched={handleLocationDataFetched}
-          locationIdFromMaptoLeftsidebar={locationForLeftSidebar} // 👈 pass the data here
+          locationIdFromMaptoLeftsidebar={locationForLeftSidebar}
           oninspectionDataBasedOnActionRequiredFetched={(data) =>
             setinspectionDataBasedOnActionRequired(data)
           }
@@ -126,6 +141,7 @@ export default function MapView() {
           toggleRightSidebar={toggleRightSidebar}
           locations={locations}
           selectedLocation={locationForRightSidebar}
+          action={actionForRightsidebar}
         />
         <button
           className={`absolute top-3 z-[700] bg-[#385e72] p-3 rounded-full hover:bg-[#6aabd2] shadow transition-all duration-300 ease-in-out ${
@@ -145,11 +161,21 @@ export default function MapView() {
           <img src="/refresh.svg" alt="menu icon" className="w-6 h-6 invert" />
         </button>
 
+        <button
+          onClick={navigateHome}
+          className={`absolute top-[117px] z-[700] bg-[#385e72] p-3 rounded-full hover:bg-[#6aabd2] shadow transition-all duration-300 ease-in-out ${
+            LeftsidebarOpen ? "left-[18.5rem]" : "left-3"
+          }`}
+        >
+          <img src="/Home.svg" alt="menu icon" className="w-6 h-6 invert" />
+        </button>
+
         <div className="flex h-full">
           <div className="flex-1" style={{ height: mapHeight }}>
             <MapContainer
               center={[22.74578914242589, 71.17492675781251]}
               key={layerKey}
+              whenCreated={(mapInstance) => (mapRef.current = mapInstance)}
               maxBounds={gujaratBounds}
               zoom={8}
               minZoom={8}
@@ -160,43 +186,45 @@ export default function MapView() {
               zoomControl={false}
               ref={mapRef}
             >
-              <ScaleControl position="bottomright" />
-              <ZoomControl position="bottomright" />
+              <>
+                <ScaleControl position="bottomright" />
+                <ZoomControl position="bottomright" />
+                <LayersControl position="topright" className="mt-12">
+                  <LayersControl.BaseLayer
+                    checked={activeLayer === "empty"}
+                    name="Canvas"
+                  >
+                    <TileLayer
+                      url="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+                      maxZoom={30}
+                      attribution=""
+                    />
+                  </LayersControl.BaseLayer>
 
-              <LayersControl position="topright" className="mt-12">
-                <LayersControl.BaseLayer
-                  checked={activeLayer === "empty"}
-                  name="Canvas"
-                >
-                  <TileLayer
-                    url="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
-                    maxZoom={30}
-                    attribution=""
-                  />
-                </LayersControl.BaseLayer>
+                  <LayersControl.BaseLayer
+                    checked={activeLayer === "OpenStreetMap"}
+                    name="OpenStreetMap"
+                  >
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      maxZoom={30}
+                      attribution=""
+                    />
+                  </LayersControl.BaseLayer>
 
-                <LayersControl.BaseLayer
-                  checked={activeLayer === "OpenStreetMap"}
-                  name="OpenStreetMap"
-                >
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    maxZoom={30}
-                    attribution=""
-                  />
-                </LayersControl.BaseLayer>
+                  <LayersControl.BaseLayer
+                    checked={activeLayer === "Satellite"}
+                    name="Satellite"
+                  >
+                    <TileLayer
+                      url="https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+                      subdomains={["mt1", "mt2", "mt3"]}
+                      maxZoom={30}
+                    />
+                  </LayersControl.BaseLayer>
+                </LayersControl>
+              </>
 
-                <LayersControl.BaseLayer
-                  checked={activeLayer === "Satellite"}
-                  name="Satellite"
-                >
-                  <TileLayer
-                    url="https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
-                    subdomains={["mt1", "mt2", "mt3"]}
-                    maxZoom={30}
-                  />
-                </LayersControl.BaseLayer>
-              </LayersControl>
               {locations
                 .filter((location) => {
                   const name = location.location_type?.trim().toLowerCase();
@@ -272,101 +300,8 @@ export default function MapView() {
                         icon = null;
                     }
                   }
-                  console.log(location)
+
                   return (
-                    // <Marker
-                    //   key={location.id}
-                    //   position={[location.lat, location.lang]}
-                    //   icon={icon}
-                    // >
-                    //   <Popup
-                    //     className="custom-leaflet-popup"
-                    //     eventHandlers={{
-                    //       add: () => {
-                    //         setlocationForLeftSidebar(location.id);
-                    //       },
-                    //     }}
-                    //   >
-                    //     <div className="p-3 text-sm text-[#385e72] bg-[#d9e4ec] rounded-md space-y-2 shadow-md relative">
-                    //       <div className="flex justify-between items-center">
-                    //         <div className="font-semibold text-lg text-[#385e72]">
-                    //           {location.location_type}
-                    //         </div>
-                    //         <div className="relative">
-                    //           <button
-                    //             className="text-[#385e72] mr-5 hover:text-[#6aabd2] focus:outline-none"
-                    //             onClick={(e) => {
-                    //               e.stopPropagation();
-                    //               setActiveLocationId((prev) =>
-                    //                 prev === location.id ? null : location.id
-                    //               );
-                    //             }}
-                    //           >
-                    //             ⋮
-                    //           </button>
-
-                    //           {activeLocationId === location.id && (
-                    //             <div className="absolute left-8 mt-6 w-28 bg-white border border-gray-200 rounded shadow-md z-10">
-                    //               <ul className="text-sm text-gray-700">
-                    //                 <li
-                    //                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    //                   onClick={() => handleEdit(location.id)}
-                    //                 >
-                    //                   ✏️ Edit
-                    //                 </li>
-                    //                 <li
-                    //                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    //                   onClick={() => handleDelete(location.id)}
-                    //                 >
-                    //                   🗑️ Delete
-                    //                 </li>
-                    //                 <li
-                    //                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    //                   onClick={() => {
-                    //                     toggleRightSidebar();
-                    //                     setlocationForRightSidebar(location.id);
-                    //                   }}
-                    //                 >
-                    //                   Open Right Sidebar
-                    //                 </li>
-                    //               </ul>
-                    //             </div>
-                    //           )}
-                    //         </div>
-                    //       </div>
-
-                    //       <hr className="border-[#b7cfdc]" />
-
-                    //       <div className="">
-                    //         <span className="font-medium text-[#6aabd2]">
-                    //           Location ID:
-                    //         </span>{" "}
-                    //         {location.id}
-                    //       </div>
-                    //       <div className="">
-                    //         <span className="font-medium text-[#6aabd2]">
-                    //           Parent ID:{" "}
-                    //         </span>
-                    //         {location.parent_id}
-                    //       </div>
-
-                    //       <div>
-                    //         <span className="font-medium text-[#6aabd2]">
-                    //           Project ID:{" "}
-                    //         </span>
-                    //         {location.project_id}
-                    //       </div>
-                    //       <div>
-                    //         <span className="font-medium text-[#6aabd2]">
-                    //           Location Name:{" "}
-                    //         </span>
-                    //         {location.location_name}
-                    //       </div>
-                    //     </div>
-                    //   </Popup>
-
-                    // </Marker>
-
                     <Fragment key={location.id}>
                       {activeLocationId === location.id && (
                         <CircleMarker
@@ -385,104 +320,77 @@ export default function MapView() {
                         icon={icon}
                         eventHandlers={{
                           click: () => {
-                            setActiveLocationId(location.id); 
+                            setSelectedLocation(location);
+                            setActiveLocationId(location.id);
+                            setlocationForLeftSidebar(location.id);
+
+                            if (mapRef.current) {
+                              const point =
+                                mapRef.current.latLngToContainerPoint(
+                                  L.latLng(location.lat, location.lang)
+                                );
+                              setCustomPopupPosition(point);
+                            }
                           },
                         }}
-                      >
-                        <Popup
-                          className="custom-leaflet-popup"
-                          eventHandlers={{
-                            add: () => {
-                              setlocationForLeftSidebar(location.id);
-                            },
-                          }}
-                        >
-                          
-                          <div className="p-3 text-sm text-[#385e72] bg-[#d9e4ec] rounded-md space-y-2 shadow-md relative">
-                            <div className="flex justify-between items-center">
-                              <div className="font-semibold text-lg text-[#385e72]">
-                                {location.location_type}
-                              </div>
-                              <div className="relative">
-                                <button
-                                  className="text-[#385e72] mr-5 hover:text-[#6aabd2] focus:outline-none"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    // setActiveLocationId((prev) =>
-                                    //   prev === location.id ? null : location.id
-                                    // );
-                                  }}
-                                >
-                                  ⋮
-                                </button>
-
-                                {activeLocationId === location.id && (
-                                  <div className="absolute left-8 mt-6 w-28 bg-white border border-gray-200 rounded shadow-md z-10">
-                                    <ul className="text-sm text-gray-700">
-                                      <li
-                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                                        onClick={() => handleEdit(location.id)}
-                                      >
-                                        ✏️ Edit
-                                      </li>
-                                      <li
-                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                                        onClick={() =>
-                                          handleDelete(location.id)
-                                        }
-                                      >
-                                        🗑️ Delete
-                                      </li>
-                                      <li
-                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                                        onClick={() => {
-                                          toggleRightSidebar();
-                                          setlocationForRightSidebar(
-                                            location.id
-                                          );
-                                        }}
-                                      >
-                                        Open Right Sidebar
-                                      </li>
-                                    </ul>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-
-                            <hr className="border-[#b7cfdc]" />
-
-                            <div>
-                              <span className="font-medium text-[#6aabd2]">
-                                Location ID:
-                              </span>{" "}
-                              {location.id}
-                            </div>
-                            <div>
-                              <span className="font-medium text-[#6aabd2]">
-                                Parent ID:{" "}
-                              </span>
-                              {location.parent_id}
-                            </div>
-                            <div>
-                              <span className="font-medium text-[#6aabd2]">
-                                Project ID:{" "}
-                              </span>
-                              {location.project_id}
-                            </div>
-                            <div>
-                              <span className="font-medium text-[#6aabd2]">
-                                Location Name:{" "}
-                              </span>
-                              {location.location_name}
-                            </div>
-                          </div>
-                        </Popup>
-                      </Marker>
+                      />
                     </Fragment>
                   );
                 })}
             </MapContainer>
+            <div>
+              {activeLocationId && customPopupPosition && (
+                <div
+                  className="absolute z-[1000] bg-white border border-gray-300 rounded-lg shadow-md p-4"
+                  style={{
+                    left: `${customPopupPosition.x + 200}px`,
+                    top: `${customPopupPosition.y + 100}px`,
+                    transform: "translate(-50%, -100%)",
+                  }}
+                >
+                  <button
+                    onClick={() => {
+                      setActiveLocationId(null);
+                      setSelectedLocation(null);
+                    }}
+                    className="absolute top-1 right-2 text-gray-500 hover:text-red-500 font-bold text-xl leading-none"
+                  >
+                    &times;
+                  </button>
+
+                  <div className="text-[#385e72] font-bold text-lg mb-2">
+                    {selectedLocation?.location_type}
+                  </div>
+                  <hr className="mb-2 border-[#b7cfdc]" />
+                  <div>
+                    <span className="font-semibold">Location ID:</span>{" "}
+                    {selectedLocation?.id}
+                  </div>
+                  <div>
+                    <span className="font-semibold">Parent ID:</span>{" "}
+                    {selectedLocation?.parent_id}
+                  </div>
+                  <div>
+                    <span className="font-semibold">Project ID:</span>{" "}
+                    {selectedLocation?.project_id}
+                  </div>
+                  <div>
+                    <span className="font-semibold"> Location Name:</span>{" "}
+                    {selectedLocation?.location_name}
+                  </div>
+                  <button
+                    onClick={() => {
+                      setRightSidebarOpen(true);
+                      setactionForRightsidebar("Latest Inspectin Data");
+                      setlocationForRightSidebar(selectedLocation.id);
+                    }}
+                    className="text-sm px-2 py-1 bg-blue-200 hover:bg-blue-300 rounded"
+                  >
+                    View Latest Record
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
