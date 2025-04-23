@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef ,Fragment } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -7,6 +7,7 @@ import {
   LayersControl,
   ZoomControl,
   ScaleControl,
+  CircleMarker 
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import {
@@ -21,7 +22,7 @@ import {
   switchIconImmediate,
   ctptIcon,
   ctptIconrModerate,
-  ctptImmediate
+  ctptImmediate,
 } from "../utils/MapIcon";
 import Topbar from "../Topbar";
 import LeftSidebar from "./LeftSidebar";
@@ -39,7 +40,8 @@ export default function MapView() {
   const [locations, setLocations] = useState([]);
   const [activeLocationId, setActiveLocationId] = useState(null);
   const [activeLayer, setActiveLayer] = useState("OpenStreetMap");
-  const [selectedLocationId, setSelectedLocationId] = useState(null);
+  const [locationForRightSidebar, setlocationForRightSidebar] = useState(null);
+  const [locationForLeftSidebar, setlocationForLeftSidebar] = useState(null);
   const [layerKey, setLayerKey] = useState(0);
   const [
     inspectionDataBasedOnActionRequired,
@@ -50,6 +52,7 @@ export default function MapView() {
     setLocations([]);
     setRightSidebarOpen(false);
     setLayerKey((prev) => prev + 1);
+    setlocationForLeftSidebar(null)
   };
 
   const toggleLeftSidebar = () => {
@@ -78,11 +81,6 @@ export default function MapView() {
     });
   };
 
-  console.log(
-    inspectionDataBasedOnActionRequired,
-    "inspection data in parent jay hanuman dada"
-  );
-
   useEffect(() => {
     const updateHeight = () => {
       const header = document.querySelector("header");
@@ -109,8 +107,6 @@ export default function MapView() {
     }
   }, [locations]);
 
-  console.log(locations);
-
   return (
     <>
       <Topbar />
@@ -119,6 +115,7 @@ export default function MapView() {
           LeftsidebarOpen={LeftsidebarOpen}
           toggleLeftSidebar={toggleLeftSidebar}
           onLocationDataFetched={handleLocationDataFetched}
+          locationIdFromMaptoLeftsidebar={locationForLeftSidebar} // 👈 pass the data here
           oninspectionDataBasedOnActionRequiredFetched={(data) =>
             setinspectionDataBasedOnActionRequired(data)
           }
@@ -128,7 +125,7 @@ export default function MapView() {
           setRightSidebarOpen={setRightSidebarOpen}
           toggleRightSidebar={toggleRightSidebar}
           locations={locations}
-          selectedLocation={selectedLocationId}
+          selectedLocation={locationForRightSidebar}
         />
         <button
           className={`absolute top-3 z-[700] bg-[#385e72] p-3 rounded-full hover:bg-[#6aabd2] shadow transition-all duration-300 ease-in-out ${
@@ -211,20 +208,16 @@ export default function MapView() {
                   const name = location.location_type?.trim().toLowerCase();
                   let icon = null;
 
-                
                   const inspections =
                     inspectionDataBasedOnActionRequired?.inspections || [];
 
-                 
                   const inspection = inspections.find(
                     (inspection) => inspection.location_id == location.id
                   );
 
-               
                   if (inspection) {
                     const actionRequired = inspection.actionrequired;
 
-                 
                     switch (name) {
                       case "transformer":
                         icon =
@@ -262,111 +255,231 @@ export default function MapView() {
                         icon = null;
                     }
                   } else {
-                  
                     switch (name) {
                       case "transformer":
-                        icon = transformerIcon; 
+                        icon = transformerIcon;
                         break;
                       case "ctpt":
                         icon = ctptIcon;
                         break;
                       case "switch":
-                        icon = switchIcon; 
+                        icon = switchIcon;
                         break;
                       case "fuse":
-                        icon = fuseIcon; 
+                        icon = fuseIcon;
                         break;
                       default:
                         icon = null;
                     }
                   }
+                  console.log(location)
                   return (
-                    <Marker
-                      key={location.id}
-                      position={[location.lat, location.lang]}
-                      icon={icon}
-                      
-                    >
-                      <Popup className="custom-leaflet-popup">
-                        <div className="p-3 text-sm text-[#385e72] bg-[#d9e4ec] rounded-md space-y-2 shadow-md relative">
-                          <div className="flex justify-between items-center">
-                            <div className="font-semibold text-lg text-[#385e72]">
-                              {location.location_type}
+                    // <Marker
+                    //   key={location.id}
+                    //   position={[location.lat, location.lang]}
+                    //   icon={icon}
+                    // >
+                    //   <Popup
+                    //     className="custom-leaflet-popup"
+                    //     eventHandlers={{
+                    //       add: () => {
+                    //         setlocationForLeftSidebar(location.id);
+                    //       },
+                    //     }}
+                    //   >
+                    //     <div className="p-3 text-sm text-[#385e72] bg-[#d9e4ec] rounded-md space-y-2 shadow-md relative">
+                    //       <div className="flex justify-between items-center">
+                    //         <div className="font-semibold text-lg text-[#385e72]">
+                    //           {location.location_type}
+                    //         </div>
+                    //         <div className="relative">
+                    //           <button
+                    //             className="text-[#385e72] mr-5 hover:text-[#6aabd2] focus:outline-none"
+                    //             onClick={(e) => {
+                    //               e.stopPropagation();
+                    //               setActiveLocationId((prev) =>
+                    //                 prev === location.id ? null : location.id
+                    //               );
+                    //             }}
+                    //           >
+                    //             ⋮
+                    //           </button>
+
+                    //           {activeLocationId === location.id && (
+                    //             <div className="absolute left-8 mt-6 w-28 bg-white border border-gray-200 rounded shadow-md z-10">
+                    //               <ul className="text-sm text-gray-700">
+                    //                 <li
+                    //                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    //                   onClick={() => handleEdit(location.id)}
+                    //                 >
+                    //                   ✏️ Edit
+                    //                 </li>
+                    //                 <li
+                    //                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    //                   onClick={() => handleDelete(location.id)}
+                    //                 >
+                    //                   🗑️ Delete
+                    //                 </li>
+                    //                 <li
+                    //                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    //                   onClick={() => {
+                    //                     toggleRightSidebar();
+                    //                     setlocationForRightSidebar(location.id);
+                    //                   }}
+                    //                 >
+                    //                   Open Right Sidebar
+                    //                 </li>
+                    //               </ul>
+                    //             </div>
+                    //           )}
+                    //         </div>
+                    //       </div>
+
+                    //       <hr className="border-[#b7cfdc]" />
+
+                    //       <div className="">
+                    //         <span className="font-medium text-[#6aabd2]">
+                    //           Location ID:
+                    //         </span>{" "}
+                    //         {location.id}
+                    //       </div>
+                    //       <div className="">
+                    //         <span className="font-medium text-[#6aabd2]">
+                    //           Parent ID:{" "}
+                    //         </span>
+                    //         {location.parent_id}
+                    //       </div>
+
+                    //       <div>
+                    //         <span className="font-medium text-[#6aabd2]">
+                    //           Project ID:{" "}
+                    //         </span>
+                    //         {location.project_id}
+                    //       </div>
+                    //       <div>
+                    //         <span className="font-medium text-[#6aabd2]">
+                    //           Location Name:{" "}
+                    //         </span>
+                    //         {location.location_name}
+                    //       </div>
+                    //     </div>
+                    //   </Popup>
+
+                    // </Marker>
+
+                    <Fragment key={location.id}>
+                      {activeLocationId === location.id && (
+                        <CircleMarker
+                          center={[location.lat, location.lang]}
+                          radius={18}
+                          pathOptions={{
+                            color: "red",
+                            fillColor: "#facc15",
+                            fillOpacity: 0.3,
+                          }}
+                        />
+                      )}
+
+                      <Marker
+                        position={[location.lat, location.lang]}
+                        icon={icon}
+                        eventHandlers={{
+                          click: () => {
+                            setActiveLocationId(location.id); 
+                          },
+                        }}
+                      >
+                        <Popup
+                          className="custom-leaflet-popup"
+                          eventHandlers={{
+                            add: () => {
+                              setlocationForLeftSidebar(location.id);
+                            },
+                          }}
+                        >
+                          
+                          <div className="p-3 text-sm text-[#385e72] bg-[#d9e4ec] rounded-md space-y-2 shadow-md relative">
+                            <div className="flex justify-between items-center">
+                              <div className="font-semibold text-lg text-[#385e72]">
+                                {location.location_type}
+                              </div>
+                              <div className="relative">
+                                <button
+                                  className="text-[#385e72] mr-5 hover:text-[#6aabd2] focus:outline-none"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    // setActiveLocationId((prev) =>
+                                    //   prev === location.id ? null : location.id
+                                    // );
+                                  }}
+                                >
+                                  ⋮
+                                </button>
+
+                                {activeLocationId === location.id && (
+                                  <div className="absolute left-8 mt-6 w-28 bg-white border border-gray-200 rounded shadow-md z-10">
+                                    <ul className="text-sm text-gray-700">
+                                      <li
+                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                        onClick={() => handleEdit(location.id)}
+                                      >
+                                        ✏️ Edit
+                                      </li>
+                                      <li
+                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                        onClick={() =>
+                                          handleDelete(location.id)
+                                        }
+                                      >
+                                        🗑️ Delete
+                                      </li>
+                                      <li
+                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                        onClick={() => {
+                                          toggleRightSidebar();
+                                          setlocationForRightSidebar(
+                                            location.id
+                                          );
+                                        }}
+                                      >
+                                        Open Right Sidebar
+                                      </li>
+                                    </ul>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                            <div className="relative">
-                              <button
-                                className="text-[#385e72] mr-5 hover:text-[#6aabd2] focus:outline-none"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setActiveLocationId((prev) =>
-                                    prev === location.id ? null : location.id
-                                  );
-                                }}
-                              >
-                                ⋮
-                              </button>
 
-                              {activeLocationId === location.id && (
-                                <div className="absolute left-8 mt-6 w-28 bg-white border border-gray-200 rounded shadow-md z-10">
-                                  <ul className="text-sm text-gray-700">
-                                    <li
-                                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                                      onClick={() => handleEdit(location.id)}
-                                    >
-                                      ✏️ Edit
-                                    </li>
-                                    <li
-                                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                                      onClick={() => handleDelete(location.id)}
-                                    >
-                                      🗑️ Delete
-                                    </li>
-                                    <li
-                                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                                      onClick={() => {
-                                        console.log("Right Sidebar toggled!");
-                                        toggleRightSidebar();
-                                        setSelectedLocationId(location.id); // ✅ SET THE LOCATION
-                                      }}
-                                    >
-                                      Open Right Sidebar
-                                    </li>
-                                  </ul>
-                                </div>
-                              )}
+                            <hr className="border-[#b7cfdc]" />
+
+                            <div>
+                              <span className="font-medium text-[#6aabd2]">
+                                Location ID:
+                              </span>{" "}
+                              {location.id}
+                            </div>
+                            <div>
+                              <span className="font-medium text-[#6aabd2]">
+                                Parent ID:{" "}
+                              </span>
+                              {location.parent_id}
+                            </div>
+                            <div>
+                              <span className="font-medium text-[#6aabd2]">
+                                Project ID:{" "}
+                              </span>
+                              {location.project_id}
+                            </div>
+                            <div>
+                              <span className="font-medium text-[#6aabd2]">
+                                Location Name:{" "}
+                              </span>
+                              {location.location_name}
                             </div>
                           </div>
-
-                          <hr className="border-[#b7cfdc]" />
-
-                          <div className="">
-                            <span className="font-medium text-[#6aabd2]">
-                              Location ID:
-                            </span>
-                            {location.id}
-                          </div>
-                          <div className="">
-                            <span className="font-medium text-[#6aabd2]">
-                              Parent ID:
-                            </span>
-                            {location.parent_id}
-                          </div>
-
-                          <div>
-                            <span className="font-medium text-[#6aabd2]">
-                              Project ID:
-                            </span>
-                            {location.project_id}
-                          </div>
-                          <div>
-                            <span className="font-medium text-[#6aabd2]">
-                              Location Name:
-                            </span>
-                            {location.location_name}
-                          </div>
-                        </div>
-                      </Popup>
-                    </Marker>
+                        </Popup>
+                      </Marker>
+                    </Fragment>
                   );
                 })}
             </MapContainer>

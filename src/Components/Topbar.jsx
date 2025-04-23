@@ -50,7 +50,7 @@ function TopBar() {
   };
 
   const handleDashboardClick = () => {
-    navigate("/data-inspection");
+    navigate("/data-dashboard");
     closeSidebar();
   };
 

@@ -1057,7 +1057,7 @@ function generateDynamicThermalTable(inspectionData) {
             Inspection Data Preview
           </h2>
           <button
-            onClick={() => navigate("/data-inspection")}
+            onClick={() => navigate("/data-dashboard")}
             className="bg-[#6aabd2] text-[#385e72] px-4 py-2 rounded-md font-medium hover:bg-[#4c94c2] transition-all"
           >
             🔙 Go Back

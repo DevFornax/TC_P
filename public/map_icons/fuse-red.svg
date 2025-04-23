@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="76" height="76" viewBox="0 0 76 76">
-  <g id="Fuse" fill="red" stroke="#4f6b3d" stroke-width="2">
-    <circle cx="38" cy="38" r="38" stroke="none"/>
-    <circle cx="38" cy="38" r="37" fill="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="35" viewBox="0 0 24 35">
+  <g id="Fuse" transform="translate(24) rotate(90)" fill="red" stroke="#2f528f" stroke-width="1">
+    <rect width="35" height="24" stroke="none"/>
+    <rect x="0.5" y="0.5" width="34" height="23" fill="none"/>
   </g>
 </svg>

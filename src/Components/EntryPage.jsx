@@ -14,7 +14,7 @@ export default function EntryPage() {
     },
     {
       title: "Inspection Reports",
-      route: "/data-inspection",
+      route: "/data-dashboard",
       image: "/dashboard.svg",
     },
     {

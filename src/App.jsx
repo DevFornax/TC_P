@@ -33,7 +33,7 @@ function App() {
           }
         />
         <Route
-          path="/data-inspection"
+          path="/data-dashboard"
           element={
             <PrivateRoute>
               <DataComponent />
