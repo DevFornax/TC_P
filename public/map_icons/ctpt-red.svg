@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="92" height="58" viewBox="0 0 92 58">
-  <g id="CTPT" fill="#5e96d1" stroke="#cbaa5b" stroke-width="2">
+  <g id="CTPT" fill="red" stroke="#cbaa5b" stroke-width="2">
     <rect width="92" height="58" stroke="none"/>
     <rect x="1" y="1" width="90" height="56" fill="none"/>
   </g>

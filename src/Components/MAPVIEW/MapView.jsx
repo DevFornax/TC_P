@@ -11,9 +11,17 @@ import {
 import "leaflet/dist/leaflet.css";
 import {
   transformerIcon,
+  transformerModerate,
+  transformerImmediate,
   fuseIcon,
+  fuseIconModerate,
+  fuseIconImmediate,
   switchIcon,
+  switchIconModerate,
+  switchIconImmediate,
   ctptIcon,
+  ctptIconrModerate,
+  ctptImmediate
 } from "../utils/MapIcon";
 import Topbar from "../Topbar";
 import LeftSidebar from "./LeftSidebar";
@@ -24,53 +32,56 @@ const gujaratBounds = [
 ];
 
 export default function MapView() {
-  
   const mapRef = useRef(null);
   const [LeftsidebarOpen, setLeftSidebarOpen] = useState(true);
-    const [RightsidebarOpen, setRightSidebarOpen] = useState(false);
+  const [RightsidebarOpen, setRightSidebarOpen] = useState(false);
   const [mapHeight, setMapHeight] = useState("calc(100vh - 4px)");
   const [locations, setLocations] = useState([]);
   const [activeLocationId, setActiveLocationId] = useState(null);
   const [activeLayer, setActiveLayer] = useState("OpenStreetMap");
+  const [selectedLocationId, setSelectedLocationId] = useState(null);
+  const [layerKey, setLayerKey] = useState(0);
+  const [
+    inspectionDataBasedOnActionRequired,
+    setinspectionDataBasedOnActionRequired,
+  ] = useState([]);
 
-const handleRefresh = () => {
-  setLocations([]);
-  setRightSidebarOpen(false);
-  console.log("Before update:", activeLayer); // Log to ensure the current value
-  setActiveLayer("OpenStreetMap");
-  console.log("After update:", activeLayer); // Log to check the updated value (after async update)
-};
-
+  const handleRefresh = () => {
+    setLocations([]);
+    setRightSidebarOpen(false);
+    setLayerKey((prev) => prev + 1);
+  };
 
   const toggleLeftSidebar = () => {
     setLeftSidebarOpen(!LeftsidebarOpen);
   };
 
-
-   const toggleRightSidebar = () => {
+  const toggleRightSidebar = () => {
     setRightSidebarOpen(!RightsidebarOpen);
   };
 
+  const handleLocationDataFetched = (fetchedLocations) => {
+    setLocations((prev) => {
+      const existingIds = new Set(prev.map((loc) => loc.id));
+      const newUnique = fetchedLocations.filter(
+        (loc) => !existingIds.has(loc.id)
+      );
+      const updated = [...prev, ...newUnique];
 
+      setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.invalidateSize();
+        }
+      }, 100);
 
-const handleLocationDataFetched = (fetchedLocations) => {
-  setLocations((prev) => {
-    const existingIds = new Set(prev.map((loc) => loc.id));
-    const newUnique = fetchedLocations.filter(
-      (loc) => !existingIds.has(loc.id)
-    );
-    const updated = [...prev, ...newUnique];
+      return updated;
+    });
+  };
 
-    setTimeout(() => {
-      if (mapRef.current) {
-        mapRef.current.invalidateSize();
-      }
-    }, 100); // 100ms delay to let the DOM/layout adjust
-
-    return updated;
-  });
-};
-
+  console.log(
+    inspectionDataBasedOnActionRequired,
+    "inspection data in parent jay hanuman dada"
+  );
 
   useEffect(() => {
     const updateHeight = () => {
@@ -84,7 +95,6 @@ const handleLocationDataFetched = (fetchedLocations) => {
     return () => window.removeEventListener("resize", updateHeight);
   }, []);
 
- 
   useEffect(() => {
     if (locations.length > 0 && mapRef.current) {
       const bounds = locations.map((loc) => [loc.lat, loc.lang]);
@@ -109,12 +119,16 @@ const handleLocationDataFetched = (fetchedLocations) => {
           LeftsidebarOpen={LeftsidebarOpen}
           toggleLeftSidebar={toggleLeftSidebar}
           onLocationDataFetched={handleLocationDataFetched}
+          oninspectionDataBasedOnActionRequiredFetched={(data) =>
+            setinspectionDataBasedOnActionRequired(data)
+          }
         />
         <RightSidebar
           RightsidebarOpen={RightsidebarOpen}
           setRightSidebarOpen={setRightSidebarOpen}
           toggleRightSidebar={toggleRightSidebar}
-          locations={locations} // Passing locations da
+          locations={locations}
+          selectedLocation={selectedLocationId}
         />
         <button
           className={`absolute top-3 z-[700] bg-[#385e72] p-3 rounded-full hover:bg-[#6aabd2] shadow transition-all duration-300 ease-in-out ${
@@ -137,10 +151,10 @@ const handleLocationDataFetched = (fetchedLocations) => {
         <div className="flex h-full">
           <div className="flex-1" style={{ height: mapHeight }}>
             <MapContainer
-              center={[21.08, 72.85]}
-              key={activeLayer}
+              center={[22.74578914242589, 71.17492675781251]}
+              key={layerKey}
               maxBounds={gujaratBounds}
-              zoom={12}
+              zoom={8}
               minZoom={8}
               maxZoom={30}
               scrollWheelZoom={true}
@@ -197,28 +211,81 @@ const handleLocationDataFetched = (fetchedLocations) => {
                   const name = location.location_type?.trim().toLowerCase();
                   let icon = null;
 
-                  switch (name) {
-                    case "transformer":
-                      icon = transformerIcon;
-                      break;
-                    case "ctpt":
-                      icon = ctptIcon;
-                      break;
-                    case "switch":
-                      icon = switchIcon;
-                      break;
-                    case "fuse":
-                      icon = fuseIcon;
-                      break;
-                    default:
-                      icon = null;
-                  }
+                
+                  const inspections =
+                    inspectionDataBasedOnActionRequired?.inspections || [];
 
+                 
+                  const inspection = inspections.find(
+                    (inspection) => inspection.location_id == location.id
+                  );
+
+               
+                  if (inspection) {
+                    const actionRequired = inspection.actionrequired;
+
+                 
+                    switch (name) {
+                      case "transformer":
+                        icon =
+                          actionRequired === "immediate"
+                            ? transformerImmediate
+                            : actionRequired === "moderate"
+                            ? transformerModerate
+                            : transformerIcon;
+                        break;
+                      case "ctpt":
+                        icon =
+                          actionRequired === "immediate"
+                            ? ctptImmediate
+                            : actionRequired === "moderate"
+                            ? ctptIconrModerate
+                            : ctptIcon;
+                        break;
+                      case "switch":
+                        icon =
+                          actionRequired === "immediate"
+                            ? switchIconImmediate
+                            : actionRequired === "moderate"
+                            ? switchIconModerate
+                            : switchIcon;
+                        break;
+                      case "fuse":
+                        icon =
+                          actionRequired === "immediate"
+                            ? fuseIconImmediate
+                            : actionRequired === "moderate"
+                            ? fuseIconModerate
+                            : fuseIcon;
+                        break;
+                      default:
+                        icon = null;
+                    }
+                  } else {
+                  
+                    switch (name) {
+                      case "transformer":
+                        icon = transformerIcon; 
+                        break;
+                      case "ctpt":
+                        icon = ctptIcon;
+                        break;
+                      case "switch":
+                        icon = switchIcon; 
+                        break;
+                      case "fuse":
+                        icon = fuseIcon; 
+                        break;
+                      default:
+                        icon = null;
+                    }
+                  }
                   return (
                     <Marker
                       key={location.id}
                       position={[location.lat, location.lang]}
                       icon={icon}
+                      
                     >
                       <Popup className="custom-leaflet-popup">
                         <div className="p-3 text-sm text-[#385e72] bg-[#d9e4ec] rounded-md space-y-2 shadow-md relative">
@@ -259,6 +326,7 @@ const handleLocationDataFetched = (fetchedLocations) => {
                                       onClick={() => {
                                         console.log("Right Sidebar toggled!");
                                         toggleRightSidebar();
+                                        setSelectedLocationId(location.id); // ✅ SET THE LOCATION
                                       }}
                                     >
                                       Open Right Sidebar

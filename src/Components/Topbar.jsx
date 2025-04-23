@@ -161,7 +161,6 @@ function TopBar() {
                 ✕
               </button>
             </div>
-
             <button
               onClick={handleHomeClick}
               className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
@@ -181,16 +180,16 @@ function TopBar() {
               🔍 Inspection Tool
             </button>
             <button
-              onClick={handleLogout}
-              className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
-            >
-              🔒 Logout
-            </button>
-            <button
               onClick={handleMapViewClick}
               className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
             >
               🌍 Map View
+            </button>
+            <button
+              onClick={handleLogout}
+              className="w-full text-left px-4 py-2 bg-white rounded text-[#385e72] hover:bg-[#b7cfdc] font-medium"
+            >
+              🔒 Logout
             </button>
           </div>
 

@@ -3,7 +3,12 @@
 
 import React, { useState } from "react";
 
-const RightSidebar = ({ RightsidebarOpen, setRightSidebarOpen, locations }) => {
+const RightSidebar = ({
+  RightsidebarOpen,
+  setRightSidebarOpen,
+  locations,
+  selectedLocation,
+}) => {
   const initialWidth = 256;
   const [width, setWidth] = useState(initialWidth);
 
@@ -78,10 +83,12 @@ const RightSidebar = ({ RightsidebarOpen, setRightSidebarOpen, locations }) => {
       >
         &rarr;
       </button>
-
-      <ul >
-        {" "}
-        {/* Makes the list scrollable */}
+      <p>Location ID: {selectedLocation}</p>
+      {/* <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus aut veritatis ad repellat? Repellendus, praesentium quasi incidunt itaque et eius nesciunt eveniet esse quod, facilis mollitia dolores recusandae laborum? Ipsa eius quos saepe! Eaque, vitae quae! Amet eveniet, inventore ratione voluptatum possimus aspernatur necessitatibus, modi illum dolorem veritatis nesciunt blanditiis aperiam eos, ex praesentium exercitationem? Ad pariatur quasi expedita veritatis autem reiciendis cupiditate in quaerat ratione laudantium, voluptates accusamus deserunt qui saepe accusantium ducimus ipsa asperiores explicabo eius quae. Quasi, rem aspernatur enim voluptatibus velit quis officia praesentium ratione rerum officiis, qui expedita architecto ipsa veritatis perferendis repudiandae laborum ab tempora vitae aut pariatur dignissimos quaerat impedit! Ipsa at distinctio autem, amet, voluptate voluptatibus modi rerum perferendis qui deserunt laboriosam, fuga cumque. Reprehenderit sed minus dignissimos ad officia nobis, ipsam itaque quisquam explicabo suscipit quasi esse accusantium veritatis dicta laudantium dolorem fugiat facilis nulla dolore vitae, quod cumque deleniti voluptates corrupti? Amet adipisci quas hic dicta minus nostrum dolores praesentium eius nam provident, explicabo illum. Distinctio, iusto commodi voluptatum doloremque veritatis fuga debitis accusantium sequi impedit dolorem natus rem officia nostrum officiis vitae est autem error blanditiis. Exercitationem neque, ut eos a id, vero quidem quo eius, cumque cum consectetur! Animi at magni corporis a dolores sequi soluta, iusto corrupti ratione sunt exercitationem amet saepe mollitia fugiat nobis. Officiis suscipit dolor dicta molestias velit quam atque aut laboriosam, commodi ipsum nostrum neque magnam animi dolorum hic quo mollitia rem laborum possimus sapiente aperiam impedit exercitationem voluptas? Odio, molestias reprehenderit. Expedita ullam facilis voluptas natus consectetur doloremque harum maiores commodi ea sequi in facere quibusdam eaque repellendus quidem, ab sapiente. Expedita et reiciendis sapiente nihil rerum quasi maiores nobis eveniet esse molestiae quibusdam, facilis vitae natus ut ipsa repellendus architecto ipsum dolorum soluta pariatur nam necessitatibus debitis! Laudantium voluptatibus pariatur maiores?
+      </p> */}
+      <ul className="p-7 pb-12">
+       
         {locations.map((location) => (
           <li key={location.id}>{location.location_name}</li>
         ))}
