@@ -11,8 +11,8 @@ import axios from "../utils/axiosInstance";
 function SurveyDashboard() {
   const sldRef = useRef(null);
 
-  const navigate = useNavigate();
-  const location = useLocation();
+  // const navigate = useNavigate();
+  // const location = useLocation();
   const [newLocationID, setNewLocationID] = useState("");
   const [error, setError] = useState("");
 
@@ -51,47 +51,6 @@ function SurveyDashboard() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  //   const handleLocationSearch = async () => {
-  //     if (!newLocationID || isNaN(newLocationID)) {
-  //       setError("Location ID must be a valid number.");
-
-  //       setTimeout(() => {
-  //         setError(null);
-  //       }, 5000);
-
-  //       return;
-  //     }
-  //     setError("");
-  //     setLoading(true);
-  //     try {
-
-  // const token = getAuthToken();
-  //       const res = await fetch(`${API_URL}/get-location-data`, {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         body: JSON.stringify({ location_id: parseInt(newLocationID) }),
-  //       });
-  //       const data = await res.json();
-  //       if (!res.ok) {
-  //         setError(data.message || "Location not found");
-  //         return;
-  //       }
-  //       setLocationData(data);
-  //       setSelection(data.attributes.point_type);
-
-  //       setProjectId(data.project_id);
-  //       setLocationIDforchild(parseInt(newLocationID));
-  //       console.log("Api called from dashbpard");
-  //     } catch (err) {
-  //       console.error("Error fetching new location:", err);
-  //       setError("Something went wrong!");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
 
   const handleLocationSearch = async () => {
     if (!newLocationID || isNaN(newLocationID)) {

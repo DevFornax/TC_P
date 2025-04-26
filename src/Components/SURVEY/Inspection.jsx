@@ -535,18 +535,18 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
                             <button
                               type="button"
                               onClick={() => handleRemoveNoteRow(index)}
-                              className="px-2 py-1 text-sm bg-red-500 text-white rounded-lg disabled:opacity-50"
+                              className="px-2 py-1 text-sm bg-[#6aabd2] text-white rounded-lg disabled:opacity-50"
                               disabled={notesRows.length === 1}
                             >
-                              ❌
+                              <img src="/delete.svg" alt="" />
                             </button>
                             {index === notesRows.length - 1 && (
                               <button
                                 type="button"
                                 onClick={handleAddNoteRow}
-                                className="px-2 py-1 text-sm bg-green-500 text-white rounded-lg"
+                                className="px-2 py-1 text-sm  bg-[#6aabd2] rounded-lg"
                               >
-                                ➕
+                                <img src="/plus.svg" alt="Add notes" />
                               </button>
                             )}
                           </div>
