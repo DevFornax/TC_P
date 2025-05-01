@@ -226,20 +226,23 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                       }
 
                       const clickState = pointClickStates[wp.id] || 0;
-                    if (clickState === 1) {
-                      fillColor = "green";
-                      strokeColor = "green";
-                    } else if (clickState === 2) {
-                      fillColor = "orange";
-                      strokeColor = "orange";
-                    } else if (clickState === 3) {
-                      fillColor = "red";
-                      strokeColor = "red";
-                    }
+                      if (clickState === 1) {
+                        fillColor = "green";
+                        strokeColor = "green";
+                      } else if (clickState === 2) {
+                        fillColor = "orange";
+                        strokeColor = "orange";
+                      } else if (clickState === 3) {
+                        fillColor = "red";
+                        strokeColor = "red";
+                      }
 
                       const handleClick = (id) => {
-                        const nextClickState =
-                          ((pointClickStates[id] || 0) + 1) % 4;
+                        // const nextClickState =
+                        //   ((pointClickStates[id] || 0) + 1) % 3;
+                        const currentClickState = pointClickStates[id] || 0;
+                        const nextClickState = (currentClickState + 1) % 4;
+
                         setPointClickStates((prev) => ({
                           ...prev,
                           [id]: nextClickState,
@@ -285,7 +288,7 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                           id.startsWith("TD")
                         ) {
                           let condition = "Normal";
-                          if(nextClickState === 1) condition = "Low";
+                          if (nextClickState === 1) condition = "Low";
                           if (nextClickState === 2) condition = "Medium";
                           if (nextClickState === 3) condition = "High";
 
@@ -293,7 +296,6 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                             id: `${id}${locationID}`,
                             condition,
                           });
-                          console.log(condition)
                         }
                       };
 
@@ -335,9 +337,9 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                                 } else if (thermalState === 2) {
                                   fill = "orange";
                                   stroke = "orange";
-                                }else if (thermalState === 3) {
+                                } else if (thermalState === 3) {
                                   fill = "red";
-                                  stroke="red"
+                                  stroke = "red";
                                 }
 
                                 return (
@@ -477,17 +479,49 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
 
                         const clickState = pointClickStates[wp.id] || 0;
                         if (clickState === 1) {
-                          fillColor = "darkorange";
-                          strokeColor = "orange";
+                          fillColor = "green";
+                          strokeColor = "green";
                         } else if (clickState === 2) {
+                          fillColor = "orange";
+                          strokeColor = "orange";
+                        } else if (clickState === 3) {
                           fillColor = "red";
                           strokeColor = "red";
                         }
 
+                        //                         const handleClick = (id) => {
+                        //                           setPointClickStates((prev) => {
+                        //                             const currentState = prev[id] || 0;
+                        //                             const nextState = (currentState + 1) % 3;
+                        //                             return {
+                        //                               ...prev,
+                        //                               [id]: nextState,
+                        //                             };
+                        //                           });
+
+                        //                           if (validIds.has(id)) {
+
+                        //                             const currentClickState = pointClickStates[id] || 0;
+                        //                             const nextClickState = (currentClickState + 1) % 4;
+
+                        //                            let condition = "Normal";
+                        //                            if (nextClickState === 1) condition = "Low";
+                        //                            if (nextClickState === 2) condition = "Medium";
+                        //                            if (nextClickState === 3) condition = "High";
+                        // console.log(nextClickState)
+                        //                             setSelectedPoint({
+                        //                               id: `${id}${locationID}`,
+                        //                               condition: condition,
+                        //                             });
+                        //                           } else {
+                        //                             console.log(`Invalid ID clicked: ${id}`);
+                        //                           }
+                        //                         };
+
                         const handleClick = (id) => {
                           setPointClickStates((prev) => {
                             const currentState = prev[id] || 0;
-                            const nextState = (currentState + 1) % 3;
+                            const nextState = (currentState + 1) % 4;
                             return {
                               ...prev,
                               [id]: nextState,
@@ -496,11 +530,12 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
 
                           if (validIds.has(id)) {
                             const currentClickState = pointClickStates[id] || 0;
-                            const nextClickState = (currentClickState + 1) % 3;
+                            const nextClickState = (currentClickState + 1) % 4;
 
                             let condition = "Normal";
-                            if (nextClickState === 1) condition = "Medium";
-                            else if (nextClickState === 2) condition = "High";
+                            if (nextClickState === 1) condition = "Low";
+                            if (nextClickState === 2) condition = "Medium";
+                            if (nextClickState === 3) condition = "High";
 
                             setSelectedPoint({
                               id: `${id}${locationID}`,
@@ -629,9 +664,12 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
 
                       const clickState = pointClickStates[wp.id] || 0;
                       if (clickState === 1) {
-                        fillColor = "darkorange";
-                        strokeColor = "orange";
+                        fillColor = "green";
+                        strokeColor = "green";
                       } else if (clickState === 2) {
+                        fillColor = "orange";
+                        strokeColor = "orange";
+                      } else if (clickState === 3) {
                         fillColor = "red";
                         strokeColor = "red";
                       }
@@ -639,7 +677,7 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                       const handleClick = (id) => {
                         setPointClickStates((prevStates) => {
                           const currentState = prevStates[id] || 0;
-                          const nextState = (currentState + 1) % 3;
+                          const nextState = (currentState + 1) % 4;
                           return {
                             ...prevStates,
                             [id]: nextState,
@@ -667,16 +705,11 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
 
                           const nextClickState = (currentClickState + 1) % 3;
 
-                          let condition = "Normal";
                           let fillColor = "pink";
-
-                          if (nextClickState === 1) {
-                            condition = "Medium";
-                            fillColor = "orange";
-                          } else if (nextClickState === 2) {
-                            condition = "High";
-                            fillColor = "red";
-                          }
+                          let condition = "Normal";
+                          if (nextClickState === 1) condition = "Low";
+                          if (nextClickState === 2) condition = "Medium";
+                          if (nextClickState === 3) condition = "High";
 
                           setPointClickStates((prev) => ({
                             ...prev,

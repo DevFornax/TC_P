@@ -20,7 +20,7 @@ export default function DataComponent() {
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
   const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [globalFilter, setGlobalFilter] = useState("");
   const [loading, setLoading] = useState(false);
   const [columnVisibility, setColumnVisibility] = useState({});

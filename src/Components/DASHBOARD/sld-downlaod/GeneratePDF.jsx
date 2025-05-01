@@ -299,6 +299,15 @@ const GeneratePDF = () => {
                 {},
                 {},
               ],
+              [
+                { text: "Organization", bold: true },
+                {
+                  text: "DGVCL/Surat-City/Surat-Industrial/Sachin-1(ind)/JMT(1-D)",
+                  colSpan: 3,
+                },
+                {},
+                {},
+              ],
             ],
           },
           layout: {
@@ -307,6 +316,46 @@ const GeneratePDF = () => {
           margin: [0, 0, 0, 10],
         },
 
+        {
+          text: "Feeder Amp & Ambient temperature  Data",
+          style: "sectionHeader",
+          margin: [0, 20, 0, 10],
+        },
+        {
+          table: {
+            widths: ["20%", "16%", "16%", "16%", "16%", "16%"], 
+            body: [
+              [
+                { text: "Time", bold: true },
+                "10:00",
+                "11:00",
+                "12:00",
+                "13:00",
+                "14:00",
+              ],
+              [
+                { text: "SS-Fdr-Loading", bold: true },
+                "206 A",
+                "221 A",
+                "211 A",
+                "155 A",
+                "191 A",
+              ],
+              [
+                { text: "Temp (°C)", bold: true },
+                "33 °C",
+                "36 °C",
+                "38 °C",
+                "39 °C",
+                "41 °C",
+              ],
+            ],
+          },
+          layout: {
+            fillColor: (rowIndex) => (rowIndex === 0 ? "#f2f2f2" : null),
+          },
+          margin: [0, 0, 0, 20],
+        },
         {
           text: "Visual Inspection Results",
           style: "sectionHeader",
