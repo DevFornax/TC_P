@@ -2,7 +2,7 @@ export const InspectionFields = [
   {
     label: "Bus Bar",
     name: "bus_bar",
-    options: ["Coated", "Barred Conductor", "Sleeve", "NI", "NA"],
+    options: ["Coated", "Bared Conductor", "Sleeve", "NI", "NA"],
     type: "select",
     device: ["Transformer", "Switch", "CTPT", "Fuse"],
     selectedOption: "Coated",
@@ -10,7 +10,7 @@ export const InspectionFields = [
   {
     label: "Bus Bar to DO Jumper",
     name: "busbar_do_jumper",
-    options: ["Coated", "Barred Conductor", "Sleeve", "NI", "NA"],
+    options: ["Coated", "Bared Conductor", "Sleeve", "NI", "NA"],
     type: "select",
     device: ["Transformer", "Switch", "CTPT"],
     selectedOption: "Coated",
@@ -36,13 +36,13 @@ export const InspectionFields = [
     name: "bird_guard",
     options: ["Yes", "No"],
     type: "radio",
-    device: ["Transformer", "Switch" , "CTPT"],
+    device: ["Transformer", "Switch", "CTPT"],
     selectedOption: "Yes",
   },
   {
     label: "DO to TC Jumper",
     name: "do_tc_jumper",
-    options: ["Coated", "Barred Conductor", "Sleeve", "NI", "NA"],
+    options: ["Coated", "Bared Conductor", "Sleeve", "NI", "NA"],
     type: "select",
     device: ["Transformer"],
     selectedOption: "Coated",
@@ -71,7 +71,7 @@ export const InspectionFields = [
     device: ["Transformer"],
     selectedOption: "No",
   },
- 
+
   {
     label: "Oil Leakage Visible",
     name: "oil_leakage",

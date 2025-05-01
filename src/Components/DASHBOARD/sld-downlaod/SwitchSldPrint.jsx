@@ -29,7 +29,8 @@ const markedPoints = [
 
 const getThermalColor = (value) => {
   if (value === "H") return "red";
-  if (value === "M") return "green";
+  if (value === "M") return "Orange";
+    if (value === "L") return "Green";
   return null;
 };
 

@@ -226,17 +226,20 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                       }
 
                       const clickState = pointClickStates[wp.id] || 0;
-                      if (clickState === 1) {
-                        fillColor = "darkorange";
-                        strokeColor = "orange";
-                      } else if (clickState === 2) {
-                        fillColor = "red";
-                        strokeColor = "red";
-                      }
+                    if (clickState === 1) {
+                      fillColor = "green";
+                      strokeColor = "green";
+                    } else if (clickState === 2) {
+                      fillColor = "orange";
+                      strokeColor = "orange";
+                    } else if (clickState === 3) {
+                      fillColor = "red";
+                      strokeColor = "red";
+                    }
 
                       const handleClick = (id) => {
                         const nextClickState =
-                          ((pointClickStates[id] || 0) + 1) % 3;
+                          ((pointClickStates[id] || 0) + 1) % 4;
                         setPointClickStates((prev) => ({
                           ...prev,
                           [id]: nextClickState,
@@ -282,13 +285,15 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                           id.startsWith("TD")
                         ) {
                           let condition = "Normal";
-                          if (nextClickState === 1) condition = "Medium";
-                          if (nextClickState === 2) condition = "High";
+                          if(nextClickState === 1) condition = "Low";
+                          if (nextClickState === 2) condition = "Medium";
+                          if (nextClickState === 3) condition = "High";
 
                           setSelectedPoint({
                             id: `${id}${locationID}`,
                             condition,
                           });
+                          console.log(condition)
                         }
                       };
 
@@ -321,15 +326,18 @@ const DynamicSLD = ({ locationID, selection, setSelectedPoint }) => {
                               {thermalTDPoints.map((pt) => {
                                 const thermalState =
                                   pointClickStates[pt.id] || 0;
-                                let fill = "#6cae4a";
-                                let stroke = "#4f6b3d";
+                                let fill = "gray";
+                                let stroke = "gray";
 
                                 if (thermalState === 1) {
-                                  fill = "darkorange";
-                                  stroke = "orange";
+                                  fill = "green";
+                                  stroke = "green";
                                 } else if (thermalState === 2) {
+                                  fill = "orange";
+                                  stroke = "orange";
+                                }else if (thermalState === 3) {
                                   fill = "red";
-                                  stroke = "red";
+                                  stroke="red"
                                 }
 
                                 return (

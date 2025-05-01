@@ -224,6 +224,7 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
       Medium: "M",
       High: "H",
       Normal: "N",
+      Low:"L"
     };
 
     let thermalInspection;
@@ -639,11 +640,13 @@ function Inspection({ locationdata, selection, deviceId, onSubmit }) {
                             <span className="font-medium">ID:</span> {record.id}{" "}
                             — <span className="font-medium">Condition:</span>{" "}
                             <span
-                              className={`inline-block px-2 py-1 rounded text-xs font-semibold ${
+                              cclassName={`inline-block px-2 py-1 rounded text-xs font-semibold ${
                                 record.condition === "High"
                                   ? "bg-red-100 text-red-600"
                                   : record.condition === "Medium"
                                   ? "bg-yellow-100 text-yellow-700"
+                                  : record.condition === "Low"
+                                  ? "bg-blue-100 text-blue-700"
                                   : "bg-gray-200 text-gray-600"
                               }`}
                             >

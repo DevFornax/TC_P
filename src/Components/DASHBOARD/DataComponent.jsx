@@ -116,6 +116,7 @@ export default function DataComponent() {
       if (lowerStatus === "notdone") return "Not Done";
       if (status === "M") return "Medium";
       if (status === "H") return "High";
+       if (status === "L") return "Low";
       return status.at(0).toUpperCase() + status.slice(1).toLowerCase();
     };
 

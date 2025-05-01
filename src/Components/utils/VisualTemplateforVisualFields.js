@@ -3,7 +3,7 @@ export const visualTemplate = {
     name: "bus_bar",
     options: {
       1: "Coated",
-      2: "Barred Conductor",
+      2: "Bared Conductor",
       3: "Sleeve",
       4: "NI",
       5: "NA",
@@ -13,7 +13,7 @@ export const visualTemplate = {
     name: "busbar_do_jumper",
     options: {
       1: "Coated",
-      2: "Barred Conductor",
+      2: "Bared Conductor",
       3: "Sleeve",
       4: "NI",
       5: "NA",
@@ -32,7 +32,7 @@ export const visualTemplate = {
     name: "do_tc_jumper",
     options: {
       1: "Coated",
-      2: "Barred Conductor",
+      2: "Bared Conductor",
       3: "Sleeve",
       4: "NI",
       5: "NA",
@@ -68,7 +68,7 @@ export const compressVisualData = (formData) => {
       "n/a": "N/A",
       na: "N/A",
       sleeve: "Sleeve",
-      "barred conductor/sleeve": "Sleeve",
+      "Bared conductor/sleeve": "Sleeve",
     };
     const key = (val || "").toString().trim().toLowerCase();
     return map[key] || val;

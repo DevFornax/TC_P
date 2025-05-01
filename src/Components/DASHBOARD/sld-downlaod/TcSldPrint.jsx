@@ -29,7 +29,8 @@ const markedPoints = [
 
 const getThermalColor = (value) => {
   if (value === "H") return "red";
-  if (value === "M") return "green";
+  if (value === "M") return "orange";
+  if (value === "L") return "Green"
   return null;
 };
 
@@ -187,6 +188,7 @@ const TcSldPrint = forwardRef(({ thermalInspection = {}, locationId }, ref) => {
             const Icon = TransformercustomIcons[point.id];
             const thermalValue = thermalPointData[point.id];
             const thermalColor = getThermalColor(thermalValue);
+          
 
             return (
               <g key={point.id}>
